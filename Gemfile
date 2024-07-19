@@ -38,6 +38,7 @@ gem 'rack-cors', require: 'rack/cors'
 # Reese's Gems
 gem "awesome_print"
 gem "devise"
+gem 'devise-jwt'
 gem "dotenv-rails"
 gem "faker"
 gem "http"
