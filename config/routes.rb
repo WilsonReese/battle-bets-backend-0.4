@@ -8,6 +8,8 @@ Rails.application.routes.draw do
     sessions: 'users/sessions',
     registrations: 'users/registrations'
   }
+  
+  resources :pools, only: %i[index show create update destroy]
 
   # root to: "home#index"
 end
