@@ -12,4 +12,18 @@ class Users::RegistrationsController < Devise::RegistrationsController
   def account_update_params
     params.require(:user).permit(:email, :password, :password_confirmation, :current_password, :username, :first_name, :last_name, :avatar)
   end
+
+  def respond_with(resource, _opts = {})
+    register_success && return if resource.persisted?
+
+    register_failed
+  end
+
+  def register_success
+    render json: { message: 'Signed up successfully.' }, status: :ok
+  end
+
+  def register_failed
+    render json: { message: 'Something went wrong.' }, status: :unprocessable_entity
+  end
 end
