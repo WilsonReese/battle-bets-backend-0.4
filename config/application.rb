@@ -26,6 +26,25 @@ module BattleBetsBackend04
 
     # Only loads a smaller set of middleware suitable for API only apps.
     # Middleware like session, flash, cookies can be added back manually.
+
+    # Add session middleware
+    config.middleware.use ActionDispatch::Cookies
+    config.middleware.use ActionDispatch::Session::CookieStore
+
+    config.generators do |g|
+      g.test_framework nil
+      g.factory_bot false
+      g.scaffold_stylesheet false
+      g.stylesheets false
+      g.javascripts false
+      g.helper false
+    end
+
+    config.action_controller.default_protect_from_forgery = false
+
+    # Don't generate system test files.
+    config.generators.system_tests = nil
+
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
 
