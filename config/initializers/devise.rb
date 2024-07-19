@@ -305,6 +305,17 @@ Devise.setup do |config|
   config.responder.error_status = :unprocessable_entity
   config.responder.redirect_status = :see_other
 
+  config.jwt do |jwt|
+    jwt.secret = Rails.application.credentials.devise_jwt_secret_key!
+    jwt.dispatch_requests = [
+      ['POST', %r{^/login$}]
+    ]
+    jwt.revocation_requests = [
+      ['DELETE', %r{^/logout$}]
+    ]
+    jwt.expiration_time = 1.years.to_i # Set token expiration to 10 years
+  end
+
   # ==> Configuration for :registerable
 
   # When set to false, does not sign a user in automatically after their password is
