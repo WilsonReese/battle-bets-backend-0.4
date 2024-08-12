@@ -31,6 +31,13 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable,
          :jwt_authenticatable, jwt_revocation_strategy: self
 
+  
+  # Direct Associations
+  has_many :pool_memberships, dependent: :destroy
+  
+  # Indirect Associations
+  has_many :pools, through: :pool_memberships
+
   # Validations
   validates :username, presence: true, uniqueness: true
   validates :first_name, presence: true
