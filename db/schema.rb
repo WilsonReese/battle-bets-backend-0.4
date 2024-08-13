@@ -10,7 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_12_235506) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_13_005549) do
+  create_table "battles", force: :cascade do |t|
+    t.integer "pool_id", null: false
+    t.datetime "start_date"
+    t.datetime "end_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["pool_id"], name: "index_battles_on_pool_id"
+  end
+
   create_table "pool_memberships", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "pool_id", null: false
@@ -44,6 +53,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_12_235506) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "battles", "pools"
   add_foreign_key "pool_memberships", "pools"
   add_foreign_key "pool_memberships", "users"
 end
