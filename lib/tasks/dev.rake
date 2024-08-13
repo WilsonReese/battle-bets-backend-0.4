@@ -3,6 +3,7 @@ namespace :dev do
   desc "Fill the database tables with some sample data"
   task sample_data: :environment do
     if Rails.env.development?
+      PoolMembership.delete_all
       User.delete_all
       Pool.delete_all
     end
@@ -33,9 +34,31 @@ namespace :dev do
 
     puts "Creating sample pools..."
 
-    Pool.create!(id: 1, name: "Pool 1")
-    Pool.create!(id: 2, name: "Pool 2")
+    pool1 = Pool.create!(
+      id: 1,
+      name: "Pool 1"
+    )
+
+    pool2 = Pool.create!(
+      id: 2,
+      name: "Pool 2"
+    )
 
     puts "Sample pools created successfully."
+
+    puts "Creating sample pool memberships..."
+    PoolMembership.create!(
+      id: 1,
+      user: user1,
+      pool: pool1
+    )
+
+    PoolMembership.create!(
+      id: 2,
+      user: user2,
+      pool: pool1
+    )
+
+    puts "Sample pool memberships created successfully."
   end
 end
