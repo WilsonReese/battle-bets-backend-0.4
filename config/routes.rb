@@ -9,7 +9,9 @@ Rails.application.routes.draw do
     registrations: 'users/registrations'
   }
   
-  resources :pools, only: %i[index show create update destroy]
+  resources :pools, only: %i[index show create update destroy] do
+    resources :pool_memberships, only: %i[index create destroy]
+  end
 
   # root to: "home#index"
 end
