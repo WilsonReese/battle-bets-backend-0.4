@@ -19,7 +19,7 @@
 #
 class Battle < ApplicationRecord
   belongs_to :pool
-  # has_many :betslips, dependent: :destroy
+  has_many :betslips, dependent: :destroy
 
   validates :start_date, :end_date, presence: true
 end
