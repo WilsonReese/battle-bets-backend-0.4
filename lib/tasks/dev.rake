@@ -3,7 +3,9 @@ namespace :dev do
   desc "Fill the database tables with some sample data"
   task sample_data: :environment do
     if Rails.env.development?
+      puts "Deleting pool memberships, battles, users, and pools."
       PoolMembership.delete_all
+      Battle.delete_all
       User.delete_all
       Pool.delete_all
     end
@@ -60,5 +62,22 @@ namespace :dev do
     )
 
     puts "Sample pool memberships created successfully."
+
+    puts "Creating sample battles..."
+    Battle.create!(
+      id: 1,
+      start_date: DateTime.new(2024, 9, 8, 0, 0, 0),
+      end_date: DateTime.new(2024, 9, 14, 23, 59, 59),
+      pool: pool1
+    )
+
+    Battle.create!(
+      id: 2,
+      start_date: DateTime.new(2024, 9, 15, 0, 0, 0),
+      end_date: DateTime.new(2024, 9, 21, 23, 59, 59),
+      pool: pool1
+    )
+
+    puts "Sample battles created successfully."
   end
 end
