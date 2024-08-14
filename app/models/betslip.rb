@@ -23,15 +23,10 @@ class Betslip < ApplicationRecord
   belongs_to :user
   belongs_to :battle
 
-  validates :name, presence: true, length: { maximum: 255 }
+  validates :name, length: { maximum: 255 }
 
-  before_validation :set_default_name, on: :create
+  # I may want to make the name be set as a default to "Username's Bets"
+  # But right now, it was causing me issues, so I will just allow the name to be null and not worry about a default
+  # I can come back to this
 
-  private
-
-  def set_default_name
-    if name.blank? && user.present?
-      self.name = "#{user.username}'s Bets"
-    end
-  end
 end

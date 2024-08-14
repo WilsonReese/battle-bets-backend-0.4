@@ -11,7 +11,9 @@ Rails.application.routes.draw do
   
   resources :pools, only: %i[index show create update destroy] do
     resources :pool_memberships, only: %i[index create destroy]
-    resources :battles, only: %i[index show create update destroy]
+    resources :battles, only: %i[index show create update destroy] do
+      resources :betslips, only: %i[index show create update destroy]
+    end
   end
 
   # root to: "home#index"
