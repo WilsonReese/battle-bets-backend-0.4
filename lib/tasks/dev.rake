@@ -3,7 +3,8 @@ namespace :dev do
   desc "Fill the database tables with some sample data"
   task sample_data: :environment do
     if Rails.env.development?
-      puts "Deleting pool memberships, battles, users, and pools."
+      puts "Deleting betslips, pool memberships, battles, users, and pools."
+      Betslip.delete_all
       PoolMembership.delete_all
       Battle.delete_all
       User.delete_all
@@ -64,14 +65,14 @@ namespace :dev do
     puts "Sample pool memberships created successfully."
 
     puts "Creating sample battles..."
-    Battle.create!(
+    battle1 = Battle.create!(
       id: 1,
       start_date: DateTime.new(2024, 9, 8, 0, 0, 0),
       end_date: DateTime.new(2024, 9, 14, 23, 59, 59),
       pool: pool1
     )
 
-    Battle.create!(
+    battle2 = Battle.create!(
       id: 2,
       start_date: DateTime.new(2024, 9, 15, 0, 0, 0),
       end_date: DateTime.new(2024, 9, 21, 23, 59, 59),
@@ -79,5 +80,22 @@ namespace :dev do
     )
 
     puts "Sample battles created successfully."
+
+    puts "Creating sample betslips..."
+    Betslip.create!(
+      id: 1,
+      user: user1,
+      battle: battle1,
+      name: 'User 1 Betslip'
+    )
+
+    Betslip.create!(
+      id: 2,
+      user: user2,
+      battle: battle1,
+      name: 'User 2 Betslip'
+    )
+
+    puts "Sample betslips created successfully."
   end
 end
