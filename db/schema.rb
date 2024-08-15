@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_15_175451) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_15_224821) do
   create_table "battles", force: :cascade do |t|
     t.integer "pool_id", null: false
     t.datetime "start_date"
@@ -51,6 +51,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_15_175451) do
     t.index ["user_id"], name: "index_betslips_on_user_id"
   end
 
+  create_table "game_teams", force: :cascade do |t|
+    t.integer "game_id", null: false
+    t.integer "team_id", null: false
+    t.boolean "is_home"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["game_id"], name: "index_game_teams_on_game_id"
+    t.index ["team_id"], name: "index_game_teams_on_team_id"
+  end
+
   create_table "games", force: :cascade do |t|
     t.datetime "start_time"
     t.datetime "created_at", null: false
@@ -67,6 +77,12 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_15_175451) do
   end
 
   create_table "pools", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "teams", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -96,6 +112,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_15_175451) do
   add_foreign_key "bets", "betslips"
   add_foreign_key "betslips", "battles"
   add_foreign_key "betslips", "users"
+  add_foreign_key "game_teams", "games"
+  add_foreign_key "game_teams", "teams"
   add_foreign_key "pool_memberships", "pools"
   add_foreign_key "pool_memberships", "users"
 end

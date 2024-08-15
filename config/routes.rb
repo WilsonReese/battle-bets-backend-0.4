@@ -23,5 +23,7 @@ Rails.application.routes.draw do
     resources :bet_options, only: [:index]
   end
 
+  resources :teams, only: :index
+
   # root to: "home#index"
 end
