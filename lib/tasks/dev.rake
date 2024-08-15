@@ -146,7 +146,6 @@ namespace :dev do
       betslip: betslip1,
       bet_option: bet_option1,
       bet_amount: 100,
-      to_win_amount: 200 # Calculated as bet_amount * payout
     )
 
     Bet.create!(
@@ -154,7 +153,6 @@ namespace :dev do
       betslip: betslip1,
       bet_option: bet_option3,
       bet_amount: 600,
-      to_win_amount: 1200
     )
 
     Bet.create!(
@@ -162,7 +160,6 @@ namespace :dev do
       betslip: betslip2,
       bet_option: bet_option2,
       bet_amount: 400,
-      to_win_amount: 800
     )
 
     Bet.create!(
@@ -170,7 +167,6 @@ namespace :dev do
       betslip: betslip2,
       bet_option: bet_option3,
       bet_amount: 200,
-      to_win_amount: 400
     )
 
     puts "Sample bets created successfully."

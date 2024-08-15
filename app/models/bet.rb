@@ -25,5 +25,20 @@ class Bet < ApplicationRecord
   belongs_to :bet_option
 
   validates :bet_amount, presence: true, numericality: { greater_than: 0 }
-  validates :to_win_amount, presence: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :to_win_amount, presence: true, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
+
+  before_save :calculate_to_win_amount
+  after_save :ensure_to_win_amount_is_not_nil
+
+  private
+
+  def calculate_to_win_amount
+    self.to_win_amount = bet_amount * bet_option.payout
+  end
+  
+  def ensure_to_win_amount_is_not_nil
+    if to_win_amount.nil?
+      raise "to_win_amount should not be nil after saving Bet"
+    end
+  end
 end
