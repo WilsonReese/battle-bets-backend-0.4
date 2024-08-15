@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get 'games/index'
   devise_for :users, path: '', path_names: {
     sign_in: 'login',
     sign_out: 'logout',
@@ -12,8 +13,14 @@ Rails.application.routes.draw do
   resources :pools, only: %i[index show create update destroy] do
     resources :pool_memberships, only: %i[index create destroy]
     resources :battles, only: %i[index show create update destroy] do
-      resources :betslips, only: %i[index show create update destroy]
+      resources :betslips, only: %i[index show create update destroy] do
+        resources :bets, only: %i[index create update destroy]
+      end
     end
+  end
+  
+  resources :games, only: [:index] do
+    resources :bet_options, only: [:index]
   end
 
   # root to: "home#index"

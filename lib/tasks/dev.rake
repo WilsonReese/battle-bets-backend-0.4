@@ -5,8 +5,10 @@ namespace :dev do
     if Rails.env.development?
       puts "Deleting betslips, pool memberships, battles, users, and pools."
       Betslip.delete_all
+      BetOption.delete_all
       PoolMembership.delete_all
       Battle.delete_all
+      Game.delete_all
       User.delete_all
       Pool.delete_all
     end
@@ -97,5 +99,50 @@ namespace :dev do
     )
 
     puts "Sample betslips created successfully."
+
+    puts "Creating sample games..."
+
+    game1 = Game.create!(
+      id: 1,
+      start_time: DateTime.new(2024, 9, 21, 11, 0, 0)
+    )
+
+    puts "Sample games created successfully."
+
+    puts "Creating sample bet options..."
+
+    BetOption.create!(
+      id: 1,
+      title: "Vanderbilt -6.5",
+      payout: 2.0,
+      category: "spread",
+      game: game1
+    )
+
+    BetOption.create!(
+      id: 2,  
+      title: "Tennessee + 6.5",
+      payout: 2.0,
+      category: "spread",
+      game: game1
+    )
+
+    BetOption.create!(
+      id: 3,  
+      title: "Over 45.5 Points",
+      payout: 2.0,
+      category: "ou",
+      game: game1
+    )
+
+    BetOption.create!(
+      id: 4,
+      title: "Under 45.5 Points",
+      payout: 2.0,
+      category: "ou",
+      game: game1
+    )
+
+    puts "Sample bet options created successfully."
   end
 end

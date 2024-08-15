@@ -22,7 +22,7 @@
 #
 class Bet < ApplicationRecord
   belongs_to :betslip
-  # belongs_to :bet_option
+  belongs_to :bet_option
 
   validates :bet_amount, presence: true, numericality: { greater_than: 0 }
   validates :to_win_amount, presence: true, numericality: { greater_than_or_equal_to: 0 }

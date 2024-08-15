@@ -23,6 +23,8 @@ class Betslip < ApplicationRecord
   belongs_to :user
   belongs_to :battle
 
+  has_many  :bets, dependent: :destroy
+
   validates :name, length: { maximum: 255 }
 
   # I may want to make the name be set as a default to "Username's Bets"
