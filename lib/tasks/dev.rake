@@ -81,6 +81,13 @@ namespace :dev do
       pool: pool1
     )
 
+    battle3 = Battle.create!(
+      id: 3,
+      start_date: DateTime.new(2024, 9, 15, 0, 0, 0),
+      end_date: DateTime.new(2024, 9, 21, 23, 59, 59),
+      pool: pool1
+    )
+
     puts "Sample battles created successfully."
     puts "Creating sample betslips..."
     betslip1 = Betslip.create!(
@@ -107,35 +114,35 @@ namespace :dev do
 
     puts "Sample teams created successfully."
     puts "Creating sample games and game teams..."
-    game1 = Game.create!(id: 1, start_time: "2024-09-08 15:00:00")
+    game1 = Game.create!(id: 1, start_time: "2024-09-15 15:00:00")
     GameTeam.create!(game: game1, team: teams[0], is_home: true)  # Vanderbilt
     GameTeam.create!(game: game1, team: teams[2], is_home: false) # Tennessee
 
-    game2 = Game.create!(id: 2, start_time: "2024-09-08 18:00:00")
+    game2 = Game.create!(id: 2, start_time: "2024-09-15 18:00:00")
     GameTeam.create!(game: game2, team: teams[1], is_home: true)  # Oklahoma
     GameTeam.create!(game: game2, team: teams[3], is_home: false) # Texas
 
-    game3 = Game.create!(id: 3, start_time: "2024-09-08 12:00:00")
+    game3 = Game.create!(id: 3, start_time: "2024-09-15 12:00:00")
     GameTeam.create!(game: game3, team: teams[4], is_home: true)  # Alabama
     GameTeam.create!(game: game3, team: teams[5], is_home: false) # Auburn
 
-    game4 = Game.create!(id: 4, start_time: "2024-09-08 15:00:00")
+    game4 = Game.create!(id: 4, start_time: "2024-09-15 15:00:00")
     GameTeam.create!(game: game4, team: teams[6], is_home: true)  # Texas A&M
     GameTeam.create!(game: game4, team: teams[7], is_home: false) # LSU
 
-    game5 = Game.create!(id: 5, start_time: "2024-09-08 15:00:00")
+    game5 = Game.create!(id: 5, start_time: "2024-09-15 15:00:00")
     GameTeam.create!(game: game5, team: teams[8], is_home: true)  # Ole Miss
     GameTeam.create!(game: game5, team: teams[9], is_home: false) # Mississippi St
 
-    game6 = Game.create!(id: 6, start_time: "2024-09-08 18:00:00")
+    game6 = Game.create!(id: 6, start_time: "2024-09-15 18:00:00")
     GameTeam.create!(game: game6, team: teams[10], is_home: true) # Missouri
     GameTeam.create!(game: game6, team: teams[11], is_home: false) # Arkansas
 
-    game7 = Game.create!(id: 7, start_time: "2024-09-08 12:00:00")
+    game7 = Game.create!(id: 7, start_time: "2024-09-15 12:00:00")
     GameTeam.create!(game: game7, team: teams[12], is_home: true) # Florida
     GameTeam.create!(game: game7, team: teams[13], is_home: false) # Georgia
 
-    game8 = Game.create!(id: 8, start_time: "2024-09-08 15:00:00")
+    game8 = Game.create!(id: 8, start_time: "2024-09-15 15:00:00")
     GameTeam.create!(game: game8, team: teams[14], is_home: true) # S Carolina
     GameTeam.create!(game: game8, team: teams[15], is_home: false) # Kentucky
 
