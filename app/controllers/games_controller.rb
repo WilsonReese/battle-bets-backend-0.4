@@ -10,7 +10,8 @@ class GamesController < ApplicationController
       @games = Game.within_date_range(battle.start_date, battle.end_date)
 
       render json: @games.as_json(include: { 
-        game_teams: { include: { team: { only: :name } }, only: :is_home }, 
+        home_team: { only: :name }, 
+        away_team: { only: :name }, 
         bet_options: { only: [:title, :payout, :category] } 
       })
     else
