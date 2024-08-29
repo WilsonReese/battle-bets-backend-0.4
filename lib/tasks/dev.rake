@@ -9,7 +9,6 @@ namespace :dev do
       BetOption.delete_all
       PoolMembership.delete_all
       Battle.delete_all
-      GameTeam.delete_all
       Game.delete_all
       Team.delete_all
       User.delete_all
