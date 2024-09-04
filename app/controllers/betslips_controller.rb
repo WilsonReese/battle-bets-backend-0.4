@@ -51,7 +51,7 @@ class BetslipsController < ApplicationController
     end
   
     def betslip_params
-      params.require(:betslip).permit(:name)
+      params.require(:betslip).permit(:name, :status)
     end
   end
   

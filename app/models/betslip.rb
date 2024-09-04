@@ -30,15 +30,24 @@ class Betslip < ApplicationRecord
   enum status: { created: "created", submitted: "submitted", completed: "completed" }
 
   validates :name, length: { maximum: 255 }
+  validates :status, exclusion: { in: %w(completed), message: "cannot be set to completed manually" }, on: :update
   validates :status, presence: true
   validates :locked, inclusion: { in: [true, false] }
 
   before_create :set_default_status
+  before_update :ensure_not_locked, if: :locked?
 
   private
 
   def set_default_status
     self.status ||= "created"
+  end
+
+  def ensure_not_locked
+    if locked?
+      errors.add(:status, "cannot be changed. The betslip is locked.")
+      throw(:abort)
+    end
   end
 
   # I may want to make the name be set as a default to "Username's Bets"

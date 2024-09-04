@@ -30,6 +30,8 @@ class Bet < ApplicationRecord
   before_save :calculate_to_win_amount
   after_save :ensure_to_win_amount_is_not_nil
 
+  before_save :ensure_betslip_not_locked
+
   private
 
   def calculate_to_win_amount
@@ -39,6 +41,13 @@ class Bet < ApplicationRecord
   def ensure_to_win_amount_is_not_nil
     if to_win_amount.nil?
       raise "to_win_amount should not be nil after saving Bet"
+    end
+  end
+
+  def ensure_betslip_not_locked
+    if betslip.locked?
+      errors.add(:base, "Cannot create or update a bet in a locked betslip.")
+      throw(:abort)
     end
   end
 end
