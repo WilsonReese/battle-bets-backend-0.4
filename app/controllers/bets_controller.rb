@@ -9,13 +9,27 @@ class BetsController < ApplicationController
     end
   
     # POST /pools/:pool_id/battles/:battle_id/betslips/:betslip_id/bets
-    def create
-      @bet = @betslip.bets.new(bet_params)
+    # def create
+    #   @bet = @betslip.bets.new(bet_params)
   
-      if @bet.save
-        render json: @bet, status: :created, location: [@betslip.battle.pool, @betslip.battle, @betslip, @bet]
-      else
-        render json: @bet.errors, status: :unprocessable_entity
+    #   if @bet.save
+    #     render json: @bet, status: :created, location: [@betslip.battle.pool, @betslip.battle, @betslip, @bet]
+    #   else
+    #     render json: @bet.errors, status: :unprocessable_entity
+    #   end
+    # end
+
+    def create
+      bets = []
+      begin
+        Bet.transaction do
+          bets = bet_params.map do |bet|
+            @betslip.bets.create!(bet.permit(:bet_option_id, :bet_amount))
+          end
+        end
+        render json: bets, status: :created, location: [@betslip.battle.pool, @betslip.battle, @betslip]
+      rescue ActiveRecord::RecordInvalid => e
+        render json: { error: e.message }, status: :unprocessable_entity
       end
     end
   
@@ -45,6 +59,8 @@ class BetsController < ApplicationController
     end
   
     def bet_params
-      params.require(:bet).permit(:bet_option_id, :bet_amount)
+      params.require(:bets).map do |bet|
+        bet.permit(:bet_option_id, :bet_amount)
+      end
     end
 end
