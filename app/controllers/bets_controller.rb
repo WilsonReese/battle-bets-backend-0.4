@@ -1,6 +1,6 @@
 class BetsController < ApplicationController
     before_action :set_betslip
-    before_action :set_bet, only: %i[update destroy]
+    # before_action :set_bet, only: %i[update destroy]
   
     # GET /pools/:pool_id/battles/:battle_id/betslips/:betslip_id/bets
     def index
@@ -34,11 +34,27 @@ class BetsController < ApplicationController
     end
   
     # PATCH/PUT /pools/:pool_id/battles/:battle_id/betslips/:betslip_id/bets/:id
+    # def update
+    #   if @bet.update(bet_params)
+    #     render json: @bet
+    #   else
+    #     render json: @bet.errors, status: :unprocessable_entity
+    #   end
+    # end
+
     def update
-      if @bet.update(bet_params)
-        render json: @bet
-      else
-        render json: @bet.errors, status: :unprocessable_entity
+      begin
+        Bet.transaction do
+          @betslip.bets.destroy_all
+    
+          bets = bet_params.map do |bet|
+            @betslip.bets.create!(bet.permit(:bet_option_id, :bet_amount))
+          end
+    
+          render json: bets, status: :created, location: [@betslip.battle.pool, @betslip.battle, @betslip]
+        end
+      rescue ActiveRecord::RecordInvalid => e
+        render json: { error: e.message }, status: :unprocessable_entity
       end
     end
   
@@ -54,9 +70,9 @@ class BetsController < ApplicationController
       @betslip = Betslip.find(params[:betslip_id])
     end
   
-    def set_bet
-      @bet = @betslip.bets.find(params[:id])
-    end
+    # def set_bet
+    #   @bet = @betslip.bets.find(params[:id])
+    # end
   
     def bet_params
       params.require(:bets).map do |bet|
