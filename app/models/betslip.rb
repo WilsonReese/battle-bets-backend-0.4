@@ -3,7 +3,9 @@
 # Table name: betslips
 #
 #  id         :integer          not null, primary key
+#  locked     :boolean          default(FALSE), not null
 #  name       :string
+#  status     :string           default("created"), not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  battle_id  :integer          not null
@@ -25,7 +27,19 @@ class Betslip < ApplicationRecord
 
   has_many  :bets, dependent: :destroy
 
+  enum status: { created: "created", submitted: "submitted", completed: "completed" }
+
   validates :name, length: { maximum: 255 }
+  validates :status, presence: true
+  validates :locked, inclusion: { in: [true, false] }
+
+  before_create :set_default_status
+
+  private
+
+  def set_default_status
+    self.status ||= "created"
+  end
 
   # I may want to make the name be set as a default to "Username's Bets"
   # But right now, it was causing me issues, so I will just allow the name to be null and not worry about a default
