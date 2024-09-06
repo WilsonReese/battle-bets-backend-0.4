@@ -1,0 +1,19 @@
+game_id,title,payout,category,success
+1,Vanderbilt -6.5,2,spread,1
+1,Tenessee +6.5,2,spread,0
+1,Over 45.5 Points,2,ou,1
+1,Under 45.5 Points,2,ou,0
+1,Vanderbilt wins,1.5,money_line,1
+1,Tennessee wins,2.5,money_line,0
+1,Vanderbilt QB passes for over 250 yards,4,prop,1
+1,Tennesee RB rushes for under 100 yards,3,prop,1
+1,Vanderbilt scores first touchdown,2,prop,1
+2,Oklahoma -6.5,2,spread,1
+2,Texas +6.5,2,spread,0
+2,Over 45.5 Points,2,ou,
+2,Under 45.5 Points,2,ou,
+2,Oklahoma wins,1.5,money_line,
+2,Texas wins,2.5,money_line,
+2,Oklahoma QB passes for over 250 yards,4,prop,
+2,Texas RB rushes for under 100 yards,3,prop,
+2,Texas scores first touchdown,2,prop,

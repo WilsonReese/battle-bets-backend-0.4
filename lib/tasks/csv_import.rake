@@ -11,11 +11,10 @@ namespace :csv do
       CsvImporter.import_bet_options(bet_options_file)
 			puts "Successfully imported games file."
   
-  
-      # Delete the files after import
-			puts "Deleting CSVs/"
-      File.delete(games_file) if File.exist?(games_file)
-      File.delete(bet_options_file) if File.exist?(bet_options_file)
-      puts "CSV files deleted successfully."
+      # # Delete the files after import
+			# puts "Deleting CSVs"
+      # File.delete(games_file) if File.exist?(games_file)
+      # File.delete(bet_options_file) if File.exist?(bet_options_file)
+      # puts "CSV files deleted successfully."
     end
   end
