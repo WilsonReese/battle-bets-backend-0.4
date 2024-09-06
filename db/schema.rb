@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_09_04_194042) do
+ActiveRecord::Schema[7.1].define(version: 2024_09_06_165913) do
   create_table "battles", force: :cascade do |t|
     t.integer "pool_id", null: false
     t.datetime "start_date"
@@ -27,6 +27,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_04_194042) do
     t.integer "game_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "success"
     t.index ["game_id"], name: "index_bet_options_on_game_id"
   end
 
@@ -37,6 +38,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_04_194042) do
     t.decimal "to_win_amount"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.float "amount_won"
     t.index ["bet_option_id"], name: "index_bets_on_bet_option_id"
     t.index ["betslip_id"], name: "index_bets_on_betslip_id"
   end

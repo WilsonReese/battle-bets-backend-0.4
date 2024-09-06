@@ -3,6 +3,7 @@
 # Table name: bets
 #
 #  id            :integer          not null, primary key
+#  amount_won    :float
 #  bet_amount    :decimal(, )
 #  to_win_amount :decimal(, )
 #  created_at    :datetime         not null
@@ -28,14 +29,25 @@ class Bet < ApplicationRecord
   validates :to_win_amount, presence: true, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
 
   before_save :calculate_to_win_amount
+  before_save :calculate_amount_won
+  before_save :ensure_betslip_not_locked
   after_save :ensure_to_win_amount_is_not_nil
 
-  before_save :ensure_betslip_not_locked
 
   private
 
   def calculate_to_win_amount
     self.to_win_amount = bet_amount * bet_option.payout
+  end
+
+  def calculate_amount_won
+    if bet_option.success.nil?
+      self.amount_won = nil
+    elsif bet_option.success
+      self.amount_won = to_win_amount
+    else
+      self.amount_won = 0
+    end
   end
   
   def ensure_to_win_amount_is_not_nil
