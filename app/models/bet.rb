@@ -33,6 +33,9 @@ class Bet < ApplicationRecord
   before_save :ensure_betslip_not_locked
   after_save :ensure_to_win_amount_is_not_nil
 
+  after_save :update_betslip_earnings
+  after_destroy :update_betslip_earnings
+
 
   private
 
@@ -48,6 +51,10 @@ class Bet < ApplicationRecord
     else
       self.amount_won = 0
     end
+  end
+
+  def update_betslip_earnings
+    betslip.calculate_earnings
   end
   
   def ensure_to_win_amount_is_not_nil

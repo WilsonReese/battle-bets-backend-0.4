@@ -3,6 +3,7 @@
 # Table name: betslips
 #
 #  id         :integer          not null, primary key
+#  earnings   :float            default(0.0), not null
 #  locked     :boolean          default(FALSE), not null
 #  name       :string
 #  status     :string           default("created"), not null
@@ -37,6 +38,11 @@ class Betslip < ApplicationRecord
   before_create :set_default_status
   before_update :ensure_not_locked, if: :locked?
 
+  def calculate_earnings
+    self.earnings = bets.sum { |bet| bet.amount_won.to_f }
+    save!
+  end
+  
   private
 
   def set_default_status

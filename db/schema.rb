@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_09_06_165913) do
+ActiveRecord::Schema[7.1].define(version: 2024_09_06_170536) do
   create_table "battles", force: :cascade do |t|
     t.integer "pool_id", null: false
     t.datetime "start_date"
@@ -51,6 +51,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_06_165913) do
     t.datetime "updated_at", null: false
     t.string "status", default: "created", null: false
     t.boolean "locked", default: false, null: false
+    t.float "earnings", default: 0.0, null: false
     t.index ["battle_id"], name: "index_betslips_on_battle_id"
     t.index ["user_id"], name: "index_betslips_on_user_id"
   end
