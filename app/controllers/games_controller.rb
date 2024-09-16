@@ -12,7 +12,7 @@ class GamesController < ApplicationController
       render json: @games.as_json(include: { 
         home_team: { only: :name }, 
         away_team: { only: :name }, 
-        bet_options: { only: [:title, :payout, :category] } 
+        bet_options: { only: [:id, :title, :payout, :category] } 
       })
     else
       render json: { error: "battle_id parameter is required" }, status: :bad_request
