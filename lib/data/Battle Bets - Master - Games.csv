@@ -1,9 +1,9 @@
-ID,start_time,home_team,away_team
-1,2024-09-15 15:00:00,Vanderbilt,Tennessee
-2,2024-09-15 18:00:00,Oklahoma,Texas
-3,2024-09-15 12:00:00,Alabama,Auburn
-4,2024-09-15 15:00:00,Texas A&M,LSU
-5,2024-09-15 15:00:00,Ole Miss,Mississippi St
-6,2024-09-15 18:00:00,Missouri,Arkansas
-7,2024-09-15 12:00:00,Florida,Georgia
-8,2024-09-15 15:00:00,S Carolina,Kentucky
+ID,start_time,away_team,home_team
+1,2024-10-19 18:30:00,Georgia,Texas
+2,2024-10-19 14:30:00,Alabama,Tennessee
+3,2024-10-19 11:00:00,Auburn,Missouri
+4,2024-10-19 11:00:00,S Carolina,Oklahoma
+5,2024-10-19 19:30:00,LSU,Arkansas
+6,2024-10-19 14:30:00,Texas A&M,Mississippi St
+7,2024-10-19 18:00:00,Kentucky,Florida
+8,2024-10-19 18:00:00,Ball St,Vanderbilt
