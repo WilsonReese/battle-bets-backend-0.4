@@ -7,7 +7,7 @@ class Users::SessionsController < Devise::SessionsController
 
   def respond_with(resource, _opts = {})
     token = request.env['warden-jwt_auth.token']
-    render json: { message: 'Logged in successfully.' }, status: :ok, headers: { 'Authorization': "Bearer #{token}" }
+    render json: { message: 'Logged in successfully.', token: token }, status: :ok, headers: { 'Authorization': "Bearer #{token}" }
   end
 
   def respond_to_on_destroy
