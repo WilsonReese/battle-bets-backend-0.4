@@ -1,9 +1,10 @@
 class PoolsController < ApplicationController
     before_action :set_pool, only: %i[show update destroy]
+    before_action :authenticate_user!, only: %i[index]
   
     # GET /pools
     def index
-      @pools = Pool.all
+      @pools = current_user.pools
   
       render json: @pools
     end

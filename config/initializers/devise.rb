@@ -306,7 +306,9 @@ Devise.setup do |config|
   config.responder.redirect_status = :see_other
 
   config.jwt do |jwt|
-    jwt.secret = Rails.application.credentials.devise_jwt_secret_key!
+    secret_key = Rails.application.credentials.devise_jwt_secret_key!
+    Rails.logger.info "Using JWT Secret Key: #{secret_key}"  # Log the secret key being used for signing and verification
+    jwt.secret = secret_key
     jwt.dispatch_requests = [
       ['POST', %r{^/login$}]
     ]
