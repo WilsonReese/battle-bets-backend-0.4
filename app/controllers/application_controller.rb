@@ -21,7 +21,7 @@ class ApplicationController < ActionController::API
         begin
             decoded_token = JWT.decode(token, Rails.application.credentials.devise_jwt_secret_key!, true, algorithm: 'HS256')
             user_id = decoded_token[0]['sub']
-            @current_user = User.find(user_id)
+            @current_user = User.find_by(id: user_id)
         rescue JWT::DecodeError => e
             render json: { error: 'Unauthorized' }, status: :unauthorized
         end

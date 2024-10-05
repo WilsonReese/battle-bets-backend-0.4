@@ -1,6 +1,7 @@
 class BetslipsController < ApplicationController
     before_action :set_battle
     before_action :set_betslip, only: %i[show update destroy]
+    before_action :authenticate_user!, only: %i[create]
   
     # GET /battles/:battle_id/betslips
     def index
@@ -25,7 +26,12 @@ class BetslipsController < ApplicationController
     # POST /battles/:battle_id/betslips
     def create
       @betslip = @battle.betslips.new(betslip_params)
-      @betslip.user = current_user
+      if current_user.present?
+        @betslip.user = current_user
+      else
+        render json: { error: "User not authenticated" }, status: :unauthorized
+        return
+      end
   
       if @betslip.save
         render json: @betslip, status: :created, location: [@battle.pool, @battle, @betslip]
