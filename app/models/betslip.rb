@@ -34,6 +34,7 @@ class Betslip < ApplicationRecord
   validates :status, exclusion: { in: %w(completed), message: "cannot be set to completed manually" }, on: :update
   validates :status, presence: true
   validates :locked, inclusion: { in: [true, false] }
+  validates :user_id, uniqueness: { scope: :battle_id, message: "already has a betslip for this battle" }
 
   before_create :set_default_status
   before_update :ensure_not_locked, if: :locked?
