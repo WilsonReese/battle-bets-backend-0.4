@@ -64,6 +64,12 @@ namespace :dev do
       pool: pool1
     )
 
+    PoolMembership.create!(
+      id: 3,
+      user: user1,
+      pool: pool2
+    )
+
     puts "Sample pool memberships created successfully."
     puts "Creating sample battles..."
     battle1 = Battle.create!(
@@ -92,6 +98,13 @@ namespace :dev do
       start_date: DateTime.new(2024, 10, 13, 0, 0, 0),
       end_date: DateTime.new(2024, 10, 19, 23, 59, 59),
       pool: pool1
+    )
+
+    battle5 = Battle.create!(
+      id: 5,
+      start_date: DateTime.new(2024, 10, 13, 0, 0, 0),
+      end_date: DateTime.new(2024, 10, 19, 23, 59, 59),
+      pool: pool2
     )
 
     puts "Sample battles created successfully."
