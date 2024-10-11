@@ -1,21 +1,29 @@
 class BetslipsController < ApplicationController
     before_action :set_battle
     before_action :set_betslip, only: %i[show update destroy]
-    before_action :authenticate_user!, only: %i[create]
+    before_action :authenticate_user!, only: %i[create index]
   
     # GET /battles/:battle_id/betslips
     def index
-      @betslips = @battle.betslips.includes(:bets)
-      render json: @betslips.as_json(include: {
-        bets: {
-          only: [:id, :bet_amount, :to_win_amount, :amount_won],
-          include: {
-            bet_option: {
-              only: [:title, :payout, :category, :success]
+      if params[:user_only] == 'true'
+        # Return only the betslip for the current user
+        @betslip = @battle.betslips.find_by(user: current_user)
+        
+        render json: @betslip
+      else
+        # Return all betslips for the battle
+        @betslips = @battle.betslips.includes(:bets)
+        render json: @betslips.as_json(include: {
+          bets: {
+            only: [:id, :bet_amount, :to_win_amount, :amount_won],
+            include: {
+              bet_option: {
+                only: [:title, :payout, :category, :success]
+              }
             }
           }
-        }
-      })
+        })
+      end
     end
   
     # GET /battles/:battle_id/betslips/:id
