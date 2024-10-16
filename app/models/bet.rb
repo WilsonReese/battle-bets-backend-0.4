@@ -27,6 +27,10 @@ class Bet < ApplicationRecord
 
   validates :bet_amount, presence: true, numericality: { greater_than: 0 }
   validates :to_win_amount, presence: true, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
+  validates :bet_option_id, uniqueness: { 
+    scope: :betslip_id, 
+    message: "This bet option is already added to the betslip" 
+  }
 
   before_save :calculate_to_win_amount
   before_save :calculate_amount_won

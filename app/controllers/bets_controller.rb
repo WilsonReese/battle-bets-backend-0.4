@@ -20,7 +20,8 @@ class BetsController < ApplicationController
     #     render json: @bet.errors, status: :unprocessable_entity
     #   end
     # end
-
+    
+    # POST /pools/:pool_id/battles/:battle_id/betslips/:betslip_id/bets
     def create
       bets = []
       begin
@@ -44,6 +45,7 @@ class BetsController < ApplicationController
     #   end
     # end
 
+    # PATCH/PUT /pools/:pool_id/battles/:battle_id/betslips/:betslip_id/bets/:id
     def update
       begin
         Bet.transaction do
