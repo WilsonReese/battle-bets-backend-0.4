@@ -1,7 +1,7 @@
 class BetslipsController < ApplicationController
     before_action :set_battle
     before_action :set_betslip, only: %i[show update destroy]
-    before_action :authenticate_user!, only: %i[create index]
+    before_action :authenticate_user!, only: %i[create index update]
   
     # GET /battles/:battle_id/betslips
     def index
@@ -50,6 +50,11 @@ class BetslipsController < ApplicationController
   
     # PATCH/PUT /battles/:battle_id/betslips/:id
     def update
+      if @betslip.user != current_user
+        render json: { error: "Unauthorized to update this betslip" }, status: :forbidden
+        return
+      end
+  
       if @betslip.update(betslip_params)
         render json: @betslip
       else
@@ -59,6 +64,11 @@ class BetslipsController < ApplicationController
   
     # DELETE /battles/:battle_id/betslips/:id
     def destroy
+      if @betslip.user != current_user
+        render json: { error: "Unauthorized to delete this betslip" }, status: :forbidden
+        return
+      end
+  
       @betslip.destroy
       head :no_content
     end

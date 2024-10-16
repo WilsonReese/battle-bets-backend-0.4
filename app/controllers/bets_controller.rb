@@ -1,6 +1,8 @@
 class BetsController < ApplicationController
     before_action :set_betslip
-    # before_action :set_bet, only: %i[update destroy]
+    before_action :authenticate_user!, only: %i[create update destroy]
+    before_action :authorize_betslip_owner!, only: %i[create update destroy]
+    before_action :set_bet, only: %i[destroy]
   
     # GET /pools/:pool_id/battles/:battle_id/betslips/:betslip_id/bets
     def index
@@ -70,9 +72,15 @@ class BetsController < ApplicationController
       @betslip = Betslip.find(params[:betslip_id])
     end
   
-    # def set_bet
-    #   @bet = @betslip.bets.find(params[:id])
-    # end
+    def set_bet
+      @bet = @betslip.bets.find(params[:id])
+    end
+
+    def authorize_betslip_owner!
+      unless @betslip.user == current_user
+        render json: { error: 'Unauthorized to modify bets for this betslip' }, status: :forbidden
+      end
+    end
   
     def bet_params
       params.require(:bets).map do |bet|
