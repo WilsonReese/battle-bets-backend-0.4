@@ -6,8 +6,13 @@ class BetsController < ApplicationController
   
     # GET /pools/:pool_id/battles/:battle_id/betslips/:betslip_id/bets
     def index
-      @bets = @betslip.bets
-      render json: @bets
+      @bets = @betslip.bets.includes(:bet_option) # Eager load bet_option
+  
+      render json: @bets.as_json(include: {
+        bet_option: {
+          only: [:id, :title, :category, :game_id]
+        }
+      })
     end
   
     # POST /pools/:pool_id/battles/:battle_id/betslips/:betslip_id/bets
