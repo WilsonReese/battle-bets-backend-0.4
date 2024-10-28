@@ -18,7 +18,7 @@ class BetslipsController < ApplicationController
             only: [:id, :bet_amount, :to_win_amount, :amount_won],
             include: {
               bet_option: {
-                only: [:title, :payout, :category, :success]
+                only: [:title, :long_title, :payout, :category, :success]
               }
             }
           }

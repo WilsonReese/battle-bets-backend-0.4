@@ -4,6 +4,7 @@
 #
 #  id         :integer          not null, primary key
 #  category   :string
+#  long_title :string
 #  payout     :decimal(, )
 #  success    :boolean
 #  title      :string
@@ -26,4 +27,13 @@ class BetOption < ApplicationRecord
   validates :title, presence: true
   validates :payout, numericality: { greater_than: 0 }
   validates :category, presence: true
+
+  before_save :set_long_title
+
+  private
+
+  def set_long_title
+    game = self.game
+    self.long_title = "#{game.away_team.name} at #{game.home_team.name}: #{title}"
+  end
 end

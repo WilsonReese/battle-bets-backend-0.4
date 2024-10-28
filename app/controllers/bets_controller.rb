@@ -11,7 +11,7 @@ class BetsController < ApplicationController
       render json: {
         status: @betslip.status,
         bets: @bets.as_json(include: {
-          bet_option: { only: [:id, :title, :category, :game_id] }
+          bet_option: { only: [:id, :title, :long_title, :category, :game_id] }
         }),
       }
     end
