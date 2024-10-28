@@ -52,21 +52,54 @@ class BetsController < ApplicationController
     # end
 
     # PATCH/PUT /pools/:pool_id/battles/:battle_id/betslips/:betslip_id/bets/:id
+    # def update
+    #   begin
+    #     Bet.transaction do
+    #       @betslip.bets.destroy_all
+    
+    #       bets = bet_params.map do |bet|
+    #         @betslip.bets.create!(bet.permit(:bet_option_id, :bet_amount))
+    #       end
+    
+    #       render json: bets, status: :created, location: [@betslip.battle.pool, @betslip.battle, @betslip]
+    #     end
+    #   rescue ActiveRecord::RecordInvalid => e
+    #     render json: { error: e.message }, status: :unprocessable_entity
+    #   end
+    # end
+
+    # PATCH/PUT /pools/:pool_id/battles/:battle_id/betslips/:betslip_id/bets
     def update
       begin
         Bet.transaction do
-          @betslip.bets.destroy_all
-    
-          bets = bet_params.map do |bet|
+          # Extract new, updated, and removed bets from params
+          new_bets = bet_params[:new_bets] || []
+          updated_bets = bet_params[:updated_bets] || []
+          removed_bet_ids = bet_params[:removed_bet_ids] || []
+
+          # Destroy removed bets
+          Bet.where(id: removed_bet_ids).destroy_all if removed_bet_ids.any?
+
+          # Update existing bets
+          updated_bets.each do |bet|
+            existing_bet = Bet.find(bet[:id])
+            existing_bet.update!(bet.permit(:bet_option_id, :bet_amount))
+          end
+
+          # Create new bets
+          new_bets.each do |bet|
             @betslip.bets.create!(bet.permit(:bet_option_id, :bet_amount))
           end
-    
-          render json: bets, status: :created, location: [@betslip.battle.pool, @betslip.battle, @betslip]
+
+          # Render the updated bets as the response
+          render json: @betslip.bets, status: :ok
         end
       rescue ActiveRecord::RecordInvalid => e
         render json: { error: e.message }, status: :unprocessable_entity
       end
     end
+
+    
   
     # DELETE /pools/:pool_id/battles/:battle_id/betslips/:betslip_id/bets/:id
     def destroy
@@ -89,10 +122,60 @@ class BetsController < ApplicationController
         render json: { error: 'Unauthorized to modify bets for this betslip' }, status: :forbidden
       end
     end
-  
+
     def bet_params
-      params.require(:bets).map do |bet|
-        bet.permit(:bet_option_id, :bet_amount)
-      end
+      params.require(:bets).permit(
+        new_bets: [:bet_option_id, :bet_amount],
+        updated_bets: [:id, :bet_option_id, :bet_amount],
+        removed_bets: []
+      )
     end
+  
+    # def bet_params
+    #   params.require(:bets).map do |bet|
+    #     bet.permit(:bet_option_id, :bet_amount)
+    #   end
+    # end
 end
+
+
+# # PATCH/PUT /pools/:pool_id/battles/:battle_id/betslips/:betslip_id/bets
+# def update
+#   begin
+#     Bet.transaction do
+#       # Extract new, updated, and removed bets from params
+#       new_bets = bet_params[:new_bets] || []
+#       updated_bets = bet_params[:updated_bets] || []
+#       removed_bet_ids = bet_params[:removed_bet_ids] || []
+
+#       # Destroy removed bets
+#       Bet.where(id: removed_bet_ids).destroy_all if removed_bet_ids.any?
+
+#       # Update existing bets
+#       updated_bets.each do |bet|
+#         existing_bet = Bet.find(bet[:id])
+#         existing_bet.update!(bet.permit(:bet_option_id, :bet_amount))
+#       end
+
+#       # Create new bets
+#       new_bets.each do |bet|
+#         @betslip.bets.create!(bet.permit(:bet_option_id, :bet_amount))
+#       end
+
+#       # Render the updated bets as the response
+#       render json: @betslip.bets, status: :ok
+#     end
+#   rescue ActiveRecord::RecordInvalid => e
+#     render json: { error: e.message }, status: :unprocessable_entity
+#   end
+# end
+
+# private
+
+# def bet_params
+#   params.require(:bets).permit(
+#     new_bets: [:bet_option_id, :bet_amount],
+#     updated_bets: [:id, :bet_option_id, :bet_amount],
+#     removed_bet_ids: []
+#   )
+# end

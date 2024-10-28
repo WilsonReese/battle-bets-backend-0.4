@@ -14,7 +14,8 @@ Rails.application.routes.draw do
     resources :pool_memberships, only: %i[index create destroy]
     resources :battles, only: %i[index show create update destroy] do
       resources :betslips, only: %i[index show create update destroy] do
-        resources :bets, only: %i[index create update destroy]
+        patch 'bets', to: 'bets#update', on: :member
+        resources :bets, only: %i[index create destroy]
       end
     end
   end
