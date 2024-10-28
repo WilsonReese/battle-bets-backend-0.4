@@ -110,7 +110,7 @@ class BetsController < ApplicationController
     private
   
     def set_betslip
-      @betslip = Betslip.find(params[:betslip_id])
+      @betslip = Betslip.find(params[:betslip_id] || params[:id])
     end
   
     def set_bet
