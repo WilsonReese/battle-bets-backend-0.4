@@ -75,10 +75,10 @@ class BetsController < ApplicationController
           # Extract new, updated, and removed bets from params
           new_bets = bet_params[:new_bets] || []
           updated_bets = bet_params[:updated_bets] || []
-          removed_bet_ids = bet_params[:removed_bet_ids] || []
+          removed_bets = bet_params[:removed_bets] || []
 
           # Destroy removed bets
-          Bet.where(id: removed_bet_ids).destroy_all if removed_bet_ids.any?
+          Bet.where(id: removed_bets).destroy_all if removed_bets.any?
 
           # Update existing bets
           updated_bets.each do |bet|
