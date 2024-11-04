@@ -2,15 +2,16 @@
 #
 # Table name: betslips
 #
-#  id         :integer          not null, primary key
-#  earnings   :float            default(0.0), not null
-#  locked     :boolean          default(FALSE), not null
-#  name       :string
-#  status     :string           default("created"), not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  battle_id  :integer          not null
-#  user_id    :integer          not null
+#  id                   :integer          not null, primary key
+#  earnings             :float            default(0.0), not null
+#  locked               :boolean          default(FALSE), not null
+#  max_payout_remaining :float            default(0.0), not null
+#  name                 :string
+#  status               :string           default("created"), not null
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
+#  battle_id            :integer          not null
+#  user_id              :integer          not null
 #
 # Indexes
 #
@@ -42,6 +43,24 @@ class Betslip < ApplicationRecord
   def calculate_earnings
     self.earnings = bets.sum { |bet| bet.amount_won.to_f }
     save!
+  end
+
+  def calculate_max_payout_remaining
+    # Sum all bets where amount_won is set (including zero amounts for lost bets)
+    won_amounts = bets.where.not(amount_won: nil).sum(:amount_won)
+    
+    # Sum potential winnings for unsettled bets (where amount_won is nil)
+    potential_win = bets.where(amount_won: nil).sum(:to_win_amount)
+    
+    # Update max_payout_remaining
+    self.max_payout_remaining = won_amounts + potential_win
+    Rails.logger.info "Calculated max_payout_remaining for Betslip #{id}: #{max_payout_remaining}"
+      # Attempt to save and log any validation errors
+    if save
+      Rails.logger.info "Betslip #{id} successfully saved with max_payout_remaining: #{max_payout_remaining}"
+    else
+      Rails.logger.error "Failed to save Betslip #{id}: #{errors.full_messages.join(', ')}"
+    end
   end
   
   private

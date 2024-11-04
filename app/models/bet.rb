@@ -40,6 +40,8 @@ class Bet < ApplicationRecord
   after_save :update_betslip_earnings
   after_destroy :update_betslip_earnings
 
+  after_save :update_betslip_max_payout_remaining
+  after_destroy :update_betslip_max_payout_remaining
 
   private
 
@@ -59,6 +61,11 @@ class Bet < ApplicationRecord
 
   def update_betslip_earnings
     betslip.calculate_earnings
+  end
+
+  def update_betslip_max_payout_remaining
+    Rails.logger.info "update_betslip_max_payout_remaining triggered"
+    betslip.calculate_max_payout_remaining
   end
   
   def ensure_to_win_amount_is_not_nil
