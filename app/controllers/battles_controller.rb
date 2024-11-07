@@ -5,7 +5,7 @@ class BattlesController < ApplicationController
     # GET /pools/:pool_id/battles
     def index
       @battles = @pool.battles.order(start_date: :desc)
-      render json: @battles
+      render json: @battles.as_json(methods: :betslip_count)
     end
   
     # GET /pools/:pool_id/battles/:id

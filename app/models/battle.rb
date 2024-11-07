@@ -22,4 +22,8 @@ class Battle < ApplicationRecord
   has_many :betslips, dependent: :destroy
 
   validates :start_date, :end_date, presence: true
+
+  def betslip_count
+    betslips.count
+  end
 end
