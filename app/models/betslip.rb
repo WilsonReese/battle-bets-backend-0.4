@@ -38,6 +38,7 @@ class Betslip < ApplicationRecord
   validates :user_id, uniqueness: { scope: :battle_id, message: "already has a betslip for this battle" }
 
   before_create :set_default_status
+  before_create :set_default_name
   before_update :ensure_not_locked, if: :locked?
 
   def calculate_earnings
@@ -69,6 +70,12 @@ class Betslip < ApplicationRecord
     self.status ||= "created"
   end
 
+  def set_default_name
+    if name.blank? && user
+      self.name = "#{user.first_name} #{user.last_name}'s Bets"
+    end
+  end
+
   def ensure_not_locked
     if locked?
       errors.add(:status, "cannot be changed. The betslip is locked.")
@@ -76,8 +83,5 @@ class Betslip < ApplicationRecord
     end
   end
 
-  # I may want to make the name be set as a default to "Username's Bets"
-  # But right now, it was causing me issues, so I will just allow the name to be null and not worry about a default
-  # I can come back to this
 
 end
