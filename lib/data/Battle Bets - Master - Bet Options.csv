@@ -1,14 +1,14 @@
 game_id,title,payout,category,success
-1,Florida +21.5,2,spread,
-1,Texas -21.5,2,spread,
-1,Over 47.5 Points,2,ou,
-1,Under 47.5 Points,2,ou,
-1,Florida wins,11,money_line,
-1,Texas wins,1.5,money_line,
-1,Ewers Over 2.5 TDs,2,prop,
-1,Florida wins first half,5.5,prop,
-1,First score is a field goal,3,prop,
-1,Badger 1+ TD,6,prop,
+1,Florida +21.5,2,spread,0
+1,Texas -21.5,2,spread,1
+1,Over 47.5 Points,2,ou,1
+1,Under 47.5 Points,2,ou,0
+1,Florida wins,11,money_line,0
+1,Texas wins,1.5,money_line,1
+1,Ewers Over 2.5 TDs,2,prop,1
+1,Florida wins first half,5.5,prop,0
+1,First score is a field goal,3,prop,0
+1,Badger 1+ TD,6,prop,0
 2,S Carolina -5.5,2,spread,
 2,Vanderbilt +5.5,2,spread,
 2,Over 45.5 Points,2,ou,
