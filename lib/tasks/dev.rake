@@ -95,15 +95,15 @@ namespace :dev do
 
     battle4 = Battle.create!(
       id: 4,
-      start_date: DateTime.new(2024, 10, 13, 0, 0, 0),
-      end_date: DateTime.new(2024, 10, 19, 23, 59, 59),
+      start_date: DateTime.new(2024, 11, 3, 0, 0, 0),
+      end_date: DateTime.new(2024, 11, 9, 23, 59, 59),
       pool: pool1
     )
 
     battle5 = Battle.create!(
       id: 5,
-      start_date: DateTime.new(2024, 10, 13, 0, 0, 0),
-      end_date: DateTime.new(2024, 10, 19, 23, 59, 59),
+      start_date: DateTime.new(2024, 11, 3, 0, 0, 0),
+      end_date: DateTime.new(2024, 11, 9, 23, 59, 59),
       pool: pool2
     )
 
