@@ -31,6 +31,8 @@ class Betslip < ApplicationRecord
 
   enum status: { created: "created", submitted: "submitted", completed: "completed" }
 
+  scope :submitted, -> { where(status: "submitted") }
+
   validates :name, length: { maximum: 255 }
   validates :status, exclusion: { in: %w(completed), message: "cannot be set to completed manually" }, on: :update
   validates :status, presence: true

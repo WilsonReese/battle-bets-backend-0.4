@@ -24,6 +24,6 @@ class Battle < ApplicationRecord
   validates :start_date, :end_date, presence: true
 
   def betslip_count
-    betslips.count
+    betslips.submitted.count
   end
 end
