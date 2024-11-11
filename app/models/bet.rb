@@ -25,6 +25,8 @@ class Bet < ApplicationRecord
   belongs_to :betslip
   belongs_to :bet_option
 
+  attr_accessor :skip_locked_check
+
   validates :bet_amount, presence: true, numericality: { greater_than: 0 }
   validates :to_win_amount, presence: true, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
   validates :bet_option_id, uniqueness: { 
@@ -34,7 +36,7 @@ class Bet < ApplicationRecord
 
   before_save :calculate_to_win_amount
   before_save :calculate_amount_won
-  before_save :ensure_betslip_not_locked
+  before_save :ensure_betslip_not_locked, unless: -> { skip_locked_check }
   after_save :ensure_to_win_amount_is_not_nil
 
   after_save :update_betslip_earnings

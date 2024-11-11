@@ -89,6 +89,8 @@ class CsvImporter
         # Update the associated Bets based on the success status
         bet_option.bets.each do |bet|
           amount_won = success_status ? bet.to_win_amount : 0.0
+          bet.skip_locked_check = true
+          bet.betslip.skip_locked_check = true
           bet.update!(amount_won: amount_won)
         end
       end

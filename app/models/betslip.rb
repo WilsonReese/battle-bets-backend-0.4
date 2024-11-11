@@ -33,6 +33,8 @@ class Betslip < ApplicationRecord
 
   scope :submitted, -> { where(status: "submitted") }
 
+  attr_accessor :skip_locked_check
+
   validates :name, length: { maximum: 255 }
   validates :status, exclusion: { in: %w(completed), message: "cannot be set to completed manually" }, on: :update
   validates :status, presence: true
@@ -41,7 +43,7 @@ class Betslip < ApplicationRecord
 
   before_create :set_default_status
   before_create :set_default_name
-  before_update :ensure_not_locked, if: :locked?
+  before_update :ensure_not_locked, unless: -> { skip_locked_check }
 
   def calculate_earnings
     self.earnings = bets.sum { |bet| bet.amount_won.to_f }
