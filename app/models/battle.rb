@@ -2,12 +2,12 @@
 #
 # Table name: battles
 #
-#  id         :integer          not null, primary key
+#  id         :bigint           not null, primary key
 #  end_date   :datetime
 #  start_date :datetime
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  pool_id    :integer          not null
+#  pool_id    :bigint           not null
 #
 # Indexes
 #
@@ -15,7 +15,7 @@
 #
 # Foreign Keys
 #
-#  pool_id  (pool_id => pools.id)
+#  fk_rails_...  (pool_id => pools.id)
 #
 class Battle < ApplicationRecord
   belongs_to :pool

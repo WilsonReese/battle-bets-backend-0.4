@@ -2,14 +2,14 @@
 #
 # Table name: bets
 #
-#  id            :integer          not null, primary key
+#  id            :bigint           not null, primary key
 #  amount_won    :float
 #  bet_amount    :decimal(, )
 #  to_win_amount :decimal(, )
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
-#  bet_option_id :integer          not null
-#  betslip_id    :integer          not null
+#  bet_option_id :bigint           not null
+#  betslip_id    :bigint           not null
 #
 # Indexes
 #
@@ -18,8 +18,8 @@
 #
 # Foreign Keys
 #
-#  bet_option_id  (bet_option_id => bet_options.id)
-#  betslip_id     (betslip_id => betslips.id)
+#  fk_rails_...  (bet_option_id => bet_options.id)
+#  fk_rails_...  (betslip_id => betslips.id)
 #
 class Bet < ApplicationRecord
   belongs_to :betslip

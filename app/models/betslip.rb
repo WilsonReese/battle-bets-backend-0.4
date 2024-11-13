@@ -2,7 +2,7 @@
 #
 # Table name: betslips
 #
-#  id                   :integer          not null, primary key
+#  id                   :bigint           not null, primary key
 #  earnings             :float            default(0.0), not null
 #  locked               :boolean          default(FALSE), not null
 #  max_payout_remaining :float            default(0.0), not null
@@ -10,8 +10,8 @@
 #  status               :string           default("created"), not null
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
-#  battle_id            :integer          not null
-#  user_id              :integer          not null
+#  battle_id            :bigint           not null
+#  user_id              :bigint           not null
 #
 # Indexes
 #
@@ -20,8 +20,8 @@
 #
 # Foreign Keys
 #
-#  battle_id  (battle_id => battles.id)
-#  user_id    (user_id => users.id)
+#  fk_rails_...  (battle_id => battles.id)
+#  fk_rails_...  (user_id => users.id)
 #
 class Betslip < ApplicationRecord
   belongs_to :user

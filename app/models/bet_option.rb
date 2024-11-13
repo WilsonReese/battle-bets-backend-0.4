@@ -2,7 +2,7 @@
 #
 # Table name: bet_options
 #
-#  id         :integer          not null, primary key
+#  id         :bigint           not null, primary key
 #  category   :string
 #  long_title :string
 #  payout     :decimal(, )
@@ -10,7 +10,7 @@
 #  title      :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  game_id    :integer          not null
+#  game_id    :bigint           not null
 #
 # Indexes
 #
@@ -18,7 +18,7 @@
 #
 # Foreign Keys
 #
-#  game_id  (game_id => games.id)
+#  fk_rails_...  (game_id => games.id)
 #
 class BetOption < ApplicationRecord
   belongs_to :game

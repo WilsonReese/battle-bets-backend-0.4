@@ -2,11 +2,11 @@
 #
 # Table name: pool_memberships
 #
-#  id         :integer          not null, primary key
+#  id         :bigint           not null, primary key
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  pool_id    :integer          not null
-#  user_id    :integer          not null
+#  pool_id    :bigint           not null
+#  user_id    :bigint           not null
 #
 # Indexes
 #
@@ -15,8 +15,8 @@
 #
 # Foreign Keys
 #
-#  pool_id  (pool_id => pools.id)
-#  user_id  (user_id => users.id)
+#  fk_rails_...  (pool_id => pools.id)
+#  fk_rails_...  (user_id => users.id)
 #
 class PoolMembership < ApplicationRecord
   belongs_to :user

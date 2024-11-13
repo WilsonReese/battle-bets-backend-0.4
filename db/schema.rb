@@ -11,8 +11,11 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.1].define(version: 2024_11_04_212339) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "battles", force: :cascade do |t|
-    t.integer "pool_id", null: false
+    t.bigint "pool_id", null: false
     t.datetime "start_date"
     t.datetime "end_date"
     t.datetime "created_at", null: false
@@ -24,7 +27,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_04_212339) do
     t.string "title"
     t.decimal "payout"
     t.string "category"
-    t.integer "game_id", null: false
+    t.bigint "game_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "success"
@@ -33,8 +36,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_04_212339) do
   end
 
   create_table "bets", force: :cascade do |t|
-    t.integer "betslip_id", null: false
-    t.integer "bet_option_id", null: false
+    t.bigint "betslip_id", null: false
+    t.bigint "bet_option_id", null: false
     t.decimal "bet_amount"
     t.decimal "to_win_amount"
     t.datetime "created_at", null: false
@@ -46,8 +49,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_04_212339) do
 
   create_table "betslips", force: :cascade do |t|
     t.string "name"
-    t.integer "user_id", null: false
-    t.integer "battle_id", null: false
+    t.bigint "user_id", null: false
+    t.bigint "battle_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "status", default: "created", null: false
@@ -67,8 +70,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_04_212339) do
   end
 
   create_table "pool_memberships", force: :cascade do |t|
-    t.integer "user_id", null: false
-    t.integer "pool_id", null: false
+    t.bigint "user_id", null: false
+    t.bigint "pool_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["pool_id"], name: "index_pool_memberships_on_pool_id"
