@@ -26,17 +26,27 @@ namespace :betslip do
         puts "No battles found for date: #{date}"
         exit
       end
+
+      # Lock the battles
+      locked_battles_count = 0
+      battles.find_each do |battle|
+        unless battle.locked
+          battle.update!(locked: true)
+          locked_battles_count += 1
+          puts "Locked Battle ID #{battle.id}"
+        end
+      end
   
       # Lock betslips associated with the found battles
       betslips_to_lock = Betslip.where(battle_id: battles.pluck(:id))
-      locked_count = 0
+      locked_betslips_count = 0
   
       betslips_to_lock.find_each do |betslip|
         betslip.update_column(:locked, true) # Directly updates the column, bypassing callbacks and validations
-        locked_count += 1
+        locked_betslips_count += 1
         puts "Locked Betslip ID #{betslip.id} for Battle ID #{betslip.battle_id}"
       end
   
-      puts "Locked #{locked_count} betslip(s) for battles ongoing on #{date}."
+      puts "Locked #{locked_battles_count} battle(s) and #{locked_betslips_count} betslip(s) for battles ongoing on #{date}."
     end
   end
