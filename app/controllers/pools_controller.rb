@@ -5,6 +5,7 @@ class PoolsController < ApplicationController
     # GET /pools
     def index
       @pools = current_user.pools
+      puts "Current User: #{current_user.inspect}"
   
       render json: @pools
     end

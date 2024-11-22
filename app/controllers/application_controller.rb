@@ -7,6 +7,8 @@ class ApplicationController < ActionController::API
         devise_parameter_sanitizer.permit(:account_update, keys: %i[username first_name last_name avatar])
     end
 
+    before_action :log_auth_header
+
     private
 
   # Global authenticate_user! method
@@ -29,5 +31,9 @@ class ApplicationController < ActionController::API
 
     def current_user
         @current_user
+    end
+
+    def log_auth_header
+        Rails.logger.info "Authorization Header: #{request.headers['Authorization']}"
     end
 end
