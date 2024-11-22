@@ -40,6 +40,11 @@ class BetslipsController < ApplicationController
         render json: { error: "User not authenticated" }, status: :unauthorized
         return
       end
+
+      if @battle.locked?
+        render json: { error: "Cannot create a betslip for a locked battle." }, status: :forbidden
+        return
+      end
   
       if @betslip.save
         render json: @betslip, status: :created, location: [@battle.pool, @battle, @betslip]

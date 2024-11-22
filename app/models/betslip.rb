@@ -40,6 +40,7 @@ class Betslip < ApplicationRecord
   validates :status, presence: true
   validates :locked, inclusion: { in: [true, false] }
   validates :user_id, uniqueness: { scope: :battle_id, message: "already has a betslip for this battle" }
+  validate :battle_not_locked, on: :create
 
   before_create :set_default_status
   before_create :set_default_name
@@ -87,5 +88,10 @@ class Betslip < ApplicationRecord
     end
   end
 
+  def battle_not_locked
+    if battle.locked?
+      errors.add(:base, "Cannot create a betslip for a locked battle.")
+    end
+  end
 
 end

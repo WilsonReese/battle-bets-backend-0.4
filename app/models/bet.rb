@@ -34,6 +34,8 @@ class Bet < ApplicationRecord
     message: "This bet option is already added to the betslip" 
   }
 
+  # I added a line here so I would have something to commit.
+
   before_save :calculate_to_win_amount
   before_save :calculate_amount_won
   before_save :ensure_betslip_not_locked, unless: -> { skip_locked_check }
