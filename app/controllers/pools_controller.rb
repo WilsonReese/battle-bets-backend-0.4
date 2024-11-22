@@ -4,10 +4,17 @@ class PoolsController < ApplicationController
   
     # GET /pools
     def index
-      @pools = current_user.pools
-      puts "Current User: #{current_user.inspect}"
+      begin
+        Rails.logger.info "Attempting to fetch pools for user: #{current_user.inspect}"
+        @pools = current_user.pools
+        Rails.logger.info "Fetched pools: #{@pools.inspect}"
   
-      render json: @pools
+        render json: @pools
+      rescue => e
+        Rails.logger.error "Error in PoolsController#index: #{e.message}"
+        Rails.logger.error e.backtrace.join("\n")
+        render json: { error: "Internal Server Error" }, status: :internal_server_error
+      end
     end
   
     # GET /pools/:id
