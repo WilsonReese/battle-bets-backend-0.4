@@ -2,7 +2,7 @@
 namespace :dev do
   desc "Fill the database tables with some sample data"
   task sample_data: :environment do
-    if Rails.env.development?
+    if Rails.env.development? || Rails.env.production? || Rails.env.staging?
       puts "Deleting bets, betslips, bet options, pool memberships, battles, games, users, and pools."
       Bet.delete_all
       Betslip.delete_all
@@ -17,22 +17,22 @@ namespace :dev do
 
     puts "Creating sample users..."
 
-    user5 = User.create!(
-      id: 5,
-      email: "user5@example.com",
+    user1 = User.create!(
+      id: 1,
+      email: "user1@example.com",
       password: "password123",
       password_confirmation: "password123",
-      username: "user5",
+      username: "user1",
       first_name: "John",
       last_name: "Doe"
     )
 
-    user6 = User.create!(
-      id: 6,
-      email: "user6@example.com",
+    user2 = User.create!(
+      id: 2,
+      email: "user2@example.com",
       password: "password123",
       password_confirmation: "password123",
-      username: "user6",
+      username: "user2",
       first_name: "Jane",
       last_name: "Doe"
     )
@@ -40,86 +40,86 @@ namespace :dev do
     puts "Sample users created successfully."
     puts "Creating sample pools..."
 
-    pool5 = Pool.create!(
-      id: 5,
-      name: "Pool 5"
+    pool1 = Pool.create!(
+      id: 1,
+      name: "Pool 1"
     )
 
-    pool6 = Pool.create!(
-      id: 5,
-      name: "Pool 5"
+    pool2 = Pool.create!(
+      id: 2,
+      name: "Pool 2"
     )
 
     puts "Sample pools created successfully."
     puts "Creating sample pool memberships..."
     PoolMembership.create!(
-      id: 7,
-      user: user5,
-      pool: pool5
+      id: 1,
+      user: user1,
+      pool: pool1
     )
 
     PoolMembership.create!(
-      id: 8,
-      user: user6,
-      pool: pool5
+      id: 2,
+      user: user2,
+      pool: pool1
     )
 
     PoolMembership.create!(
-      id: 9,
-      user: user5,
-      pool: pool6
+      id: 3,
+      user: user1,
+      pool: pool2
     )
 
     puts "Sample pool memberships created successfully."
     puts "Creating sample battles..."
-    battle11 = Battle.create!(
-      id: 11,
+    battle1 = Battle.create!(
+      id: 1,
       start_date: DateTime.new(2024, 9, 8, 0, 0, 0),
       end_date: DateTime.new(2024, 9, 14, 23, 59, 59),
-      pool: pool5
+      pool: pool1
     )
 
-    battle7 = Battle.create!(
-      id: 12,
+    battle2 = Battle.create!(
+      id: 2,
       start_date: DateTime.new(2024, 9, 15, 0, 0, 0),
       end_date: DateTime.new(2024, 9, 21, 23, 59, 59),
-      pool: pool5
+      pool: pool1
     )
 
-    battle8 = Battle.create!(
-      id: 13,
+    battle3 = Battle.create!(
+      id: 3,
       start_date: DateTime.new(2024, 9, 15, 0, 0, 0),
       end_date: DateTime.new(2024, 9, 21, 23, 59, 59),
-      pool: pool5
+      pool: pool1
     )
 
-    battle9 = Battle.create!(
-      id: 14,
+    battle4 = Battle.create!(
+      id: 4,
       start_date: DateTime.new(2024, 11, 17, 0, 0, 0),
       end_date: DateTime.new(2024, 11, 23, 23, 59, 59),
-      pool: pool5
+      pool: pool1
     )
 
-    battle10 = Battle.create!(
-      id: 15,
+    battle5 = Battle.create!(
+      id: 5,
       start_date: DateTime.new(2024, 11, 17, 0, 0, 0),
       end_date: DateTime.new(2024, 11, 23, 23, 59, 59),
-      pool: pool6
+      pool: pool2
     )
 
     puts "Sample battles created successfully."
     puts "Creating sample betslips..."
-    betslip3 = Betslip.create!(
-      id: 10,
-      user: user5,
-      battle: battle11,
+    betslip1 = Betslip.create!(
+      id: 1,
+      user: user1,
+      battle: battle1,
       name: 'User 1 Betslip'
     )
 
-    betslip4 = Betslip.create!(
-      id: 11,
-      user: user6,
-      battle: battle11,
+    betslip2 = Betslip.create!(
+      id: 2,
+      user: user2,
+      battle: battle1,
       name: 'User 2 Betslip'
     )
 
