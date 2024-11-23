@@ -18,7 +18,7 @@ namespace :dev do
     puts "Creating sample users..."
 
     user1 = User.create!(
-      id: 1,
+      id: 3,
       email: "user3@example.com",
       password: "password123",
       password_confirmation: "password123",
@@ -28,7 +28,7 @@ namespace :dev do
     )
 
     user2 = User.create!(
-      id: 2,
+      id: 4,
       email: "user4@example.com",
       password: "password123",
       password_confirmation: "password123",
@@ -40,68 +40,68 @@ namespace :dev do
     puts "Sample users created successfully."
     puts "Creating sample pools..."
 
-    pool1 = Pool.create!(
-      id: 1,
-      name: "Pool 1"
+    pool3 = Pool.create!(
+      id: 3,
+      name: "Pool 3"
     )
 
-    pool2 = Pool.create!(
-      id: 2,
-      name: "Pool 2"
+    pool4 = Pool.create!(
+      id: 4,
+      name: "Pool 4"
     )
 
     puts "Sample pools created successfully."
     puts "Creating sample pool memberships..."
     PoolMembership.create!(
-      id: 1,
+      id: 4,
       user: user3,
-      pool: pool1
+      pool: pool3
     )
 
     PoolMembership.create!(
-      id: 2,
+      id: 5,
       user: user4,
-      pool: pool1
+      pool: pool3
     )
 
     PoolMembership.create!(
-      id: 3,
+      id: 6,
       user: user3,
-      pool: pool2
+      pool: pool4
     )
 
     puts "Sample pool memberships created successfully."
     puts "Creating sample battles..."
-    battle1 = Battle.create!(
-      id: 1,
+    battle6 = Battle.create!(
+      id: 6,
       start_date: DateTime.new(2024, 9, 8, 0, 0, 0),
       end_date: DateTime.new(2024, 9, 14, 23, 59, 59),
       pool: pool1
     )
 
-    battle2 = Battle.create!(
-      id: 2,
+    battle7 = Battle.create!(
+      id: 7,
       start_date: DateTime.new(2024, 9, 15, 0, 0, 0),
       end_date: DateTime.new(2024, 9, 21, 23, 59, 59),
       pool: pool1
     )
 
-    battle3 = Battle.create!(
-      id: 3,
+    battle8 = Battle.create!(
+      id: 8,
       start_date: DateTime.new(2024, 9, 15, 0, 0, 0),
       end_date: DateTime.new(2024, 9, 21, 23, 59, 59),
       pool: pool1
     )
 
-    battle4 = Battle.create!(
-      id: 4,
+    battle9 = Battle.create!(
+      id: 9,
       start_date: DateTime.new(2024, 11, 17, 0, 0, 0),
       end_date: DateTime.new(2024, 11, 23, 23, 59, 59),
       pool: pool1
     )
 
-    battle5 = Battle.create!(
-      id: 5,
+    battle10 = Battle.create!(
+      id: 10,
       start_date: DateTime.new(2024, 11, 17, 0, 0, 0),
       end_date: DateTime.new(2024, 11, 23, 23, 59, 59),
       pool: pool2
@@ -109,17 +109,17 @@ namespace :dev do
 
     puts "Sample battles created successfully."
     puts "Creating sample betslips..."
-    betslip1 = Betslip.create!(
-      id: 1,
-      user: user1,
-      battle: battle1,
+    betslip3 = Betslip.create!(
+      id: 3,
+      user: user3,
+      battle: battle6,
       name: 'User 1 Betslip'
     )
 
-    betslip2 = Betslip.create!(
-      id: 2,
-      user: user2,
-      battle: battle1,
+    betslip4 = Betslip.create!(
+      id: 4,
+      user: user4,
+      battle: battle6,
       name: 'User 2 Betslip'
     )
 
