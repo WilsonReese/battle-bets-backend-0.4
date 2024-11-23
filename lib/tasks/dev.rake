@@ -19,20 +19,20 @@ namespace :dev do
 
     user1 = User.create!(
       id: 1,
-      email: "user1@example.com",
+      email: "user3@example.com",
       password: "password123",
       password_confirmation: "password123",
-      username: "user1",
+      username: "user3",
       first_name: "John",
       last_name: "Doe"
     )
 
     user2 = User.create!(
       id: 2,
-      email: "user2@example.com",
+      email: "user4@example.com",
       password: "password123",
       password_confirmation: "password123",
-      username: "user2",
+      username: "user4",
       first_name: "Jane",
       last_name: "Doe"
     )
@@ -54,19 +54,19 @@ namespace :dev do
     puts "Creating sample pool memberships..."
     PoolMembership.create!(
       id: 1,
-      user: user1,
+      user: user3,
       pool: pool1
     )
 
     PoolMembership.create!(
       id: 2,
-      user: user2,
+      user: user4,
       pool: pool1
     )
 
     PoolMembership.create!(
       id: 3,
-      user: user1,
+      user: user3,
       pool: pool2
     )
 
@@ -95,15 +95,15 @@ namespace :dev do
 
     battle4 = Battle.create!(
       id: 4,
-      start_date: DateTime.new(2024, 11, 3, 0, 0, 0),
-      end_date: DateTime.new(2024, 11, 9, 23, 59, 59),
+      start_date: DateTime.new(2024, 11, 17, 0, 0, 0),
+      end_date: DateTime.new(2024, 11, 23, 23, 59, 59),
       pool: pool1
     )
 
     battle5 = Battle.create!(
       id: 5,
-      start_date: DateTime.new(2024, 11, 3, 0, 0, 0),
-      end_date: DateTime.new(2024, 11, 9, 23, 59, 59),
+      start_date: DateTime.new(2024, 11, 17, 0, 0, 0),
+      end_date: DateTime.new(2024, 11, 23, 23, 59, 59),
       pool: pool2
     )
 
