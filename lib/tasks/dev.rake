@@ -19,7 +19,7 @@ namespace :dev do
 
     user5 = User.create!(
       id: 5,
-      email: "user3@example.com",
+      email: "user5@example.com",
       password: "password123",
       password_confirmation: "password123",
       username: "user5",
@@ -29,7 +29,7 @@ namespace :dev do
 
     user6 = User.create!(
       id: 6,
-      email: "user4@example.com",
+      email: "user6@example.com",
       password: "password123",
       password_confirmation: "password123",
       username: "user6",
