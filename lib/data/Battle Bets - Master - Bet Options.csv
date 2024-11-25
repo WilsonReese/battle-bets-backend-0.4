@@ -1,36 +1,36 @@
 game_id,title,payout,category,success
-1,Alabama -13.5,2,spread,
-1,Oklahoma +13.5,2,spread,
-1,Over 46.5 Points,2,ou,
-1,Under 46.5 Points,2,ou,
-1,Alabama wins,1.5,money_line,
-1,Oklahoma wins,5,money_line,
-1,Jackson Arnold  OR Jalen Milroe pass for 300+ yards,4.5,prop,
-1,Jalen Milrose 2+ TDs Scored (Non-passing),3.5,prop,
-1,Jackson Arnold Over 200 Passing Yards,3,prop,
-1,OU Under 10 points,4,prop,
-1,Xavier Robinson first TD scorer,28,prop,
-2,LSU +8.5,2,spread,
-2,Vanderbilt -8.5,2,spread,
-2,Over 53.5 Points,2,ou,
-2,Under 53.5 Points,2,ou,
-2,LSU wins,3,money_line,
-2,Vanderbilt wins,1.5,money_line,
-2,1+ Pass TDs in every quarter,5.5,prop,
-2,Each team 1+ FG and 1+ TD each half,17,prop,
-2,Pavia 275+ Passing Yards,7,prop,
-2,Pavia 3+ Passsing TDs,5.5,prop,
-2,Nussmeier 4+ Passing TDs,4,prop,
-2,Sedrick Alexander 80+ Rushing Yards,4.5,prop,
-3,Texas A&M -1.5,2,spread,
-3,Auburn +1.5,2,spread,
-3,Over 46.5 Points,2,ou,
-3,Under 46.5 Points,2,ou,
-3,Texas A&M wins,1.5,money_line,
-3,Auburn wins,1.5,money_line,
-3,Aggies win every quarter,14,prop,
-3,Marcel Reed scores first TD,9,prop,
-3,Both teams score every quarter,9,prop,
-3,Auburn to not score a TD,10,prop,
-3,Alt Spread - Aggies (-10.5),3,prop,
-3,Throne 300+ passing yards,5,prop,
+1,Alabama -13.5,2,spread,0
+1,Oklahoma +13.5,2,spread,1
+1,Over 46.5 Points,2,ou,0
+1,Under 46.5 Points,2,ou,1
+1,Alabama wins,1.5,money_line,0
+1,Oklahoma wins,5,money_line,1
+1,Jackson Arnold  OR Jalen Milroe pass for 300+ yards,4.5,prop,0
+1,Jalen Milrose 2+ TDs Scored (Non-passing),3.5,prop,0
+1,Jackson Arnold Over 200 Passing Yards,3,prop,0
+1,OU Under 10 points,4,prop,0
+1,Xavier Robinson first TD scorer,28,prop,1
+2,LSU +8.5,2,spread,0
+2,Vanderbilt -8.5,2,spread,1
+2,Over 53.5 Points,2,ou,0
+2,Under 53.5 Points,2,ou,1
+2,LSU wins,3,money_line,1
+2,Vanderbilt wins,1.5,money_line,0
+2,1+ Pass TDs in every quarter,5.5,prop,0
+2,Each team 1+ FG and 1+ TD each half,17,prop,0
+2,Pavia 275+ Passing Yards,7,prop,0
+2,Pavia 3+ Passsing TDs,5.5,prop,0
+2,Nussmeier 4+ Passing TDs,4,prop,0
+2,Sedrick Alexander 80+ Rushing Yards,4.5,prop,0
+3,Texas A&M -1.5,2,spread,0
+3,Auburn +1.5,2,spread,1
+3,Over 46.5 Points,2,ou,1
+3,Under 46.5 Points,2,ou,0
+3,Texas A&M wins,1.5,money_line,0
+3,Auburn wins,1.5,money_line,1
+3,Aggies win every quarter,14,prop,0
+3,Marcel Reed scores first TD,9,prop,0
+3,Both teams score every quarter,9,prop,0
+3,Auburn to not score a TD,10,prop,0
+3,Alt Spread - Aggies (-10.5),3,prop,0
+3,Throne 300+ passing yards,5,prop,1
