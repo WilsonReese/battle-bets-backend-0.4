@@ -19,22 +19,40 @@ namespace :dev do
 
     user1 = User.create!(
       id: 1,
-      email: "user1@example.com",
+      email: "reese@example.com",
       password: "password123",
       password_confirmation: "password123",
-      username: "user1",
-      first_name: "John",
-      last_name: "Doe"
+      username: "reese",
+      first_name: "Reese",
+      last_name: "Wilson"
     )
 
     user2 = User.create!(
       id: 2,
-      email: "user2@example.com",
+      email: "logan@example.com",
       password: "password123",
       password_confirmation: "password123",
-      username: "user2",
-      first_name: "Jane",
-      last_name: "Doe"
+      username: "logan",
+      first_name: "Logan",
+      last_name: "Dunn"
+    )
+    user3 = User.create!(
+      id: 3,
+      email: "ben@example.com",
+      password: "password123",
+      password_confirmation: "password123",
+      username: "ben",
+      first_name: "Ben",
+      last_name: "Parker"
+    )
+    user4 = User.create!(
+      id: 4,
+      email: "chandler@example.com",
+      password: "password123",
+      password_confirmation: "password123",
+      username: "chandler",
+      first_name: "Chandler",
+      last_name: "Hawkins"
     )
 
     puts "Sample users created successfully."
@@ -68,6 +86,18 @@ namespace :dev do
       id: 3,
       user: user1,
       pool: pool2
+    )
+
+    PoolMembership.create!(
+      id: 4,
+      user: user3,
+      pool: pool1
+    )
+
+    PoolMembership.create!(
+      id: 5,
+      user: user4,
+      pool: pool1
     )
 
     puts "Sample pool memberships created successfully."
@@ -108,22 +138,22 @@ namespace :dev do
     )
 
     puts "Sample battles created successfully."
-    puts "Creating sample betslips..."
-    betslip1 = Betslip.create!(
-      id: 1,
-      user: user1,
-      battle: battle1,
-      name: 'User 1 Betslip'
-    )
+    puts "Skipping sample betslips..."
+    # betslip1 = Betslip.create!(
+    #   id: 1,
+    #   user: user1,
+    #   battle: battle1,
+    #   name: 'User 1 Betslip'
+    # )
 
-    betslip2 = Betslip.create!(
-      id: 2,
-      user: user2,
-      battle: battle1,
-      name: 'User 2 Betslip'
-    )
+    # betslip2 = Betslip.create!(
+    #   id: 2,
+    #   user: user2,
+    #   battle: battle1,
+    #   name: 'User 2 Betslip'
+    # )
 
-    puts "Sample betslips created successfully."
+    puts "Skipped betslips successfully."
     puts "Creating sample teams..."
     
     team_names = ["Vanderbilt", "Oklahoma", "Tennessee", "Texas", "Alabama", "Auburn", "Texas A&M", "LSU", "Ole Miss", "Mississippi St", "Missouri", "Arkansas", "Florida", "Georgia", "S Carolina", "Kentucky", "Ball St"]
