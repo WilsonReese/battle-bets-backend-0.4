@@ -1,36 +1,58 @@
 game_id,title,payout,category,success
-1,Alabama -13.5,2,spread,0
-1,Oklahoma +13.5,2,spread,1
-1,Over 46.5 Points,2,ou,0
-1,Under 46.5 Points,2,ou,1
-1,Alabama wins,1.5,money_line,0
-1,Oklahoma wins,5,money_line,1
-1,Jackson Arnold  OR Jalen Milroe pass for 300+ yards,4.5,prop,0
-1,Jalen Milrose 2+ TDs Scored (Non-passing),3.5,prop,0
-1,Jackson Arnold Over 200 Passing Yards,3,prop,0
-1,OU Under 10 points,4,prop,0
-1,Xavier Robinson first TD scorer,28,prop,1
-2,LSU +8.5,2,spread,0
-2,Vanderbilt -8.5,2,spread,1
-2,Over 53.5 Points,2,ou,0
-2,Under 53.5 Points,2,ou,1
-2,LSU wins,3,money_line,1
-2,Vanderbilt wins,1.5,money_line,0
-2,1+ Pass TDs in every quarter,5.5,prop,0
-2,Each team 1+ FG and 1+ TD each half,17,prop,0
-2,Pavia 275+ Passing Yards,7,prop,0
-2,Pavia 3+ Passsing TDs,5.5,prop,0
-2,Nussmeier 4+ Passing TDs,4,prop,0
-2,Sedrick Alexander 80+ Rushing Yards,4.5,prop,0
-3,Texas A&M -1.5,2,spread,0
-3,Auburn +1.5,2,spread,1
-3,Over 46.5 Points,2,ou,1
-3,Under 46.5 Points,2,ou,0
-3,Texas A&M wins,1.5,money_line,0
-3,Auburn wins,1.5,money_line,1
-3,Aggies win every quarter,14,prop,0
-3,Marcel Reed scores first TD,9,prop,0
-3,Both teams score every quarter,9,prop,0
-3,Auburn to not score a TD,10,prop,0
-3,Alt Spread - Aggies (-10.5),3,prop,0
-3,Throne 300+ passing yards,5,prop,1
+1,Texas -5.5,2,spread,
+1,Texas A&M +5.5,2,spread,
+1,Over 49.5 Points,2,ou,
+1,Under 49.5 Points,2,ou,
+1,Texas wins,1.5,money_line,
+1,Texas A&M wins,2,money_line,
+1,Marcel Reed 1st TD Scorer,7,prop,
+1,Ewers 3+ INT,10,prop,
+1,Game goes to OT,8,prop,
+1,No TDs in 1st half,15,prop,
+1,Moss (A&M) over 100 yards rushing,4,prop,
+2,Oklahoma +5.5,2,spread,
+2,LSU -5.5,2,spread,
+2,Over 47.5 Points,2,ou,
+2,Under 47.5 Points,2,ou,
+2,Oklahoma wins,2,money_line,
+2,LSU wins,1.5,money_line,
+2,Jackson Arnold 150+ passing yards,4,prop,
+2,OU zero fumbles ,5,prop,
+2,LSU under 10 first half ,7,prop,
+2,NO TDs in first half ,10,prop,
+2,OU defensive TD,14,prop,
+2,Xavier Robinson 100+ Rushing Yards,4,prop,
+3,Auburn +11.5,2,spread,
+3,Alabama -11.5,2,spread,
+3,Over 52.5 Points,2,ou,
+3,Under 52.5 Points,2,ou,
+3,Auburn wins,3.5,money_line,
+3,Alabama wins,1.5,money_line,
+3,Milroe over 100 rushing yards,4,prop,
+3,Ryan Williams 2+ TDs,7,prop,
+3,Coleman first TD scorer,11,prop,
+3,Auburn Alt Spread (-10.5),6,prop,
+3,Milroe 3+ Ints,10,prop,
+3,Total Over 70.5,5,prop,
+4,Tennessee -10.5,2,spread,
+4,Vanderbilt +10.5,2,spread,
+4,Over 48.5 Points,2,ou,
+4,Under 48.5 Points,2,ou,
+4,Tennessee wins,1.5,money_line,
+4,Vanderbilt wins,3.5,money_line,
+4,Pavia 3+ Total TDs,8,prop,
+4,Pavia first TD scorer,10,prop,
+4,Vandy wins first half,2.5,prop,
+4,Nico 3+ Turnovers,9,prop,
+4,Dylan Sampson 125+ Rush Yards,4,prop,
+5,Arkansas +3,2,spread,
+5,Missouri -3,2,spread,
+5,Over 53.5 Points,2,ou,
+5,Under 53.5 Points,2,ou,
+5,Arkansas wins,2,money_line,
+5,Missouri wins,1.5,money_line,
+5,Burden over 200 Scrimmage Yards,15,prop,
+5,Wease first TD Scorer,8,prop,
+5,Green (ARK) 3+ Total TD,12,prop,
+5,Anytime Special Teams TD,26,prop,
+5,Anytime Defensive TD,18,prop,

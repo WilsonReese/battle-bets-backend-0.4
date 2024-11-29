@@ -1,4 +1,6 @@
 ID,start_time,away_team,home_team
-1,2024-11-23 18:30:00,Alabama,Oklahoma
-2,2024-11-23 18:30:00,LSU,Vanderbilt
-3,2024-11-23 18:30:00,Texas A&M,Auburn
+1,2024-11-23 18:30:00,Texas,Texas A&M
+2,2024-11-23 18:00:00,Oklahoma,LSU
+3,2024-11-23 14:30:00,Auburn,Alabama
+4,2024-11-23 11:00:00,Tennessee,Vanderbilt
+5,2024-11-23 14:30:00,Arkansas,Missouri
