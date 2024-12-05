@@ -9,7 +9,7 @@ class GoogleSheetFetcher
     @sheet_id = sheet_id
     @service = SHEETS::SheetsService.new
     @service.authorization = Google::Auth::ServiceAccountCredentials.make_creds(
-      json_key_io: File.open('path/to/your/credentials.json'),
+      json_key_io: File.open('config/battle-bets-sheets-api-f42d6b61d979.json'),
       scope: SCOPE
     )
   end
