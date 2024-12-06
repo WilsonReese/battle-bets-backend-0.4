@@ -4,17 +4,28 @@ class BetsController < ApplicationController
     before_action :authorize_betslip_owner!, only: %i[create update destroy]
     before_action :set_bet, only: %i[destroy]
   
-    # GET /pools/:pool_id/battles/:battle_id/betslips/:betslip_id/bets
-    def index
-      @bets = @betslip.bets.includes(:bet_option) # Eager load bet_option
-    
-      render json: {
-        status: @betslip.status,
-        bets: @bets.as_json(include: {
-          bet_option: { only: [:id, :title, :long_title, :category, :game_id] }
-        }),
-      }
-    end
+    # GET /pools/:pool_id/battles/:battle_id/betslips/:betslip_id/bets  # GET /pools/:pool_id/battles/:battle_id/betslips/:betslip_id/bets
+  def index
+    @bets = @betslip.bets.includes(bet_option: :game) # Eager load bet_option and game
+
+    render json: {
+      status: @betslip.status,
+      bets: @bets.as_json(include: {
+        bet_option: {
+          only: [:id, :title, :long_title, :category, :payout],
+          include: {
+            game: {
+              only: [:start_time],
+              include: {
+                home_team: { only: [:name] },
+                away_team: { only: [:name] }
+              }
+            }
+          }
+        }
+      })
+    }
+  end
   
     # POST /pools/:pool_id/battles/:battle_id/betslips/:betslip_id/bets
     # def create
