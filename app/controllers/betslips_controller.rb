@@ -12,13 +12,23 @@ class BetslipsController < ApplicationController
         render json: @betslip
       else
         # Return all betslips for the battle
-        @betslips = @battle.betslips.includes(:bets)
+        @betslips = @battle.betslips.includes(bets: { bet_option: :game })
+  
         render json: @betslips.as_json(include: {
           bets: {
             only: [:id, :bet_amount, :to_win_amount, :amount_won],
             include: {
               bet_option: {
-                only: [:title, :long_title, :payout, :category, :success]
+                only: [:title, :long_title, :payout, :category, :success],
+                include: {
+                  game: {
+                    only: [:start_time],
+                    include: {
+                      home_team: { only: [:name] },
+                      away_team: { only: [:name] }
+                    }
+                  }
+                }
               }
             }
           }
