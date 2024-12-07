@@ -125,15 +125,15 @@ namespace :dev do
 
     battle4 = Battle.create!(
       id: 4,
-      start_date: DateTime.new(2024, 11, 17, 0, 0, 0),
-      end_date: DateTime.new(2024, 11, 23, 23, 59, 59),
+      start_date: DateTime.new(2024, 12, 1, 0, 0, 0),
+      end_date: DateTime.new(2024, 12, 7, 23, 59, 59),
       pool: pool1
     )
 
     battle5 = Battle.create!(
       id: 5,
-      start_date: DateTime.new(2024, 11, 17, 0, 0, 0),
-      end_date: DateTime.new(2024, 11, 23, 23, 59, 59),
+      start_date: DateTime.new(2024, 12, 1, 0, 0, 0),
+      end_date: DateTime.new(2024, 12, 7, 23, 59, 59),
       pool: pool2
     )
 
@@ -156,7 +156,7 @@ namespace :dev do
     puts "Skipped betslips successfully."
     puts "Creating sample teams..."
     
-    team_names = ["Vanderbilt", "Oklahoma", "Tennessee", "Texas", "Alabama", "Auburn", "Texas A&M", "LSU", "Ole Miss", "Mississippi St", "Missouri", "Arkansas", "Florida", "Georgia", "S Carolina", "Kentucky", "Ball St"]
+    team_names = ["Vanderbilt", "Oklahoma", "Tennessee", "Texas", "Alabama", "Auburn", "Texas A&M", "LSU", "Ole Miss", "Mississippi St", "Missouri", "Arkansas", "Florida", "Georgia", "S Carolina", "Kentucky", "Penn St", "Oregon", "Iowa St", "Arizona St", "SMU", "Clemson"]
     teams = team_names.map.with_index(1) do |name, index|
       Team.create!(id: index, name: name)
     end
