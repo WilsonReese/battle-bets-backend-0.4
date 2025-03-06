@@ -2,24 +2,24 @@
 #
 # Table name: battles
 #
-#  id         :bigint           not null, primary key
-#  end_date   :datetime
-#  locked     :boolean          default(FALSE), not null
-#  start_date :datetime
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  pool_id    :bigint           not null
+#  id               :bigint           not null, primary key
+#  end_date         :datetime
+#  locked           :boolean          default(FALSE), not null
+#  start_date       :datetime
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  league_season_id :bigint           not null
 #
 # Indexes
 #
-#  index_battles_on_pool_id  (pool_id)
+#  index_battles_on_league_season_id  (league_season_id)
 #
 # Foreign Keys
 #
-#  fk_rails_...  (pool_id => pools.id)
+#  fk_rails_...  (league_season_id => league_seasons.id)
 #
 class Battle < ApplicationRecord
-  belongs_to :pool
+  belongs_to :league_season
   has_many :betslips, dependent: :destroy
 
   # Scopes

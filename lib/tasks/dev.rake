@@ -102,6 +102,8 @@ namespace :dev do
 
     puts "Sample pool memberships created successfully."
     puts "Creating sample battles..."
+
+    # Will need to re-create this to be associated with a league season
     battle1 = Battle.create!(
       id: 1,
       start_date: DateTime.new(2024, 9, 8, 0, 0, 0),

@@ -34,7 +34,9 @@ class User < ApplicationRecord
   
   # Direct Associations
   has_many :pool_memberships, dependent: :destroy
+  has_many :standings, dependent: :destroy
   has_many :betslips, dependent: :destroy
+  
   
   # Indirect Associations
   has_many :pools, through: :pool_memberships

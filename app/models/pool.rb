@@ -11,7 +11,7 @@ class Pool < ApplicationRecord
     # Associations
     has_many :pool_memberships, dependent: :destroy
     has_many :users, through: :pool_memberships
-    has_many  :battles, dependent: :destroy
+    has_many  :league_seasons, dependent: :destroy
 
     # I don't think I am going to use these 
     # has_many :bet_slips, dependent: :destroy

@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  get 'standings/index'
+  get 'league_seasons/index'
+  get 'league_seasons/show'
   get 'games/index'
   devise_for :users, path: '', path_names: {
     sign_in: 'login',
@@ -12,10 +15,16 @@ Rails.application.routes.draw do
   
   resources :pools, only: %i[index show create update destroy] do
     resources :pool_memberships, only: %i[index create destroy]
-    resources :battles, only: %i[index show create update destroy] do
-      resources :betslips, only: %i[index show create update destroy] do
-        patch 'bets', to: 'bets#update', on: :member
-        resources :bets, only: %i[index create destroy]
+
+    # LeagueSeasons within a pool
+    resources :league_seasons, only: %i[index show] do
+      # Standings for the specific LeagueSeason
+      resources :standings, only: %i[index]
+      resources :battles, only: %i[index show create update destroy] do
+        resources :betslips, only: %i[index show create update destroy] do
+          patch 'bets', to: 'bets#update', on: :member
+          resources :bets, only: %i[index create destroy]
+        end
       end
     end
   end
