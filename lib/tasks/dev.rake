@@ -12,6 +12,9 @@ namespace :dev do
       Game.delete_all
       Team.delete_all
       User.delete_all
+      Standing.delete_all
+      LeagueSeason.delete_all
+      Season.delete_all
       Pool.delete_all
     end
 
@@ -101,6 +104,64 @@ namespace :dev do
     )
 
     puts "Sample pool memberships created successfully."
+
+    puts "Creating sample Seasons..."
+    season1 = Season.create!(
+      id: 1,
+      start_date: DateTime.new(2024, 8, 1, 0, 0, 0),
+      end_date: DateTime.new(2025, 2, 1, 0, 0, 0),
+      year: 2024
+    )
+
+    puts "Sample Seasons created successfully."
+
+    puts "Creating sample League Seasons..."
+    league_season1 = LeagueSeason.create!(
+      id: 1,
+      pool: pool1,
+      season: season1
+    )
+
+    league_season2 = LeagueSeason.create!(
+      id: 2,
+      pool: pool2,
+      season: season1
+    )
+
+    puts "Sample League Seasons created successfully."
+
+    puts "Creating sample Standings..."
+    Standing.create!(
+      id: 1,
+      league_season: league_season1,
+      user: user1,
+      total_points: 100,
+    )
+
+    Standing.create!(
+      id: 2,
+      league_season: league_season2,
+      user: user1,
+      total_points: 50,
+    )
+
+    Standing.create!(
+      id: 3,
+      league_season: league_season1,
+      user: user2,
+      total_points: 90,
+    )
+
+    Standing.create!(
+      id: 4,
+      league_season: league_season2,
+      user: user3,
+      total_points: 20,
+    )
+
+    puts "Sample Standings created successfully."
+    
+
     puts "Creating sample battles..."
 
     # Will need to re-create this to be associated with a league season
@@ -108,35 +169,35 @@ namespace :dev do
       id: 1,
       start_date: DateTime.new(2024, 9, 8, 0, 0, 0),
       end_date: DateTime.new(2024, 9, 14, 23, 59, 59),
-      pool: pool1
+      league_season: league_season1
     )
 
     battle2 = Battle.create!(
       id: 2,
       start_date: DateTime.new(2024, 9, 15, 0, 0, 0),
       end_date: DateTime.new(2024, 9, 21, 23, 59, 59),
-      pool: pool1
+      league_season: league_season1
     )
 
     battle3 = Battle.create!(
       id: 3,
       start_date: DateTime.new(2024, 9, 15, 0, 0, 0),
       end_date: DateTime.new(2024, 9, 21, 23, 59, 59),
-      pool: pool1
+      league_season: league_season1
     )
 
     battle4 = Battle.create!(
       id: 4,
       start_date: DateTime.new(2024, 12, 1, 0, 0, 0),
       end_date: DateTime.new(2024, 12, 7, 23, 59, 59),
-      pool: pool1
+      league_season: league_season1
     )
 
     battle5 = Battle.create!(
       id: 5,
       start_date: DateTime.new(2024, 12, 1, 0, 0, 0),
       end_date: DateTime.new(2024, 12, 7, 23, 59, 59),
-      pool: pool2
+      league_season: league_season2
     )
 
     puts "Sample battles created successfully."
