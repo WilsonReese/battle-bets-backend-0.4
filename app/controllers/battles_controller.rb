@@ -1,10 +1,10 @@
 class BattlesController < ApplicationController
-    before_action :set_pool
+    before_action :set_league_season
     before_action :set_battle, only: %i[show update destroy]
   
     # GET /pools/:pool_id/battles
     def index
-      @battles = @pool.battles.order(start_date: :desc)
+      @battles = @league_season.battles.order(start_date: :desc)
       render json: @battles.as_json(methods: :betslip_count)
     end
   
@@ -41,12 +41,12 @@ class BattlesController < ApplicationController
   
     private
   
-    def set_pool
-      @pool = Pool.find(params[:pool_id])
+    def set_league_season
+      @league_season = LeagueSeason.find(params[:league_season_id])
     end
   
     def set_battle
-      @battle = @pool.battles.find(params[:id])
+      @battle = @league_season.battles.find(params[:id])
     end
   
     def battle_params
