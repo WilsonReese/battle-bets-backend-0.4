@@ -57,7 +57,7 @@ class BetslipsController < ApplicationController
       end
   
       if @betslip.save
-        render json: @betslip, status: :created, location: [@battle.pool, @battle, @betslip]
+        render json: @betslip, status: :created
       else
         render json: @betslip.errors, status: :unprocessable_entity
       end

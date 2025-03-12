@@ -11,8 +11,8 @@ namespace :dev do
       Battle.delete_all
       Game.delete_all
       Team.delete_all
-      User.delete_all
       Standing.delete_all
+      User.delete_all
       LeagueSeason.delete_all
       Season.delete_all
       Pool.delete_all
