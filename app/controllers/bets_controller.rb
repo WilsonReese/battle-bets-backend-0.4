@@ -47,7 +47,7 @@ class BetsController < ApplicationController
             @betslip.bets.create!(bet.permit(:bet_option_id, :bet_amount))
           end
         end
-        render json: bets, status: :created, location: [@betslip.battle.pool, @betslip.battle, @betslip]
+        render json: bets, status: :created
       rescue ActiveRecord::RecordInvalid => e
         render json: { error: e.message }, status: :unprocessable_entity
       end
