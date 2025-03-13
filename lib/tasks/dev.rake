@@ -11,7 +11,7 @@ namespace :dev do
       Battle.delete_all
       Game.delete_all
       Team.delete_all
-      Standing.delete_all
+      LeaderboardEntry.delete_all
       User.delete_all
       LeagueSeason.delete_all
       Season.delete_all
@@ -130,36 +130,36 @@ namespace :dev do
 
     puts "Sample League Seasons created successfully."
 
-    puts "Creating sample Standings..."
-    Standing.create!(
+    puts "Creating sample Leaderboard Entries..."
+    LeaderboardEntry.create!(
       id: 1,
       league_season: league_season1,
       user: user1,
       total_points: 100,
     )
 
-    Standing.create!(
+    LeaderboardEntry.create!(
       id: 2,
       league_season: league_season2,
       user: user1,
       total_points: 50,
     )
 
-    Standing.create!(
+    LeaderboardEntry.create!(
       id: 3,
       league_season: league_season1,
       user: user2,
       total_points: 90,
     )
 
-    Standing.create!(
+    LeaderboardEntry.create!(
       id: 4,
       league_season: league_season2,
       user: user3,
       total_points: 20,
     )
 
-    puts "Sample Standings created successfully."
+    puts "Sample Leaderboard Entries created successfully."
     
 
     puts "Creating sample battles..."

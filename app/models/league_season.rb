@@ -22,5 +22,5 @@ class LeagueSeason < ApplicationRecord
   belongs_to :season
   belongs_to :pool
   has_many :battles, dependent: :destroy
-  has_many :standings, dependent: :destroy # each row of standings is a single record for a user's score for the season (aka one standing, and many standings)
+  has_many :leaderboard_entries, dependent: :destroy 
 end

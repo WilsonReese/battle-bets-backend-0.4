@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  get 'standings/index'
+  get 'leaderboard_entries/index'
   get 'league_seasons/index'
   get 'league_seasons/show'
   get 'games/index'
@@ -18,8 +18,8 @@ Rails.application.routes.draw do
 
     # LeagueSeasons within a pool
     resources :league_seasons, only: %i[index show] do
-      # Standings for the specific LeagueSeason
-      resources :standings, only: %i[index]
+      # Leaderboard Entries for the specific LeagueSeason
+      resources :leaderboard_entries, only: %i[index]
       resources :battles, only: %i[index show create update destroy] do
         resources :betslips, only: %i[index show create update destroy] do
           patch 'bets', to: 'bets#update', on: :member
