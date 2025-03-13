@@ -135,7 +135,7 @@ namespace :dev do
       id: 1,
       league_season: league_season1,
       user: user1,
-      total_points: 100,
+      total_points: 80,
     )
 
     LeaderboardEntry.create!(
