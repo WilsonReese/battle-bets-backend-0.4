@@ -3,6 +3,7 @@
 # Table name: leaderboard_entries
 #
 #  id               :bigint           not null, primary key
+#  ranking          :integer
 #  total_points     :float            default(0.0)
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
@@ -24,4 +25,28 @@ class LeaderboardEntry < ApplicationRecord
   belongs_to :user
 
   validates :total_points, presence: true
+
+  # After save callback to trigger ranking updates
+  after_save :update_rankings
+
+  # Method to update rankings for entries in the same league season
+  def update_rankings
+    entries = league_season.leaderboard_entries.order(total_points: :desc)
+
+    # Assign rankings based on total points
+    current_rank = 0
+    previous_points = nil
+    rank_counter = 0
+
+    entries.each do |entry|
+      rank_counter += 1
+
+      if entry.total_points != previous_points
+        current_rank = rank_counter
+      end
+
+      entry.update_column(:ranking, current_rank)  # Use update_column to skip callbacks for performance
+      previous_points = entry.total_points
+    end
+  end
 end
