@@ -13,6 +13,9 @@ class Pool < ApplicationRecord
     has_many :users, through: :pool_memberships
     has_many  :league_seasons, dependent: :destroy
 
+
+    # Need to build out a way for the week selected to be accepted
+
     # I don't think I am going to use these 
     # has_many :bet_slips, dependent: :destroy
     # has_many :weekly_competitions, dependent: :destroy 
