@@ -1,6 +1,6 @@
 class PoolsController < ApplicationController
     before_action :set_pool, only: %i[show update destroy]
-    before_action :authenticate_user!, only: %i[index show]
+    before_action :authenticate_user!, only: %i[index show create]
   
     # GET /pools
     def index
@@ -32,6 +32,11 @@ class PoolsController < ApplicationController
         @pool.league_seasons.create!(
           season: season,
           start_week: params[:start_week]
+        )
+
+        @pool.pool_memberships.create!(
+          user: current_user,
+          is_commissioner: true
         )
     
         render json: @pool, status: :created, location: @pool

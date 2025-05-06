@@ -21,7 +21,7 @@ namespace :dev do
     puts "Creating sample users..."
 
     user1 = User.create!(
-      id: 1,
+      # id: 1,
       email: "reese@example.com",
       password: "password123",
       password_confirmation: "password123",
@@ -31,7 +31,7 @@ namespace :dev do
     )
 
     user2 = User.create!(
-      id: 2,
+      # id: 2,
       email: "logan@example.com",
       password: "password123",
       password_confirmation: "password123",
@@ -40,7 +40,7 @@ namespace :dev do
       last_name: "Dunn"
     )
     user3 = User.create!(
-      id: 3,
+      # id: 3,
       email: "ben@example.com",
       password: "password123",
       password_confirmation: "password123",
@@ -49,7 +49,7 @@ namespace :dev do
       last_name: "Parker"
     )
     user4 = User.create!(
-      id: 4,
+      # id: 4,
       email: "chandler@example.com",
       password: "password123",
       password_confirmation: "password123",
@@ -62,43 +62,43 @@ namespace :dev do
     puts "Creating sample pools..."
 
     pool1 = Pool.create!(
-      id: 1,
+      # id: 1,
       name: "Pool 1"
     )
 
     pool2 = Pool.create!(
-      id: 2,
+      # id: 2,
       name: "Pool 2"
     )
 
     puts "Sample pools created successfully."
     puts "Creating sample pool memberships..."
     PoolMembership.create!(
-      id: 1,
+      # id: 1,
       user: user1,
       pool: pool1
     )
 
     PoolMembership.create!(
-      id: 2,
+      # id: 2,
       user: user2,
       pool: pool1
     )
 
     PoolMembership.create!(
-      id: 3,
+      # id: 3,
       user: user1,
       pool: pool2
     )
 
     PoolMembership.create!(
-      id: 4,
+      # id: 4,
       user: user3,
       pool: pool1
     )
 
     PoolMembership.create!(
-      id: 5,
+      # id: 5,
       user: user4,
       pool: pool1
     )
@@ -107,7 +107,7 @@ namespace :dev do
 
     puts "Creating sample Seasons..."
     season2024 = Season.create!(
-      id: 1,
+      # id: 1,
       start_date: DateTime.new(2024, 8, 1, 0, 0, 0),
       end_date: DateTime.new(2025, 2, 1, 0, 0, 0),
       year: 2024
@@ -117,14 +117,14 @@ namespace :dev do
 
     puts "Creating sample League Seasons..."
     league_season1 = LeagueSeason.create!(
-      id: 1,
+      # id: 1,
       pool: pool1,
       season: season2024, 
       start_week: 1
     )
 
     league_season2 = LeagueSeason.create!(
-      id: 2,
+      # id: 2,
       pool: pool2,
       season: season2024,
       start_week: 1
@@ -134,28 +134,28 @@ namespace :dev do
 
     puts "Creating sample Leaderboard Entries..."
     LeaderboardEntry.create!(
-      id: 1,
+      # id: 1,
       league_season: league_season1,
       user: user1,
       total_points: 80,
     )
 
     LeaderboardEntry.create!(
-      id: 2,
+      # id: 2,
       league_season: league_season2,
       user: user1,
       total_points: 50,
     )
 
     LeaderboardEntry.create!(
-      id: 3,
+      # id: 3,
       league_season: league_season1,
       user: user2,
       total_points: 90,
     )
 
     LeaderboardEntry.create!(
-      id: 4,
+      # id: 4,
       league_season: league_season2,
       user: user3,
       total_points: 20,
@@ -168,35 +168,35 @@ namespace :dev do
 
     # Will need to re-create this to be associated with a league season
     battle1 = Battle.create!(
-      id: 1,
+      # id: 1,
       start_date: DateTime.new(2024, 9, 8, 0, 0, 0),
       end_date: DateTime.new(2024, 9, 14, 23, 59, 59),
       league_season: league_season1
     )
 
     battle2 = Battle.create!(
-      id: 2,
+      # id: 2,
       start_date: DateTime.new(2024, 9, 15, 0, 0, 0),
       end_date: DateTime.new(2024, 9, 21, 23, 59, 59),
       league_season: league_season1
     )
 
     battle3 = Battle.create!(
-      id: 3,
+      # id: 3,
       start_date: DateTime.new(2024, 9, 15, 0, 0, 0),
       end_date: DateTime.new(2024, 9, 21, 23, 59, 59),
       league_season: league_season1
     )
 
     battle4 = Battle.create!(
-      id: 4,
+      # id: 4,
       start_date: DateTime.new(2024, 12, 1, 0, 0, 0),
       end_date: DateTime.new(2024, 12, 7, 23, 59, 59),
       league_season: league_season1
     )
 
     battle5 = Battle.create!(
-      id: 5,
+      # id: 5,
       start_date: DateTime.new(2024, 12, 1, 0, 0, 0),
       end_date: DateTime.new(2024, 12, 7, 23, 59, 59),
       league_season: league_season2
