@@ -21,6 +21,17 @@ class Pool < ApplicationRecord
     # has_many :weekly_competitions, dependent: :destroy 
 
     # Validations
-    validates :name, presence: true, uniqueness: true
+    validates :name, presence: true, uniqueness: true # do we need a unique name??
+
+    # after_create :create_league_season
+
+    # private
+
+    # def create_league_season
+    #   season = Season.find_by(year: 2024)
+    #   return unless season && start_week.present?
+  
+    #   league_seasons.create(start_week: start_week, season: season)
+    # end
 
 end

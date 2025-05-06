@@ -24,9 +24,16 @@ class PoolsController < ApplicationController
   
     # POST /pools
     def create
-      @pool = Pool.new(pool_params)
-  
+      @pool = Pool.new(pool_params.except(:start_week))
+    
       if @pool.save
+        season = Season.find_by!(year: 2024)
+        Rails.logger.debug "Params received: #{params.inspect}"
+        @pool.league_seasons.create!(
+          season: season,
+          start_week: params[:start_week]
+        )
+    
         render json: @pool, status: :created, location: @pool
       else
         render json: @pool.errors, status: :unprocessable_entity
@@ -54,7 +61,7 @@ class PoolsController < ApplicationController
     end
   
     def pool_params
-      params.require(:pool).permit(:name)
+      params.require(:pool).permit(:name, :start_week)
     end
 end
 

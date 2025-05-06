@@ -17,7 +17,7 @@ Rails.application.routes.draw do
     resources :pool_memberships, only: %i[index create destroy]
 
     # LeagueSeasons within a pool
-    resources :league_seasons, only: %i[index show] do
+    resources :league_seasons, only: %i[index show create] do
       # Leaderboard Entries for the specific LeagueSeason
       resources :leaderboard_entries, only: %i[index]
       resources :battles, only: %i[index show create update destroy] do

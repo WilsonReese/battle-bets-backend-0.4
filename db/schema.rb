@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_13_031012) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_06_170629) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -86,6 +86,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_13_031012) do
     t.bigint "pool_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "start_week"
     t.index ["pool_id"], name: "index_league_seasons_on_pool_id"
     t.index ["season_id"], name: "index_league_seasons_on_season_id"
   end

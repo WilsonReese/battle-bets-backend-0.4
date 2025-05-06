@@ -106,7 +106,7 @@ namespace :dev do
     puts "Sample pool memberships created successfully."
 
     puts "Creating sample Seasons..."
-    season1 = Season.create!(
+    season2024 = Season.create!(
       id: 1,
       start_date: DateTime.new(2024, 8, 1, 0, 0, 0),
       end_date: DateTime.new(2025, 2, 1, 0, 0, 0),
@@ -119,13 +119,15 @@ namespace :dev do
     league_season1 = LeagueSeason.create!(
       id: 1,
       pool: pool1,
-      season: season1
+      season: season2024, 
+      start_week: 1
     )
 
     league_season2 = LeagueSeason.create!(
       id: 2,
       pool: pool2,
-      season: season1
+      season: season2024,
+      start_week: 1
     )
 
     puts "Sample League Seasons created successfully."
