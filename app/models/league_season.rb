@@ -26,4 +26,9 @@ class LeagueSeason < ApplicationRecord
   has_many :leaderboard_entries, dependent: :destroy
   
   validates :start_week, presence: true 
+
+  def has_started?
+    # TEMP: hard code logic — update this later
+    battles.exists?
+  end
 end

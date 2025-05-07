@@ -28,7 +28,7 @@ class PoolsController < ApplicationController
         @pool = Pool.new(pool_params.except(:start_week))
         @pool.save!
     
-        season = Season.find_by!(year: 2024)
+        season = Season.find_by!(year: 2024) # Hard code
         @pool.league_seasons.create!(
           season: season,
           start_week: params[:start_week]
