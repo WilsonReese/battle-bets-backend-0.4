@@ -76,7 +76,8 @@ namespace :dev do
     PoolMembership.create!(
       # id: 1,
       user: user1,
-      pool: pool1
+      pool: pool1,
+      is_commissioner: true
     )
 
     PoolMembership.create!(
@@ -88,7 +89,8 @@ namespace :dev do
     PoolMembership.create!(
       # id: 3,
       user: user1,
-      pool: pool2
+      pool: pool2,
+      is_commissioner: true
     )
 
     PoolMembership.create!(
