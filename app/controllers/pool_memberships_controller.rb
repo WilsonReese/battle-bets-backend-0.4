@@ -6,7 +6,7 @@ class PoolMembershipsController < ApplicationController
     def index
       @memberships = @pool.pool_memberships.includes(:user)
       render json: @memberships.as_json(include: {
-        user: { only: [:id, :first_name, :last_name, :username] }
+        user: { only: [:id, :first_name, :last_name, :username, ] }
       })
     end
   
