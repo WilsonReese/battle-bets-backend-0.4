@@ -5,7 +5,9 @@ class PoolMembershipsController < ApplicationController
     # GET /pools/:pool_id/pool_memberships
     def index
       @memberships = @pool.pool_memberships.includes(:user)
-      render json: @memberships.as_json(include: { user: { only: %i[id email username] } })
+      render json: @memberships.as_json(include: {
+        user: { only: [:id, :first_name, :last_name, :username] }
+      })
     end
   
     # POST /pools/:pool_id/pool_memberships
