@@ -5,26 +5,16 @@ class PoolMembershipsController < ApplicationController
   
     # GET /pools/:pool_id/pool_memberships
     def index
-      page = params[:page].to_i > 0 ? params[:page].to_i : 1
-      per_page = 2
-      offset = (page - 1) * per_page
+      memberships = @pool.sorted_memberships
     
-      memberships = @pool.sorted_memberships.offset(offset).limit(per_page)
-      total_count = @pool.pool_memberships.count
-    
-      render json: {
-        memberships: memberships.as_json(
-          only: [:id, :is_commissioner, :created_at],
-          include: {
-            user: {
-              only: [:id, :first_name, :last_name, :username]
-            }
+      render json: memberships.as_json(
+        only: [:id, :is_commissioner, :created_at],
+        include: {
+          user: {
+            only: [:id, :first_name, :last_name, :username]
           }
-        ),
-        total_count: total_count,
-        current_page: page,
-        total_pages: (total_count / per_page.to_f).ceil
-      }
+        }
+      )
     end
   
     # POST /pools/:pool_id/pool_memberships

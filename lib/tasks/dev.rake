@@ -58,6 +58,26 @@ namespace :dev do
       last_name: "Hawkins"
     )
 
+    user5 = User.create!(
+      # id: 4,
+      email: "chandler2@example.com",
+      password: "password123",
+      password_confirmation: "password123",
+      username: "chandler2",
+      first_name: "Chandler",
+      last_name: "Hawkins"
+    )
+
+    user6 = User.create!(
+      # id: 4,
+      email: "chandler6@example.com",
+      password: "password123",
+      password_confirmation: "password123",
+      username: "chandler6",
+      first_name: "Chandler",
+      last_name: "Hawkins"
+    )
+
     puts "Sample users created successfully."
     puts "Creating sample pools..."
 
@@ -106,6 +126,19 @@ namespace :dev do
       user: user3,
       pool: pool1
     )
+
+    PoolMembership.create!(
+      # id: 4,
+      user: user5,
+      pool: pool1
+    )
+
+    PoolMembership.create!(
+      # id: 4,
+      user: user6,
+      pool: pool1
+    )
+
 
 
     puts "Sample pool memberships created successfully."
