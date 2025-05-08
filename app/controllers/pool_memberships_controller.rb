@@ -1,18 +1,30 @@
 class PoolMembershipsController < ApplicationController
     before_action :set_pool
+    before_action :authenticate_user!, only: %i[index create destroy update]
     before_action :set_pool_membership, only: [:destroy, :update]
   
     # GET /pools/:pool_id/pool_memberships
     def index
-      @memberships = @pool.sorted_memberships
-      render json: @memberships.as_json(
-        only: [:id, :is_commissioner, :created_at],
-        include: {
-          user: {
-            only: [:id, :first_name, :last_name, :username]
+      page = params[:page].to_i > 0 ? params[:page].to_i : 1
+      per_page = 2
+      offset = (page - 1) * per_page
+    
+      memberships = @pool.sorted_memberships.offset(offset).limit(per_page)
+      total_count = @pool.pool_memberships.count
+    
+      render json: {
+        memberships: memberships.as_json(
+          only: [:id, :is_commissioner, :created_at],
+          include: {
+            user: {
+              only: [:id, :first_name, :last_name, :username]
+            }
           }
-        }
-      )
+        ),
+        total_count: total_count,
+        current_page: page,
+        total_pages: (total_count / per_page.to_f).ceil
+      }
     end
   
     # POST /pools/:pool_id/pool_memberships
@@ -27,13 +39,20 @@ class PoolMembershipsController < ApplicationController
     end
 
     def update
-      if @membership.is_commissioner && params[:pool_membership][:is_commissioner] == false
-        unless @membership.can_be_demoted?
-          render json: { error: "A league must have at least one commissioner." }, status: :forbidden
+      if params[:pool_membership].key?(:is_commissioner)
+        unless authorized_to_update_membership?
+          render json: { error: "Only commissioners can modify members." }, status: :forbidden
           return
         end
+    
+        if @membership.is_commissioner && params[:pool_membership][:is_commissioner] == false
+          unless @membership.can_be_demoted?
+            render json: { error: "A league must have at least one commissioner." }, status: :forbidden
+            return
+          end
+        end
       end
-
+    
       if @membership.update(update_params)
         render json: @membership
       else
@@ -45,9 +64,11 @@ class PoolMembershipsController < ApplicationController
     def destroy
       if @membership.is_commissioner
         render json: { error: "Commissioners cannot be removed." }, status: :forbidden
-      else
+      elsif authorized_to_remove_membership?
         @membership.destroy
         head :no_content
+      else
+        render json: { error: "Only commissioners can remove other users." }, status: :forbidden
       end
     end
   
@@ -67,5 +88,16 @@ class PoolMembershipsController < ApplicationController
 
     def update_params
       params.require(:pool_membership).permit(:is_commissioner)
+    end
+
+    def authorized_to_remove_membership?
+      current_user_membership = @pool.pool_memberships.find_by(user_id: current_user.id)
+    
+      @membership.user_id == current_user.id ||
+        current_user_membership&.is_commissioner?
+    end
+
+    def authorized_to_update_membership?
+      @pool.pool_memberships.find_by(user_id: current_user.id)&.is_commissioner?
     end
 end
