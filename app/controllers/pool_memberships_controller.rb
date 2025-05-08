@@ -4,9 +4,9 @@ class PoolMembershipsController < ApplicationController
   
     # GET /pools/:pool_id/pool_memberships
     def index
-      @memberships = @pool.pool_memberships.includes(:user)
+      @memberships = @pool.sorted_memberships
       render json: @memberships.as_json(
-        only: [:id, :is_commissioner],
+        only: [:id, :is_commissioner, :created_at],
         include: {
           user: {
             only: [:id, :first_name, :last_name, :username]

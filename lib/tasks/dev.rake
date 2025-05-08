@@ -77,13 +77,15 @@ namespace :dev do
       # id: 1,
       user: user1,
       pool: pool1,
-      is_commissioner: true
+      is_commissioner: true,
+      created_at: 2.years.ago
     )
 
     PoolMembership.create!(
       # id: 2,
       user: user2,
-      pool: pool1
+      pool: pool1,
+      created_at: 100.days.ago
     )
 
     PoolMembership.create!(
@@ -94,16 +96,17 @@ namespace :dev do
     )
 
     PoolMembership.create!(
+      # id: 5,
+      user: user4,
+      pool: pool1,
+      created_at: 3.hours.ago
+    )
+    PoolMembership.create!(
       # id: 4,
       user: user3,
       pool: pool1
     )
 
-    PoolMembership.create!(
-      # id: 5,
-      user: user4,
-      pool: pool1
-    )
 
     puts "Sample pool memberships created successfully."
 

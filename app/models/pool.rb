@@ -23,6 +23,11 @@ class Pool < ApplicationRecord
     # Validations
     validates :name, presence: true, uniqueness: true # do we need a unique name??
 
+    def sorted_memberships
+      pool_memberships
+        .includes(:user)
+        .order(is_commissioner: :desc, created_at: :desc)
+    end
     # after_create :create_league_season
 
     # private
