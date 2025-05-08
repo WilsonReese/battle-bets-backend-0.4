@@ -44,7 +44,7 @@ class PoolMembershipsController < ApplicationController
     # DELETE /pools/:pool_id/pool_memberships/:id
     def destroy
       if @membership.is_commissioner
-        render json: { error: "Commissioners cannot be removed from the league." }, status: :forbidden
+        render json: { error: "Commissioners cannot be removed." }, status: :forbidden
       else
         @membership.destroy
         head :no_content
