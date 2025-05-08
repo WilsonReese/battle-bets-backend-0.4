@@ -78,6 +78,66 @@ namespace :dev do
       last_name: "Hawkins"
     )
 
+    user7 = User.create!(
+      # id: 4,
+      email: "chandler7@example.com",
+      password: "password123",
+      password_confirmation: "password123",
+      username: "chandler7",
+      first_name: "Chandler",
+      last_name: "Hawkins"
+    )
+
+    user8 = User.create!(
+      # id: 4,
+      email: "chandler8@example.com",
+      password: "password123",
+      password_confirmation: "password123",
+      username: "chandler8",
+      first_name: "Chandler",
+      last_name: "Hawkins"
+    )
+
+    user9 = User.create!(
+      # id: 4,
+      email: "chandler9@example.com",
+      password: "password123",
+      password_confirmation: "password123",
+      username: "chandler9",
+      first_name: "Chandler",
+      last_name: "Hawkins"
+    )
+
+    user10 = User.create!(
+      # id: 4,
+      email: "chandler10@example.com",
+      password: "password123",
+      password_confirmation: "password123",
+      username: "chandler10",
+      first_name: "Chandler",
+      last_name: "Hawkins"
+    )
+
+    user11 = User.create!(
+      # id: 4,
+      email: "chandler11@example.com",
+      password: "password123",
+      password_confirmation: "password123",
+      username: "chandler11",
+      first_name: "Chandler",
+      last_name: "Hawkins"
+    )
+
+    user12 = User.create!(
+      # id: 4,
+      email: "chandler12@example.com",
+      password: "password123",
+      password_confirmation: "password123",
+      username: "chandler12",
+      first_name: "Chandler",
+      last_name: "Hawkins"
+    )
+
     puts "Sample users created successfully."
     puts "Creating sample pools..."
 
@@ -139,6 +199,41 @@ namespace :dev do
       pool: pool1
     )
 
+    PoolMembership.create!(
+      # id: 4,
+      user: user7,
+      pool: pool1
+    )
+
+    PoolMembership.create!(
+      # id: 4,
+      user: user8,
+      pool: pool1
+    )
+
+    PoolMembership.create!(
+      # id: 4,
+      user: user9,
+      pool: pool1
+    )
+
+    PoolMembership.create!(
+      # id: 4,
+      user: user10,
+      pool: pool1
+    )
+
+    PoolMembership.create!(
+      # id: 4,
+      user: user11,
+      pool: pool1
+    )
+
+    PoolMembership.create!(
+      # id: 4,
+      user: user12,
+      pool: pool1
+    )
 
 
     puts "Sample pool memberships created successfully."
