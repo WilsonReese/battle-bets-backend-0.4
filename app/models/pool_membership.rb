@@ -24,4 +24,15 @@ class PoolMembership < ApplicationRecord
   belongs_to :pool
 
   validates :user_id, uniqueness: { scope: :pool_id, message: "User is already a member of this pool" }
+
+  def can_be_demoted?
+    return true unless is_commissioner
+
+    other_commissioners_exist = pool.pool_memberships
+      .where(is_commissioner: true)
+      .where.not(id: id)
+      .exists?
+
+    other_commissioners_exist
+  end
 end

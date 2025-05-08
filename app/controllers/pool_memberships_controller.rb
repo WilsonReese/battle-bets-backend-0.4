@@ -27,8 +27,15 @@ class PoolMembershipsController < ApplicationController
     end
 
     def update
+      if @membership.is_commissioner && params[:pool_membership][:is_commissioner] == false
+        unless @membership.can_be_demoted?
+          render json: { error: "A league must have at least one commissioner." }, status: :forbidden
+          return
+        end
+      end
+
       if @membership.update(update_params)
-        render json: @membership, status: :ok
+        render json: @membership
       else
         render json: @membership.errors, status: :unprocessable_entity
       end
@@ -36,8 +43,12 @@ class PoolMembershipsController < ApplicationController
   
     # DELETE /pools/:pool_id/pool_memberships/:id
     def destroy
-      @membership.destroy
-      head :no_content
+      if @membership.is_commissioner
+        render json: { error: "Commissioners cannot be removed from the league." }, status: :forbidden
+      else
+        @membership.destroy
+        head :no_content
+      end
     end
   
     private
