@@ -1,6 +1,6 @@
 class PoolMembershipsController < ApplicationController
     before_action :set_pool
-    before_action :set_pool_membership, only: :destroy
+    before_action :set_pool_membership, only: [:destroy, :update]
   
     # GET /pools/:pool_id/pool_memberships
     def index
@@ -25,6 +25,14 @@ class PoolMembershipsController < ApplicationController
         render json: @membership.errors, status: :unprocessable_entity
       end
     end
+
+    def update
+      if @membership.update(update_params)
+        render json: @membership, status: :ok
+      else
+        render json: @membership.errors, status: :unprocessable_entity
+      end
+    end
   
     # DELETE /pools/:pool_id/pool_memberships/:id
     def destroy
@@ -44,5 +52,9 @@ class PoolMembershipsController < ApplicationController
   
     def pool_membership_params
       params.require(:pool_membership).permit(:user_id)
+    end
+
+    def update_params
+      params.require(:pool_membership).permit(:is_commissioner)
     end
 end

@@ -14,7 +14,7 @@ Rails.application.routes.draw do
   }
   
   resources :pools, only: %i[index show create update destroy] do
-    resources :pool_memberships, only: %i[index create destroy]
+    resources :pool_memberships, only: %i[index create update destroy]
 
     # LeagueSeasons within a pool
     resources :league_seasons, only: %i[index show create] do
