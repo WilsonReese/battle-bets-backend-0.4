@@ -19,8 +19,13 @@ class PoolMembershipsController < ApplicationController
   
     # POST /pools/:pool_id/pool_memberships
     def create
+      if params[:token].present? && params[:token] != @pool.invite_token
+        render json: { error: "Invalid invite token" }, status: :unauthorized
+        return
+      end
+    
       @membership = @pool.pool_memberships.new(pool_membership_params)
-  
+    
       if @membership.save
         render json: @membership, status: :created
       else

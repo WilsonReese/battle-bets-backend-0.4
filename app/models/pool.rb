@@ -2,10 +2,15 @@
 #
 # Table name: pools
 #
-#  id         :bigint           not null, primary key
-#  name       :string
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
+#  id           :bigint           not null, primary key
+#  invite_token :string
+#  name         :string
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#
+# Indexes
+#
+#  index_pools_on_invite_token  (invite_token) UNIQUE
 #
 class Pool < ApplicationRecord
     # Associations
@@ -23,20 +28,19 @@ class Pool < ApplicationRecord
     # Validations
     validates :name, presence: true, uniqueness: true # do we need a unique name??
 
+    before_create :generate_invite_token
+
     def sorted_memberships
       pool_memberships
         .includes(:user)
         .order(is_commissioner: :desc, created_at: :desc)
     end
-    # after_create :create_league_season
 
-    # private
+    private
 
-    # def create_league_season
-    #   season = Season.find_by(year: 2024)
-    #   return unless season && start_week.present?
-  
-    #   league_seasons.create(start_week: start_week, season: season)
-    # end
+    def generate_invite_token
+      # Generate a short, URL-safe token
+      self.invite_token = SecureRandom.urlsafe_base64(10)
+    end
 
 end

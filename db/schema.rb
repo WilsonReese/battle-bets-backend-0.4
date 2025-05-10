@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_05_06_220340) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_09_224933) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -105,6 +105,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_06_220340) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "invite_token"
+    t.index ["invite_token"], name: "index_pools_on_invite_token", unique: true
   end
 
   create_table "seasons", force: :cascade do |t|
