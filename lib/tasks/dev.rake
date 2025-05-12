@@ -270,7 +270,7 @@ namespace :dev do
       # id: 1,
       league_season: league_season1,
       user: user1,
-      total_points: 80,
+      total_points: 90,
     )
 
     LeaderboardEntry.create!(
@@ -304,21 +304,24 @@ namespace :dev do
       # id: 1,
       start_date: DateTime.new(2024, 9, 8, 0, 0, 0),
       end_date: DateTime.new(2024, 9, 14, 23, 59, 59),
-      league_season: league_season1
+      league_season: league_season1,
+      locked: true
     )
 
     battle2 = Battle.create!(
       # id: 2,
       start_date: DateTime.new(2024, 9, 15, 0, 0, 0),
       end_date: DateTime.new(2024, 9, 21, 23, 59, 59),
-      league_season: league_season1
+      league_season: league_season1,
+      locked: true
     )
 
     battle3 = Battle.create!(
       # id: 3,
       start_date: DateTime.new(2024, 9, 15, 0, 0, 0),
       end_date: DateTime.new(2024, 9, 21, 23, 59, 59),
-      league_season: league_season1
+      league_season: league_season1,
+      locked: true
     )
 
     battle4 = Battle.create!(

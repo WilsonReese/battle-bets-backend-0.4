@@ -11,7 +11,7 @@ class LeaderboardEntriesController < ApplicationController
       if leaderboard_entry
         render json: leaderboard_entry.as_json(
           only: [:id, :total_points, :ranking],
-          include: { user: { only: [:id, :username] } }
+          include: { user: { only: [:id, :username, :first_name, :last_name] } }
         )
       else
         render json: { error: "Leaderboard entry not found for current user." }, status: :not_found
@@ -22,7 +22,7 @@ class LeaderboardEntriesController < ApplicationController
 
       render json: leaderboard_entries.as_json(
         only: [:id, :total_points, :ranking],
-        include: { user: { only: [:id, :username] } }
+        include: { user: { only: [:id, :username, :first_name, :last_name] } }
       )
     end
   end
