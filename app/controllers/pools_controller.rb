@@ -47,11 +47,24 @@ class PoolsController < ApplicationController
   
     # PATCH/PUT /pools/:id
     def update
-      if @pool.update(pool_params)
-        render json: @pool
-      else
-        render json: @pool.errors, status: :unprocessable_entity
+      ActiveRecord::Base.transaction do
+        @pool.update!(pool_params)
+    
+        if params[:start_week]
+          season = Season.find_by!(year: 2024)  # find the actual Season record
+          league_season = @pool.league_seasons.find_by(season: season)
+          
+          if league_season
+            league_season.update!(start_week: params[:start_week])
+          else
+            Rails.logger.warn("No LeagueSeason found for pool #{@pool.id} and season #{season.id}")
+          end
+        end
       end
+    
+      render json: @pool
+    rescue ActiveRecord::RecordInvalid => e
+      render json: { error: e.message }, status: :unprocessable_entity
     end
   
     # DELETE /pools/:id
