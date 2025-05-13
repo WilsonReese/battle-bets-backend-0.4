@@ -26,6 +26,7 @@ class PoolMembership < ApplicationRecord
   validates :user_id, uniqueness: { scope: :pool_id, message: "User is already a member of this pool" }
 
   after_create :create_leaderboard_entries_for_existing_seasons
+  before_destroy :remove_leaderboard_entries
 
   def can_be_demoted?
     return true unless is_commissioner
@@ -47,6 +48,12 @@ class PoolMembership < ApplicationRecord
         entry.ranking = nil
         entry.update_rankings if entry.persisted?
       end
+    end
+  end
+
+  def remove_leaderboard_entries
+    pool.league_seasons.each do |season|
+      LeaderboardEntry.where(user: user, league_season: season).destroy_all
     end
   end
 
