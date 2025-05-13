@@ -265,36 +265,41 @@ namespace :dev do
 
     puts "Sample League Seasons created successfully."
 
-    puts "Creating sample Leaderboard Entries..."
-    LeaderboardEntry.create!(
-      # id: 1,
+    puts "Updating sample Leaderboard Entries with points..."
+    LeaderboardEntry.find_or_initialize_by(
       league_season: league_season1,
-      user: user1,
-      total_points: 90,
-    )
-
-    LeaderboardEntry.create!(
-      # id: 2,
+      user: user1
+    ).tap do |entry|
+      entry.total_points = 90
+      entry.save!
+    end
+    
+    LeaderboardEntry.find_or_initialize_by(
       league_season: league_season2,
-      user: user1,
-      total_points: 50,
-    )
+      user: user1
+    ).tap do |entry|
+      entry.total_points = 50
+      entry.save!
+    end
 
-    LeaderboardEntry.create!(
-      # id: 3,
+    LeaderboardEntry.find_or_initialize_by(
       league_season: league_season1,
-      user: user2,
-      total_points: 90,
-    )
-
-    LeaderboardEntry.create!(
-      # id: 4,
+      user: user2
+    ).tap do |entry|
+      entry.total_points = 90
+      entry.save!
+    end
+    
+    LeaderboardEntry.find_or_initialize_by(
       league_season: league_season2,
-      user: user3,
-      total_points: 20,
-    )
+      user: user3
+    ).tap do |entry|
+      entry.total_points = 20
+      entry.save!
+    end
 
-    puts "Sample Leaderboard Entries created successfully."
+
+    puts "Updated Leaderboard Entries successfully."
     
 
     puts "Creating sample battles..."
