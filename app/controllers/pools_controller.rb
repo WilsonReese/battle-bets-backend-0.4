@@ -1,6 +1,7 @@
 class PoolsController < ApplicationController
     before_action :set_pool, only: %i[show update destroy]
-    before_action :authenticate_user!, only: %i[index show create]
+    before_action :authenticate_user!, only: %i[index show create update destroy]
+    before_action :authorize_commissioner!, only: %i[update destroy]
   
     # GET /pools
     def index
@@ -80,6 +81,14 @@ class PoolsController < ApplicationController
   
     def pool_params
       params.require(:pool).permit(:name, :start_week)
+    end
+
+    def authorize_commissioner!
+      membership = @pool.pool_memberships.find_by(user_id: current_user.id)
+    
+      unless membership&.is_commissioner
+        render json: { error: "Only commissioners can perform this action." }, status: :forbidden
+      end
     end
 end
 

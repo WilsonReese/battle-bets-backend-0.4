@@ -26,7 +26,7 @@ class Pool < ApplicationRecord
     # has_many :weekly_competitions, dependent: :destroy 
 
     # Validations
-    validates :name, presence: true, uniqueness: true # do we need a unique name??
+    validates :name, presence: true
 
     before_create :generate_invite_token
 
