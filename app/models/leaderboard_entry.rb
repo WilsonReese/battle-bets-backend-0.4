@@ -12,8 +12,9 @@
 #
 # Indexes
 #
-#  index_leaderboard_entries_on_league_season_id  (league_season_id)
-#  index_leaderboard_entries_on_user_id           (user_id)
+#  index_leaderboard_entries_on_league_season_id              (league_season_id)
+#  index_leaderboard_entries_on_league_season_id_and_user_id  (league_season_id,user_id) UNIQUE
+#  index_leaderboard_entries_on_user_id                       (user_id)
 #
 # Foreign Keys
 #

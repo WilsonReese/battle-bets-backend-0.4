@@ -27,8 +27,19 @@ class LeagueSeason < ApplicationRecord
   
   validates :start_week, presence: true 
 
+  after_create :create_leaderboard_entries_for_all_members
+
   def has_started?
     # TEMP: hard code logic — update this later
     battles.exists?
+  end
+
+  def create_leaderboard_entries_for_all_members
+    pool.pool_memberships.find_each do |membership|
+      LeaderboardEntry.find_or_create_by!(league_season: self, user: membership.user) do |entry|
+        entry.total_points = 0
+        entry.ranking = nil
+      end
+    end
   end
 end
