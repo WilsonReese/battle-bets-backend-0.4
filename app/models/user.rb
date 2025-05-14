@@ -43,6 +43,7 @@ class User < ApplicationRecord
   has_many :pools, through: :pool_memberships
 
   before_validation :downcase_username
+  before_validation :strip_whitespace
   
   # Validations
   validates :username,
@@ -58,6 +59,13 @@ class User < ApplicationRecord
 
   def downcase_username
     self.username = username.downcase if username.present?
+  end
+
+  def strip_whitespace
+    self.first_name = first_name.strip if first_name
+    self.last_name = last_name.strip if last_name
+    self.username = username.strip if username
+    self.email = email.strip if email
   end
 
   def password_complexity
