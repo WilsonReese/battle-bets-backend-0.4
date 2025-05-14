@@ -20,6 +20,7 @@
 #
 #  index_users_on_email                 (email) UNIQUE
 #  index_users_on_jti                   (jti) UNIQUE
+#  index_users_on_lower_username        (lower((username)::text)) UNIQUE
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
 #
 class User < ApplicationRecord
@@ -41,8 +42,33 @@ class User < ApplicationRecord
   # Indirect Associations
   has_many :pools, through: :pool_memberships
 
+  before_validation :downcase_username
+  
   # Validations
-  validates :username, presence: true, uniqueness: true
+  validates :username,
+            presence: true,
+            uniqueness: { case_sensitive: false },
+            length: { in: 3..20 },
+            format: { with: /\A[a-zA-Z_][a-zA-Z0-9_]*\z/, message: "can only contain letters, numbers, and underscores, and must start with a letter or underscore" }
+  validate :password_complexity
   validates :first_name, presence: true
   validates :last_name, presence: true
+
+  private
+
+  def downcase_username
+    self.username = username.downcase if username.present?
+  end
+
+  def password_complexity
+    return if password.blank? # Let Devise handle presence
+
+    if password.length < 8
+      errors.add(:password, "must be at least 8 characters")
+    end
+
+    if password.include?(" ")
+      errors.add(:password, "cannot contain spaces")
+    end
+  end
 end
