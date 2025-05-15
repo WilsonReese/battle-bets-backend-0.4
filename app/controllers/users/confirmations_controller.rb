@@ -6,9 +6,9 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
     self.resource = resource_class.confirm_by_token(params[:confirmation_token])
 
     if resource.errors.empty?
-      render html: "<h1 style='text-align:center; margin-top:30px;'>Your account has been confirmed.</h1>".html_safe, status: :ok
+      render html: "<h1 style='margin-top:30px;'>Your account has been confirmed.</h1>".html_safe, status: :ok
     else
-      render html: "<h1 style='text-align:center; margin-top:30px;'>#{resource.errors.full_messages.join(", ")}</h1>".html_safe
+      render html: "<h1 style='margin-top:30px;'>#{resource.errors.full_messages.join(", ")}</h1>".html_safe
     end
   end
 end
