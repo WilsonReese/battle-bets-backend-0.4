@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   get 'league_seasons/index'
   get 'league_seasons/show'
   get 'games/index'
+  get "/current_user", to: "users#current"
   devise_for :users, path: '', path_names: {
     sign_in: 'login',
     sign_out: 'logout',
