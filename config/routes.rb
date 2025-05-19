@@ -4,16 +4,23 @@ Rails.application.routes.draw do
   get 'league_seasons/show'
   get 'games/index'
   get "/current_user", to: "users#current"
+  get '/user_reset_status', to: 'users#reset_status'
   devise_for :users, path: '', path_names: {
     sign_in: 'login',
     sign_out: 'logout',
-    registration: 'signup'
+    registration: 'signup',
+    password: 'password'
   },
   controllers: {
     sessions: 'users/sessions',
     registrations: 'users/registrations',
-    confirmations: 'users/confirmations'
+    confirmations: 'users/confirmations',
+    passwords: 'users/passwords'
   }
+  
+  devise_scope :user do
+    patch "/password/update", to: "users/passwords#update"
+  end
   
   resources :pools, only: %i[index show create update destroy] do
     resources :pool_memberships, only: %i[index create update destroy]
