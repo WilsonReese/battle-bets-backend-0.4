@@ -35,8 +35,13 @@ class Users::PasswordsController < Devise::PasswordsController
     user = User.find_by(email: params[:email], resetting_password: true)
 
     if user.present?
+      if user.resetting_password_set_at.blank? || user.resetting_password_set_at < 10.minutes.ago
+        user.update!(resetting_password: false, resetting_password_set_at: nil)
+        return render json: { error: "Password reset session expired. Please request a new link." }, status: :unauthorized
+      end
+
       if user.update(password: params[:password], password_confirmation: params[:password_confirmation])
-        user.update!(resetting_password: false)
+        user.update!(resetting_password: false, resetting_password_set_at: nil)
         render json: { message: "Password updated successfully." }, status: :ok
       else
         render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
@@ -45,6 +50,7 @@ class Users::PasswordsController < Devise::PasswordsController
       render json: { error: "Unauthorized or expired reset request" }, status: :unauthorized
     end
   end
+
 
   private
 
