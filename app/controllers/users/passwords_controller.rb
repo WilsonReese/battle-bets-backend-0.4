@@ -3,10 +3,16 @@ class Users::PasswordsController < Devise::PasswordsController
 
   # Called when the user requests a password reset
   def create
+    user = User.find_by(email: resource_params[:email])
+
+    unless user
+      render json: { error: "No account associated with this email." }, status: :not_found and return
+    end
+
     self.resource = resource_class.send_reset_password_instructions(resource_params)
 
     if successfully_sent?(resource)
-      resource.update!(resetting_password: false) # ✅ your custom flag
+      user.update!(resetting_password: false) # or true depending on your flow
       render json: { message: "Reset password instructions sent." }, status: :ok
     else
       render json: { errors: resource.errors.full_messages }, status: :unprocessable_entity
