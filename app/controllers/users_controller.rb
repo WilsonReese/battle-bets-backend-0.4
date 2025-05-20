@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :authenticate_user!, only: %i[current update_profile]
+  before_action :authenticate_user!, only: %i[current update_profile change_password]
 
   def current
     render json: {
@@ -28,6 +28,14 @@ class UsersController < ApplicationController
       render json: { resetting_password: user.resetting_password }
     else
       render json: { resetting_password: false }, status: :not_found
+    end
+  end
+
+  def change_password
+    if current_user.update(password: params[:password], password_confirmation: params[:password_confirmation])
+      render json: { message: "Password updated successfully." }, status: :ok
+    else
+      render json: { errors: current_user.errors.full_messages }, status: :unprocessable_entity
     end
   end
 

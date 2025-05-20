@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   get "/current_user", to: "users#current"
   get '/user_reset_status', to: 'users#reset_status'
   patch "/users/update_profile", to: "users#update_profile"
+  patch "/users/change_password", to: "users#change_password"
   devise_for :users, path: '', path_names: {
     sign_in: 'login',
     sign_out: 'logout',
