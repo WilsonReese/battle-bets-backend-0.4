@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   get 'games/index'
   get "/current_user", to: "users#current"
   get '/user_reset_status', to: 'users#reset_status'
+  patch "/users/update_profile", to: "users#update_profile"
   devise_for :users, path: '', path_names: {
     sign_in: 'login',
     sign_out: 'logout',

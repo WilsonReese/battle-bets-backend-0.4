@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :authenticate_user!, only: %i[current]
+  before_action :authenticate_user!, only: %i[current update_profile]
 
   def current
     render json: {
@@ -9,8 +9,17 @@ class UsersController < ApplicationController
       confirmed: current_user.confirmed?,
       first_name: current_user.first_name,
       last_name: current_user.last_name,
-      resetting_password: current_user.resetting_password
+      resetting_password: current_user.resetting_password,
+      created_at: current_user.created_at
     }
+  end
+
+  def update_profile
+    if current_user.update(profile_params)
+      render json: current_user
+    else
+      render json: { errors: current_user.errors }, status: :unprocessable_entity
+    end
   end
 
   def reset_status
@@ -20,5 +29,11 @@ class UsersController < ApplicationController
     else
       render json: { resetting_password: false }, status: :not_found
     end
+  end
+
+  private
+
+  def profile_params
+    params.require(:user).permit(:first_name, :last_name, :username)
   end
 end
