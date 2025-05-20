@@ -27,7 +27,8 @@ namespace :dev do
       password_confirmation: "password123",
       username: "reese",
       first_name: "Reese",
-      last_name: "Wilson"
+      last_name: "Wilson", 
+      confirmed_at: Time.now
     )
 
     user2 = User.create!(
@@ -37,7 +38,8 @@ namespace :dev do
       password_confirmation: "password123",
       username: "logan",
       first_name: "Logan",
-      last_name: "Dunn"
+      last_name: "Dunn",
+      confirmed_at: Time.now
     )
     user3 = User.create!(
       # id: 3,
@@ -46,7 +48,8 @@ namespace :dev do
       password_confirmation: "password123",
       username: "ben",
       first_name: "Ben",
-      last_name: "Parker"
+      last_name: "Parker",
+      confirmed_at: Time.now
     )
     user4 = User.create!(
       # id: 4,
@@ -55,7 +58,8 @@ namespace :dev do
       password_confirmation: "password123",
       username: "chandler",
       first_name: "Chandler",
-      last_name: "Hawkins"
+      last_name: "Hawkins",
+      confirmed_at: Time.now
     )
 
     user5 = User.create!(
@@ -65,7 +69,8 @@ namespace :dev do
       password_confirmation: "password123",
       username: "chandler2",
       first_name: "Chandler",
-      last_name: "Hawkins"
+      last_name: "Hawkins",
+      confirmed_at: Time.now
     )
 
     user6 = User.create!(
@@ -75,7 +80,8 @@ namespace :dev do
       password_confirmation: "password123",
       username: "chandler6",
       first_name: "Chandler",
-      last_name: "Hawkins"
+      last_name: "Hawkins",
+      confirmed_at: Time.now
     )
 
     user7 = User.create!(
@@ -85,7 +91,8 @@ namespace :dev do
       password_confirmation: "password123",
       username: "chandler7",
       first_name: "Chandler",
-      last_name: "Hawkins"
+      last_name: "Hawkins",
+      confirmed_at: Time.now
     )
 
     user8 = User.create!(
@@ -95,7 +102,8 @@ namespace :dev do
       password_confirmation: "password123",
       username: "chandler8",
       first_name: "Chandler",
-      last_name: "Hawkins"
+      last_name: "Hawkins",
+      confirmed_at: Time.now
     )
 
     user9 = User.create!(
@@ -105,7 +113,8 @@ namespace :dev do
       password_confirmation: "password123",
       username: "chandler9",
       first_name: "Chandler",
-      last_name: "Hawkins"
+      last_name: "Hawkins",
+      confirmed_at: Time.now
     )
 
     user10 = User.create!(
@@ -115,7 +124,8 @@ namespace :dev do
       password_confirmation: "password123",
       username: "chandler10",
       first_name: "Chandler",
-      last_name: "Hawkins"
+      last_name: "Hawkins",
+      confirmed_at: Time.now
     )
 
     user11 = User.create!(
@@ -125,7 +135,8 @@ namespace :dev do
       password_confirmation: "password123",
       username: "chandler11",
       first_name: "Chandler",
-      last_name: "Hawkins"
+      last_name: "Hawkins",
+      confirmed_at: Time.now
     )
 
     user12 = User.create!(
@@ -135,7 +146,8 @@ namespace :dev do
       password_confirmation: "password123",
       username: "chandler12",
       first_name: "Chandler",
-      last_name: "Hawkins"
+      last_name: "Hawkins",
+      confirmed_at: Time.now
     )
 
     puts "Sample users created successfully."
