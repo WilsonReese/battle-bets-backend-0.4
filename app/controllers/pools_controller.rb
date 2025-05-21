@@ -7,10 +7,19 @@ class PoolsController < ApplicationController
     def index
       begin
         Rails.logger.info "Attempting to fetch pools for user: #{current_user.inspect}"
-        @pools = current_user.pools
-        Rails.logger.info "Fetched pools: #{@pools.inspect}"
-  
-        render json: @pools
+        @pools = current_user.pools.includes(:pool_memberships, :league_seasons)
+
+        enriched_pools = @pools.map do |pool|
+          league_season = pool.league_seasons.find { |s| s.season.year == 2024 }
+
+          pool.as_json.merge({
+            membership_count: pool.pool_memberships.size,
+            start_week: league_season&.start_week,
+            has_started: league_season&.has_started?
+          })
+        end
+
+        render json: enriched_pools
       rescue => e
         Rails.logger.error "Error in PoolsController#index: #{e.message}"
         Rails.logger.error e.backtrace.join("\n")
