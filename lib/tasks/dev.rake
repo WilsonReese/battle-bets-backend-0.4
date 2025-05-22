@@ -201,6 +201,12 @@ namespace :dev do
 
     PoolMembership.create!(
       # id: 4,
+      user: user3,
+      pool: pool2
+    )
+
+    PoolMembership.create!(
+      # id: 4,
       user: user5,
       pool: pool1
     )
