@@ -30,7 +30,7 @@ class Battle < ApplicationRecord
   validates :locked, inclusion: { in: [true, false] }
 
   def betslip_count
-    betslips.submitted.count
+    betslips.created.count
   end
 
   def lock!
