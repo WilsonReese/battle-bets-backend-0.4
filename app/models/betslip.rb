@@ -32,7 +32,7 @@ class Betslip < ApplicationRecord
   enum status: { created: "created", filled_out: "filled_out", completed: "completed" }
 
   scope :created, -> { where(status: "created") }
-  scope :submitted, -> { where(status: "submitted") }
+  scope :filled_out, -> { where(status: "filled_out") }
 
   attr_accessor :skip_locked_check
 

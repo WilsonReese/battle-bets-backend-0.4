@@ -31,8 +31,8 @@ class Battle < ApplicationRecord
 
   after_create :create_betslips_for_members
 
-  def betslip_count
-    betslips.count
+  def filled_out_betslip_count
+    betslips.filled_out.count
   end
 
   def lock!
