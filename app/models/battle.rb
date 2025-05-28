@@ -29,11 +29,23 @@ class Battle < ApplicationRecord
   validates :start_date, :end_date, presence: true
   validates :locked, inclusion: { in: [true, false] }
 
+  after_create :create_betslips_for_members
+
   def betslip_count
     betslips.count
   end
 
   def lock!
     update!(locked: true)
+  end
+
+  private
+
+  def create_betslips_for_members
+    return if locked? # THIS IS ONLY FOR SAMPLE DATA - Skip betslip creation if battle is locked
+
+    league_season.pool.users.find_each do |user|
+      betslips.create!(user: user)
+    end
   end
 end

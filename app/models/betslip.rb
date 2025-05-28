@@ -29,7 +29,7 @@ class Betslip < ApplicationRecord
 
   has_many  :bets, dependent: :destroy
 
-  enum status: { created: "created", submitted: "submitted", completed: "completed" }
+  enum status: { created: "created", filled_out: "filled_out", completed: "completed" }
 
   scope :created, -> { where(status: "created") }
   scope :submitted, -> { where(status: "submitted") }

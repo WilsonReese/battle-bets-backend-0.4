@@ -21,10 +21,6 @@ class Pool < ApplicationRecord
 
     # Need to build out a way for the week selected to be accepted
 
-    # I don't think I am going to use these 
-    # has_many :bet_slips, dependent: :destroy
-    # has_many :weekly_competitions, dependent: :destroy 
-
     # Validations
     validates :name, presence: true
 
