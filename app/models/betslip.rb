@@ -78,7 +78,7 @@ class Betslip < ApplicationRecord
 
   def set_default_name
     if name.blank? && user
-      self.name = "#{user.first_name} #{user.last_name}'s Bets"
+      self.name = "#{user.username}"
     end
   end
 

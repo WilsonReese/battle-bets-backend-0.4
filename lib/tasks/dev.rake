@@ -349,15 +349,15 @@ namespace :dev do
 
     battle4 = Battle.create!(
       # id: 4,
-      start_date: DateTime.new(2024, 12, 1, 0, 0, 0),
-      end_date: DateTime.new(2024, 12, 7, 23, 59, 59),
+      start_date: DateTime.new(2025, 12, 1, 0, 0, 0),
+      end_date: DateTime.new(2025, 12, 7, 23, 59, 59),
       league_season: league_season1
     )
 
     battle5 = Battle.create!(
       # id: 5,
-      start_date: DateTime.new(2024, 12, 1, 0, 0, 0),
-      end_date: DateTime.new(2024, 12, 7, 23, 59, 59),
+      start_date: DateTime.new(2025, 12, 1, 0, 0, 0),
+      end_date: DateTime.new(2025, 12, 7, 23, 59, 59),
       league_season: league_season2
     )
 
