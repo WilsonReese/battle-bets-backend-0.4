@@ -378,14 +378,14 @@ namespace :dev do
     # )
 
     puts "Skipped betslips successfully."
-    puts "Creating sample teams..."
+    puts "Skip creating teams:"
     
-    team_names = ["Vanderbilt", "Oklahoma", "Tennessee", "Texas", "Alabama", "Auburn", "Texas A&M", "LSU", "Ole Miss", "Mississippi St", "Missouri", "Arkansas", "Florida", "Georgia", "S Carolina", "Kentucky", "Penn St", "Oregon", "Iowa St", "Arizona St", "SMU", "Clemson"]
-    teams = team_names.map.with_index(1) do |name, index|
-      Team.create!(id: index, name: name)
-    end
+    # team_names = ["Vanderbilt", "Oklahoma", "Tennessee", "Texas", "Alabama", "Auburn", "Texas A&M", "LSU", "Ole Miss", "Mississippi St", "Missouri", "Arkansas", "Florida", "Georgia", "S Carolina", "Kentucky", "Penn St", "Oregon", "Iowa St", "Arizona St", "SMU", "Clemson"]
+    # teams = team_names.map.with_index(1) do |name, index|
+    #   Team.create!(id: index, name: name)
+    # end
 
-    puts "Sample teams created successfully."
+    puts "Sample teams skipped successfully."
     puts "Skip creating sample games..."
     # game1 = Game.create!(
     #   id: 1,

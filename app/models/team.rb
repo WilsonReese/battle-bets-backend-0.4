@@ -3,9 +3,11 @@
 # Table name: teams
 #
 #  id         :bigint           not null, primary key
+#  conference :string
 #  name       :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  espn_id    :integer
 #
 class Team < ApplicationRecord
     has_many :home_games, class_name: 'Game', foreign_key: 'home_team_id', dependent: :nullify
