@@ -19,12 +19,15 @@ class GoogleSheetImporter
   end
 
   def self.import_bet_options(data)
-    raise "Games must be imported before Bet Options" if @game_id_mapping.nil?
+    # raise "Games must be imported before Bet Options" if @game_id_mapping.nil?
 
     data.each do |row|
       next if row[0].to_i.zero? # Skip the header or invalid rows
 
-      actual_game_id = @game_id_mapping[row[0].to_i] # Assuming column 0 is simplistic game ID
+      # actual_game_id = @game_id_mapping[row[0].to_i] # Assuming column 0 is simplistic game ID    
+      actual_game_id = row[0].to_i
+      next unless Game.exists?(actual_game_id)
+
       BetOption.create!(
         game_id: actual_game_id,
         title: row[1], # Assuming column 1 is title

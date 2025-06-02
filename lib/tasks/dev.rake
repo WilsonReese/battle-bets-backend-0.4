@@ -10,7 +10,7 @@ namespace :dev do
       PoolMembership.delete_all
       Battle.delete_all
       Game.delete_all
-      Team.delete_all
+      # Team.delete_all
       LeaderboardEntry.delete_all
       User.delete_all
       LeagueSeason.delete_all
@@ -386,64 +386,31 @@ namespace :dev do
     # end
 
     puts "Sample teams skipped successfully."
-    puts "Skip creating sample games..."
-    # game1 = Game.create!(
-    #   id: 1,
-    #   start_time: "2024-09-15 15:00:00",
-    #   home_team_id: teams[0].id, # Vanderbilt
-    #   away_team_id: teams[2].id  # Tennessee
-    # )
+    puts "Creating sample games..."
 
-    # game2 = Game.create!(
-    #   id: 2,
-    #   start_time: "2024-09-15 18:00:00",
-    #   home_team_id: teams[1].id, # Oklahoma
-    #   away_team_id: teams[3].id  # Texas
-    # )
+    games = [
+      { id: 1, start_time: "2025-12-07 15:00:00", away_team: "Georgia", home_team: "Texas" },
+      { id: 2, start_time: "2025-12-07 19:00:00", away_team: "Penn State", home_team: "Oregon" },
+      { id: 3, start_time: "2025-12-07 11:00:00", away_team: "Iowa State", home_team: "Arizona St" },
+      { id: 4, start_time: "2025-12-07 19:00:00", away_team: "Clemson", home_team: "SMU" },
+      { id: 5, start_time: "2025-12-07 19:00:00", away_team: "Tennessee", home_team: "Vanderbilt" },
+      { id: 6, start_time: "2025-12-07 19:00:00", away_team: "Mississippi St", home_team: "South Carolina" }
+    ]
 
-    # game3 = Game.create!(
-    #   id: 3,
-    #   start_time: "2024-09-15 12:00:00",
-    #   home_team_id: teams[4].id, # Alabama
-    #   away_team_id: teams[5].id  # Auburn
-    # )
+    games.each do |g|
+      away = Team.find_by!(name: g[:away_team])
+      home = Team.find_by!(name: g[:home_team])
 
-    # game4 = Game.create!(
-    #   id: 4,
-    #   start_time: "2024-09-15 15:00:00",
-    #   home_team_id: teams[6].id, # Texas A&M
-    #   away_team_id: teams[7].id  # LSU
-    # )
+      Game.create!(
+        id: g[:id],
+        start_time: g[:start_time],
+        away_team: away,
+        home_team: home
+      )
+    end 
 
-    # game5 = Game.create!(
-    #   id: 5,
-    #   start_time: "2024-09-15 15:00:00",
-    #   home_team_id: teams[8].id, # Ole Miss
-    #   away_team_id: teams[9].id  # Mississippi St
-    # )
 
-    # game6 = Game.create!(
-    #   id: 6,
-    #   start_time: "2024-09-15 18:00:00",
-    #   home_team_id: teams[10].id, # Missouri
-    #   away_team_id: teams[11].id  # Arkansas
-    # )
-
-    # game7 = Game.create!(
-    #   id: 7,
-    #   start_time: "2024-09-15 12:00:00",
-    #   home_team_id: teams[12].id, # Florida
-    #   away_team_id: teams[13].id  # Georgia
-    # )
-
-    # game8 = Game.create!(
-    #   id: 8,
-    #   start_time: "2024-09-15 15:00:00",
-    #   home_team_id: teams[14].id, # S Carolina
-    #   away_team_id: teams[15].id  # Kentucky
-    # )
-
-    puts "Sample games skipped successfully."
+    puts "Sample games created successfully."
     puts "Skip creating sample bet options..."
 
     # bet_option1 = BetOption.create!(
