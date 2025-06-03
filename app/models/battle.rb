@@ -3,9 +3,11 @@
 # Table name: battles
 #
 #  id               :bigint           not null, primary key
+#  completed        :boolean          default(FALSE), not null
 #  end_date         :datetime
 #  locked           :boolean          default(FALSE), not null
 #  start_date       :datetime
+#  status           :integer          default(0), not null
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  league_season_id :bigint           not null
@@ -21,6 +23,8 @@
 class Battle < ApplicationRecord
   belongs_to :league_season
   has_many :betslips, dependent: :destroy
+
+  enum status: { not_started: 0, in_progress: 1, completed: 2 }
 
   # Scopes
   scope :locked, -> { where(locked: true) }

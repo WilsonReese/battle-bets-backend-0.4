@@ -328,7 +328,8 @@ namespace :dev do
       start_date: DateTime.new(2024, 9, 8, 0, 0, 0),
       end_date: DateTime.new(2024, 9, 14, 23, 59, 59),
       league_season: league_season1,
-      locked: true
+      locked: true,
+      status: 2,
     )
 
     battle2 = Battle.create!(
@@ -336,7 +337,8 @@ namespace :dev do
       start_date: DateTime.new(2024, 9, 15, 0, 0, 0),
       end_date: DateTime.new(2024, 9, 21, 23, 59, 59),
       league_season: league_season1,
-      locked: true
+      locked: true,
+      status: 2,
     )
 
     battle3 = Battle.create!(
@@ -344,21 +346,24 @@ namespace :dev do
       start_date: DateTime.new(2024, 9, 15, 0, 0, 0),
       end_date: DateTime.new(2024, 9, 21, 23, 59, 59),
       league_season: league_season1,
-      locked: true
+      locked: true,
+      status: 2,
     )
 
     battle4 = Battle.create!(
       # id: 4,
       start_date: DateTime.new(2025, 12, 1, 0, 0, 0),
       end_date: DateTime.new(2025, 12, 7, 23, 59, 59),
-      league_season: league_season1
+      league_season: league_season1, 
+      status: 2,
     )
 
     battle5 = Battle.create!(
       # id: 5,
       start_date: DateTime.new(2025, 12, 1, 0, 0, 0),
       end_date: DateTime.new(2025, 12, 7, 23, 59, 59),
-      league_season: league_season2
+      league_season: league_season2,
+      status: 1,
     )
 
     puts "Sample battles created successfully."
