@@ -25,7 +25,7 @@ namespace :dev do
       email: "reese@example.com",
       password: "password123",
       password_confirmation: "password123",
-      username: "reese",
+      username: "reesemmmmmmmmmmmmmmm",
       first_name: "Reese",
       last_name: "Wilson", 
       confirmed_at: Time.now
@@ -144,7 +144,7 @@ namespace :dev do
       email: "chandler12@example.com",
       password: "password123",
       password_confirmation: "password123",
-      username: "chandler12",
+      username: "chandler12mmmmmmmmmm",
       first_name: "Chandler",
       last_name: "Hawkins",
       confirmed_at: Time.now
@@ -355,7 +355,7 @@ namespace :dev do
       start_date: DateTime.new(2025, 12, 1, 0, 0, 0),
       end_date: DateTime.new(2025, 12, 7, 23, 59, 59),
       league_season: league_season1, 
-      status: 2,
+      status: 1,
     )
 
     battle5 = Battle.create!(

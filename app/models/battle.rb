@@ -43,6 +43,31 @@ class Battle < ApplicationRecord
     update!(locked: true)
   end
 
+  # app/models/battle.rb
+
+  def complete!
+    ActiveRecord::Base.transaction do
+      update!(status: :completed)
+
+      betslips_with_earnings = betslips.to_a.sort_by { |b| -b.earnings }
+
+      top_earnings = betslips_with_earnings.first&.earnings
+      return if top_earnings.nil?
+
+      betslips_with_earnings.each do |betslip|
+        points = betslip.earnings == top_earnings ? 20 : 10
+
+        entry = LeaderboardEntry.find_or_create_by!(
+          user_id: betslip.user_id,
+          league_season_id: league_season_id
+        )
+
+        entry.increment!(:total_points, points)
+      end
+    end
+  end
+
+
   private
 
   def create_betslips_for_members
