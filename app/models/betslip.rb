@@ -4,6 +4,7 @@
 #
 #  id                   :bigint           not null, primary key
 #  earnings             :float            default(0.0), not null
+#  league_points        :float
 #  locked               :boolean          default(FALSE), not null
 #  max_payout_remaining :float            default(0.0), not null
 #  name                 :string

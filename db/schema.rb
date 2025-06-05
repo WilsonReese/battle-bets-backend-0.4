@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_06_03_192029) do
+ActiveRecord::Schema[7.1].define(version: 2025_06_05_161124) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -60,6 +60,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_03_192029) do
     t.boolean "locked", default: false, null: false
     t.float "earnings", default: 0.0, null: false
     t.float "max_payout_remaining", default: 0.0, null: false
+    t.float "league_points"
     t.index ["battle_id"], name: "index_betslips_on_battle_id"
     t.index ["user_id"], name: "index_betslips_on_user_id"
   end

@@ -7,7 +7,7 @@
 #  end_date         :datetime
 #  locked           :boolean          default(FALSE), not null
 #  start_date       :datetime
-#  status           :integer          default(0), not null
+#  status           :integer          default("not_started"), not null
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  league_season_id :bigint           not null
@@ -49,6 +49,7 @@ class Battle < ApplicationRecord
     ActiveRecord::Base.transaction do
       update!(status: :completed)
 
+      # Sort the betslips in the battle by earnings
       betslips_with_earnings = betslips.to_a.sort_by { |b| -b.earnings }
 
       top_earnings = betslips_with_earnings.first&.earnings
@@ -62,7 +63,12 @@ class Battle < ApplicationRecord
           league_season_id: league_season_id
         )
 
+        # Increase the points on the leaderboard entry
         entry.increment!(:total_points, points)
+        
+        # Add league points to the betslip
+        betslip.skip_locked_check = true
+        betslip.update!(league_points: points)
       end
     end
   end
