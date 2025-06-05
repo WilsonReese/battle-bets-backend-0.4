@@ -329,6 +329,7 @@ namespace :dev do
       end_date: DateTime.new(2024, 9, 14, 23, 59, 59),
       league_season: league_season1,
       locked: true,
+      week: 1,
       status: 2,
     )
 
@@ -338,6 +339,7 @@ namespace :dev do
       end_date: DateTime.new(2024, 9, 21, 23, 59, 59),
       league_season: league_season1,
       locked: true,
+      week: 2,
       status: 2,
     )
 
@@ -347,6 +349,7 @@ namespace :dev do
       end_date: DateTime.new(2024, 9, 21, 23, 59, 59),
       league_season: league_season1,
       locked: true,
+      week: 3,
       status: 2,
     )
 
@@ -355,6 +358,7 @@ namespace :dev do
       start_date: DateTime.new(2025, 12, 1, 0, 0, 0),
       end_date: DateTime.new(2025, 12, 7, 23, 59, 59),
       league_season: league_season1, 
+      week: 10,
       status: 1,
     )
 
@@ -363,6 +367,7 @@ namespace :dev do
       start_date: DateTime.new(2025, 12, 1, 0, 0, 0),
       end_date: DateTime.new(2025, 12, 7, 23, 59, 59),
       league_season: league_season2,
+      week: 10,
       status: 1,
     )
 
@@ -371,6 +376,7 @@ namespace :dev do
       start_date: DateTime.new(2025, 12, 8, 0, 0, 0),
       end_date: DateTime.new(2025, 12, 14, 23, 59, 59),
       league_season: league_season1,
+      week: 11,
       status: 0,
     )
 

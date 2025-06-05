@@ -4,6 +4,7 @@
 #
 #  id               :bigint           not null, primary key
 #  completed        :boolean          default(FALSE), not null
+#  current          :boolean          default(FALSE), not null
 #  end_date         :datetime
 #  locked           :boolean          default(FALSE), not null
 #  start_date       :datetime
@@ -15,8 +16,9 @@
 #
 # Indexes
 #
-#  index_battles_on_league_season_id           (league_season_id)
-#  index_battles_on_league_season_id_and_week  (league_season_id,week) UNIQUE
+#  index_battles_on_league_season_id                (league_season_id)
+#  index_battles_on_league_season_id_and_week       (league_season_id,week) UNIQUE
+#  index_battles_on_league_season_id_where_current  (league_season_id) UNIQUE WHERE current
 #
 # Foreign Keys
 #
@@ -35,6 +37,8 @@ class Battle < ApplicationRecord
   validates :start_date, :end_date, presence: true
   validates :locked, inclusion: { in: [true, false] }
   validates :week, presence: true, uniqueness: { scope: :league_season_id }
+  validate :only_one_in_progress_per_league_season, if: -> { in_progress? }
+  validate :only_one_current_per_league_season, if: -> { current? }
 
   after_create :create_betslips_for_members
 
@@ -73,6 +77,23 @@ class Battle < ApplicationRecord
         betslip.skip_locked_check = true
         betslip.update!(league_points: points)
       end
+    end
+  end
+
+  def only_one_in_progress_per_league_season
+    existing = Battle.where(
+      league_season_id: league_season_id,
+      status: :in_progress
+    ).where.not(id: id).exists?
+
+    if existing
+      errors.add(:status, "can only be 'in_progress' for one battle at a time per league season")
+    end
+  end
+
+  def only_one_current_per_league_season
+    if Battle.where(league_season_id: league_season_id, current: true).where.not(id: id).exists?
+      errors.add(:current, "can only be true for one battle per league season")
     end
   end
 
