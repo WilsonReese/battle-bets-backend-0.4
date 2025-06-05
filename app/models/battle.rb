@@ -3,7 +3,6 @@
 # Table name: battles
 #
 #  id               :bigint           not null, primary key
-#  completed        :boolean          default(FALSE), not null
 #  current          :boolean          default(FALSE), not null
 #  end_date         :datetime
 #  locked           :boolean          default(FALSE), not null

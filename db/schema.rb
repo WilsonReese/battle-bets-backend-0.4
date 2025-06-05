@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_06_05_175312) do
+ActiveRecord::Schema[7.1].define(version: 2025_06_05_210005) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -21,7 +21,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_05_175312) do
     t.datetime "updated_at", null: false
     t.boolean "locked", default: false, null: false
     t.bigint "league_season_id", null: false
-    t.boolean "completed", default: false, null: false
     t.integer "status", default: 0, null: false
     t.integer "week"
     t.boolean "current", default: false, null: false

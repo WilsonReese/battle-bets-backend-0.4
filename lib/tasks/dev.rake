@@ -345,8 +345,8 @@ namespace :dev do
 
     battle3 = Battle.create!(
       # id: 3,
-      start_date: DateTime.new(2024, 9, 15, 0, 0, 0),
-      end_date: DateTime.new(2024, 9, 21, 23, 59, 59),
+      start_date: DateTime.new(2024, 9, 22, 0, 0, 0),
+      end_date: DateTime.new(2024, 9, 28, 23, 59, 59),
       league_season: league_season1,
       locked: true,
       week: 3,
@@ -360,6 +360,7 @@ namespace :dev do
       league_season: league_season1, 
       week: 10,
       status: 1,
+      current: true,
     )
 
     battle5 = Battle.create!(
@@ -369,6 +370,7 @@ namespace :dev do
       league_season: league_season2,
       week: 10,
       status: 1,
+      current: true,
     )
 
     battle6 = Battle.create!(
@@ -376,6 +378,15 @@ namespace :dev do
       start_date: DateTime.new(2025, 12, 8, 0, 0, 0),
       end_date: DateTime.new(2025, 12, 14, 23, 59, 59),
       league_season: league_season1,
+      week: 11,
+      status: 0,
+    )
+
+    battle7 = Battle.create!(
+      # id: 5,
+      start_date: DateTime.new(2025, 12, 8, 0, 0, 0),
+      end_date: DateTime.new(2025, 12, 14, 23, 59, 59),
+      league_season: league_season2,
       week: 11,
       status: 0,
     )
