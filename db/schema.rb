@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_06_05_161124) do
+ActiveRecord::Schema[7.1].define(version: 2025_06_05_172221) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -23,6 +23,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_05_161124) do
     t.bigint "league_season_id", null: false
     t.boolean "completed", default: false, null: false
     t.integer "status", default: 0, null: false
+    t.integer "week"
+    t.index ["league_season_id", "week"], name: "index_battles_on_league_season_id_and_week", unique: true
     t.index ["league_season_id"], name: "index_battles_on_league_season_id"
   end
 

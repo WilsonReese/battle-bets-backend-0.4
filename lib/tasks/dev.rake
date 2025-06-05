@@ -366,6 +366,14 @@ namespace :dev do
       status: 1,
     )
 
+    battle6 = Battle.create!(
+      # id: 5,
+      start_date: DateTime.new(2025, 12, 8, 0, 0, 0),
+      end_date: DateTime.new(2025, 12, 14, 23, 59, 59),
+      league_season: league_season1,
+      status: 0,
+    )
+
     puts "Sample battles created successfully."
     puts "Skipping sample betslips..."
     # betslip1 = Betslip.create!(

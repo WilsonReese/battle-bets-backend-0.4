@@ -8,13 +8,15 @@
 #  locked           :boolean          default(FALSE), not null
 #  start_date       :datetime
 #  status           :integer          default("not_started"), not null
+#  week             :integer
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  league_season_id :bigint           not null
 #
 # Indexes
 #
-#  index_battles_on_league_season_id  (league_season_id)
+#  index_battles_on_league_season_id           (league_season_id)
+#  index_battles_on_league_season_id_and_week  (league_season_id,week) UNIQUE
 #
 # Foreign Keys
 #
@@ -32,6 +34,7 @@ class Battle < ApplicationRecord
 
   validates :start_date, :end_date, presence: true
   validates :locked, inclusion: { in: [true, false] }
+  validates :week, presence: true, uniqueness: { scope: :league_season_id }
 
   after_create :create_betslips_for_members
 
