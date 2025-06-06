@@ -5,7 +5,7 @@ class LeagueSeasonsController < ApplicationController
 
     render json: league_seasons.as_json(
       include: {
-        season: { only: [:year, :start_date, :end_date] }
+        season: { only: [:year, :start_date, :end_date, :current_week] }
       },
       methods: [:has_started?]
     )

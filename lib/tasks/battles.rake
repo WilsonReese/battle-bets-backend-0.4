@@ -41,5 +41,9 @@ namespace :battles do
       .update_all(current: true, status: Battle.statuses[:in_progress])
 
     puts "✅ Marked #{updated_count} battles as current and in_progress for week #{week}"
+
+    # ✅ Step 4: Update current_week for all seasons (for now)
+    Season.update_all(current_week: week)
+    puts "✅ Updated current_week for all seasons to #{week}"
   end
 end

@@ -359,8 +359,8 @@ namespace :dev do
       end_date: DateTime.new(2025, 12, 7, 23, 59, 59),
       league_season: league_season1, 
       week: 10,
-      status: 1,
-      current: true,
+      status: 0,
+      current: false,
     )
 
     battle5 = Battle.create!(
@@ -369,8 +369,8 @@ namespace :dev do
       end_date: DateTime.new(2025, 12, 7, 23, 59, 59),
       league_season: league_season2,
       week: 10,
-      status: 1,
-      current: true,
+      status: 0,
+      current: false,
     )
 
     battle6 = Battle.create!(
