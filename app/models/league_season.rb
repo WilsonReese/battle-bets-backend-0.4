@@ -25,7 +25,8 @@ class LeagueSeason < ApplicationRecord
   has_many :battles, dependent: :destroy
   has_many :leaderboard_entries, dependent: :destroy
   
-  validates :start_week, presence: true 
+  validates :start_week, presence: true
+  validate :start_week_must_be_after_current_week, on: [:create, :update] 
 
   after_create :create_leaderboard_entries_for_all_members
 
@@ -40,6 +41,16 @@ class LeagueSeason < ApplicationRecord
         entry.total_points = 0
         entry.ranking = nil
       end
+    end
+  end
+
+    private
+
+  def start_week_must_be_after_current_week
+    return if season.blank? || start_week.blank?
+
+    if season.current_week.present? && start_week <= season.current_week
+      errors.add(:start_week, "must be after the current week (#{season.current_week}) of the season.")
     end
   end
 end
