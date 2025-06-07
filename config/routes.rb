@@ -46,6 +46,8 @@ Rails.application.routes.draw do
 
   resources :teams, only: :index
 
+  resources :seasons, only: [:index]
+
   # root to: "home#index"
   root to: proc { [200, { "Content-Type" => "application/json" }, ['{ "message": "API is running" }']] }
 end
