@@ -14,4 +14,8 @@ class Season < ApplicationRecord
   has_many :league_seasons, dependent: :destroy
   validates :year, presence: true, uniqueness: true
   validates :current_week, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
+  def self.current
+    where.not(current_week: nil).order(current_week: :desc).first
+  end
 end

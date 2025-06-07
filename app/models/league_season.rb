@@ -29,7 +29,7 @@ class LeagueSeason < ApplicationRecord
   validate :start_week_must_be_after_current_week, on: [:create, :update] 
 
   after_create :create_leaderboard_entries_for_all_members
-  after_create :generate_battles
+  # after_create :generate_battles
 
   def has_started?
     season.present? && start_week.present? && start_week <= season.current_week.to_i

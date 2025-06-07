@@ -26,6 +26,7 @@ class PoolMembership < ApplicationRecord
   validates :user_id, uniqueness: { scope: :pool_id, message: "User is already a member of this pool" }
 
   after_create :create_leaderboard_entries_for_existing_seasons
+  after_create :create_betslip_if_battle_in_progress
   before_destroy :remove_leaderboard_entries
 
   def can_be_demoted?
@@ -55,6 +56,18 @@ class PoolMembership < ApplicationRecord
     pool.league_seasons.each do |season|
       LeaderboardEntry.where(user: user, league_season: season).destroy_all
     end
+  end
+
+  def create_betslip_if_battle_in_progress
+    league_season = pool.league_seasons.find_by(season: Season.current)
+
+    return unless league_season
+
+    current_battle = league_season.battles.find_by(current: true)
+
+    return unless current_battle && !current_battle.locked?
+
+    current_battle.betslips.find_or_create_by!(user: user)
   end
 
 end
