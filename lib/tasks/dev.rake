@@ -323,73 +323,75 @@ namespace :dev do
     puts "Creating sample battles..."
 
     # Will need to re-create this to be associated with a league season
-    battle1 = Battle.create!(
-      # id: 1,
-      start_date: DateTime.new(2024, 9, 8, 0, 0, 0),
-      end_date: DateTime.new(2024, 9, 14, 23, 59, 59),
-      league_season: league_season1,
-      locked: true,
-      week: 1,
-      status: 2,
-    )
+    # battle1 = Battle.create!(
+    #   # id: 1,
+    #   start_date: DateTime.new(2024, 9, 8, 0, 0, 0),
+    #   end_date: DateTime.new(2024, 9, 14, 23, 59, 59),
+    #   league_season: league_season1,
+    #   locked: true,
+    #   week: 1,
+    #   status: 2,
+    # )
+    # Battle.find_by!(league_season: league_season1, week: 1).update!(locked: true, status: 2)
 
-    battle2 = Battle.create!(
-      # id: 2,
-      start_date: DateTime.new(2024, 9, 15, 0, 0, 0),
-      end_date: DateTime.new(2024, 9, 21, 23, 59, 59),
-      league_season: league_season1,
-      locked: true,
-      week: 2,
-      status: 2,
-    )
 
-    battle3 = Battle.create!(
-      # id: 3,
-      start_date: DateTime.new(2024, 9, 22, 0, 0, 0),
-      end_date: DateTime.new(2024, 9, 28, 23, 59, 59),
-      league_season: league_season1,
-      locked: true,
-      week: 3,
-      status: 2,
-    )
+    # battle2 = Battle.create!(
+    #   # id: 2,
+    #   start_date: DateTime.new(2024, 9, 15, 0, 0, 0),
+    #   end_date: DateTime.new(2024, 9, 21, 23, 59, 59),
+    #   league_season: league_season1,
+    #   locked: true,
+    #   week: 2,
+    #   status: 2,
+    # )
 
-    battle4 = Battle.create!(
-      # id: 4,
-      start_date: DateTime.new(2025, 12, 1, 0, 0, 0),
-      end_date: DateTime.new(2025, 12, 7, 23, 59, 59),
-      league_season: league_season1, 
-      week: 10,
-      status: 0,
-      current: false,
-    )
+    # battle3 = Battle.create!(
+    #   # id: 3,
+    #   start_date: DateTime.new(2024, 9, 22, 0, 0, 0),
+    #   end_date: DateTime.new(2024, 9, 28, 23, 59, 59),
+    #   league_season: league_season1,
+    #   locked: true,
+    #   week: 3,
+    #   status: 2,
+    # )
 
-    battle5 = Battle.create!(
-      # id: 5,
-      start_date: DateTime.new(2025, 12, 1, 0, 0, 0),
-      end_date: DateTime.new(2025, 12, 7, 23, 59, 59),
-      league_season: league_season2,
-      week: 10,
-      status: 0,
-      current: false,
-    )
+    # battle4 = Battle.create!(
+    #   # id: 4,
+    #   start_date: DateTime.new(2025, 12, 1, 0, 0, 0),
+    #   end_date: DateTime.new(2025, 12, 7, 23, 59, 59),
+    #   league_season: league_season1, 
+    #   week: 10,
+    #   status: 0,
+    #   current: false,
+    # )
 
-    battle6 = Battle.create!(
-      # id: 5,
-      start_date: DateTime.new(2025, 12, 8, 0, 0, 0),
-      end_date: DateTime.new(2025, 12, 14, 23, 59, 59),
-      league_season: league_season1,
-      week: 11,
-      status: 0,
-    )
+    # battle5 = Battle.create!(
+    #   # id: 5,
+    #   start_date: DateTime.new(2025, 12, 1, 0, 0, 0),
+    #   end_date: DateTime.new(2025, 12, 7, 23, 59, 59),
+    #   league_season: league_season2,
+    #   week: 10,
+    #   status: 0,
+    #   current: false,
+    # )
 
-    battle7 = Battle.create!(
-      # id: 5,
-      start_date: DateTime.new(2025, 12, 8, 0, 0, 0),
-      end_date: DateTime.new(2025, 12, 14, 23, 59, 59),
-      league_season: league_season2,
-      week: 11,
-      status: 0,
-    )
+    # battle6 = Battle.create!(
+    #   # id: 5,
+    #   start_date: DateTime.new(2025, 12, 8, 0, 0, 0),
+    #   end_date: DateTime.new(2025, 12, 14, 23, 59, 59),
+    #   league_season: league_season1,
+    #   week: 11,
+    #   status: 0,
+    # )
+
+    # battle7 = Battle.create!(
+    #   # id: 5,
+    #   start_date: DateTime.new(2025, 12, 8, 0, 0, 0),
+    #   end_date: DateTime.new(2025, 12, 14, 23, 59, 59),
+    #   league_season: league_season2,
+    #   week: 11,
+    #   status: 0,
+    # )
 
     puts "Sample battles created successfully."
     puts "Skipping sample betslips..."

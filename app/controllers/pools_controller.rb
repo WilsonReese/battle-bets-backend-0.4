@@ -39,15 +39,15 @@ class PoolsController < ApplicationController
       @pool.save!
   
       season = Season.find_by!(year: 2024) # Hard code
+      @pool.pool_memberships.create!(
+        user: current_user,
+        is_commissioner: true
+      )
       @pool.league_seasons.create!(
         season: season,
         start_week: params[:start_week]
       )
 
-      @pool.pool_memberships.create!(
-        user: current_user,
-        is_commissioner: true
-      )
   
       render json: @pool, status: :created, location: @pool
     end

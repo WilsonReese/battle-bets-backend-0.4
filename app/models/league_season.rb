@@ -29,10 +29,10 @@ class LeagueSeason < ApplicationRecord
   validate :start_week_must_be_after_current_week, on: [:create, :update] 
 
   after_create :create_leaderboard_entries_for_all_members
+  after_create :generate_battles
 
   def has_started?
-    # TEMP: hard code logic — update this later
-    battles.exists?
+    season.present? && start_week.present? && start_week <= season.current_week.to_i
   end
 
   def create_leaderboard_entries_for_all_members
@@ -51,6 +51,24 @@ class LeagueSeason < ApplicationRecord
 
     if season.current_week.present? && start_week <= season.current_week
       errors.add(:start_week, "must be after the current week (#{season.current_week}) of the season.")
+    end
+  end
+
+  def generate_battles
+    base_date = Date.new(2025, 8, 24) # Sunday of Week 1
+
+    (1..14).each do |week_number|
+      start_date = base_date + (week_number - 1).weeks
+      end_date = start_date + 6.days + 23.hours + 59.minutes + 59.seconds
+
+      battles.create!(
+        week: week_number,
+        start_date: start_date.beginning_of_day,
+        end_date: end_date.end_of_day,
+        status: :not_started,
+        current: false,
+        locked: false
+      )
     end
   end
 end
