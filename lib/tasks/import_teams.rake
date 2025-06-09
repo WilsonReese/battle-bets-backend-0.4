@@ -5,6 +5,7 @@ namespace :teams do
     require "json"
 
     puts "🧹 Clearing existing teams..."
+    Game.delete_all
     Team.delete_all
 
     url = URI("https://site.web.api.espn.com/apis/site/v2/sports/football/college-football/teams?groups=80&groupType=conference&enable=groups")
