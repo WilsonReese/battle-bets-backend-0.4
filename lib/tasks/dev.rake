@@ -425,33 +425,33 @@ namespace :dev do
     # end
 
     puts "Sample teams skipped successfully."
-    puts "Creating sample games..."
+    puts "Skip creating sample games..."
 
-    games = [
-      { id: 1, start_time: "2025-12-07 15:00:00", away_team: "Georgia", home_team: "Texas" },
-      { id: 2, start_time: "2025-12-07 19:00:00", away_team: "Penn State", home_team: "Oregon" },
-      { id: 3, start_time: "2025-12-07 11:00:00", away_team: "Iowa State", home_team: "Arizona St" },
-      { id: 4, start_time: "2025-12-07 19:00:00", away_team: "Clemson", home_team: "SMU" },
-      { id: 5, start_time: "2025-12-07 19:00:00", away_team: "Tennessee", home_team: "Vanderbilt" },
-      { id: 6, start_time: "2025-12-07 19:00:00", away_team: "Mississippi St", home_team: "South Carolina" }
-    ]
+    # games = [
+    #   { id: 1, start_time: "2025-12-07 15:00:00", away_team: "Georgia", home_team: "Texas" },
+    #   { id: 2, start_time: "2025-12-07 19:00:00", away_team: "Penn State", home_team: "Oregon" },
+    #   { id: 3, start_time: "2025-12-07 11:00:00", away_team: "Iowa State", home_team: "Arizona St" },
+    #   { id: 4, start_time: "2025-12-07 19:00:00", away_team: "Clemson", home_team: "SMU" },
+    #   { id: 5, start_time: "2025-12-07 19:00:00", away_team: "Tennessee", home_team: "Vanderbilt" },
+    #   { id: 6, start_time: "2025-12-07 19:00:00", away_team: "Mississippi St", home_team: "South Carolina" }
+    # ]
 
-    games.each do |g|
-      away = Team.find_by!(name: g[:away_team])
-      home = Team.find_by!(name: g[:home_team])
+    # games.each do |g|
+    #   away = Team.find_by!(name: g[:away_team])
+    #   home = Team.find_by!(name: g[:home_team])
 
-      Game.create!(
-        id: g[:id],
-        start_time: g[:start_time],
-        season: season2024,
-        week: 1,
-        away_team: away,
-        home_team: home
-      )
-    end 
+    #   Game.create!(
+    #     id: g[:id],
+    #     start_time: g[:start_time],
+    #     season: season2024,
+    #     week: 1,
+    #     away_team: away,
+    #     home_team: home
+    #   )
+    # end 
 
 
-    puts "Sample games created successfully."
+    puts "Skipped creating sample games successfully."
     puts "Skip creating sample bet options..."
 
     # bet_option1 = BetOption.create!(
