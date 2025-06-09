@@ -264,6 +264,13 @@ namespace :dev do
       year: 2024
     )
 
+    season2025 = Season.create!(
+      # id: 1,
+      start_date: DateTime.new(2025, 8, 1, 0, 0, 0),
+      end_date: DateTime.new(2026, 2, 1, 0, 0, 0),
+      year: 2025
+    )
+
     puts "Sample Seasons created successfully."
 
     puts "Creating sample League Seasons..."
@@ -436,6 +443,8 @@ namespace :dev do
       Game.create!(
         id: g[:id],
         start_time: g[:start_time],
+        season: season2024,
+        week: 1,
         away_team: away,
         home_team: home
       )

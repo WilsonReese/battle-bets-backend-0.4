@@ -8,7 +8,7 @@ namespace :teams do
     Game.delete_all
     Team.delete_all
 
-    url = URI("https://site.web.api.espn.com/apis/site/v2/sports/football/college-football/teams?groups=80&groupType=conference&enable=groups")
+    url = URI("https://site.api.espn.com/apis/site/v2/sports/football/college-football/teams?limit=700&groupType=conference&enable=groups")
     response = Net::HTTP.get(url)
     data = JSON.parse(response)
 
@@ -17,7 +17,10 @@ namespace :teams do
     data["sports"][0]["leagues"][0]["groups"].each do |conference|
       conference_name = conference["midsizeName"]
 
-      conference["teams"].each do |team|
+      teams = conference["teams"]
+      next if teams.nil? || teams.empty?
+
+      teams.each do |team|
         espn_id = team["id"].to_i
         name = team["nickname"]
 

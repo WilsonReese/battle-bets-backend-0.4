@@ -10,6 +10,12 @@
 #  espn_id    :integer
 #
 class Team < ApplicationRecord
-    has_many :home_games, class_name: 'Game', foreign_key: 'home_team_id', dependent: :nullify
-    has_many :away_games, class_name: 'Game', foreign_key: 'away_team_id', dependent: :nullify
+  has_many :home_games, class_name: 'Game', foreign_key: 'home_team_id', dependent: :nullify
+  has_many :away_games, class_name: 'Game', foreign_key: 'away_team_id', dependent: :nullify
+
+  validates :name, presence: true, uniqueness: true
+
+  def self.eligible_for_import
+    where(conference: ["SEC", "ACC", "Big Ten", "Big 12"]).or(where(name: "Notre Dame"))
+  end
 end

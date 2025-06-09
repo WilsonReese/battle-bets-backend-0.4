@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_06_06_211924) do
+ActiveRecord::Schema[7.1].define(version: 2025_06_09_154706) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -74,6 +74,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_06_211924) do
     t.datetime "updated_at", null: false
     t.integer "home_team_id"
     t.integer "away_team_id"
+    t.string "espn_id"
+    t.integer "week"
+    t.bigint "season_id", null: false
+    t.index ["season_id"], name: "index_games_on_season_id"
   end
 
   create_table "leaderboard_entries", force: :cascade do |t|
@@ -164,6 +168,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_06_211924) do
   add_foreign_key "bets", "betslips"
   add_foreign_key "betslips", "battles"
   add_foreign_key "betslips", "users"
+  add_foreign_key "games", "seasons"
   add_foreign_key "games", "teams", column: "away_team_id"
   add_foreign_key "games", "teams", column: "home_team_id"
   add_foreign_key "leaderboard_entries", "league_seasons"

@@ -12,6 +12,7 @@
 #
 class Season < ApplicationRecord
   has_many :league_seasons, dependent: :destroy
+  has_many :games
   validates :year, presence: true, uniqueness: true
   validates :current_week, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
