@@ -15,8 +15,8 @@ class GamesController < ApplicationController
       @games = Game.where(season: season, week: week)
 
       render json: @games.as_json(include: {
-        home_team: { only: :name },
-        away_team: { only: :name },
+        home_team: { only: [:name, :conference] },
+        away_team: { only: [:name, :conference] },
         bet_options: { only: [:id, :title, :long_title, :payout, :category] }
       })
     else
