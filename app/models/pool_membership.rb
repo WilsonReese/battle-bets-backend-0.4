@@ -2,11 +2,12 @@
 #
 # Table name: pool_memberships
 #
-#  id         :bigint           not null, primary key
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  pool_id    :bigint           not null
-#  user_id    :bigint           not null
+#  id              :bigint           not null, primary key
+#  is_commissioner :boolean          default(FALSE), not null
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  pool_id         :bigint           not null
+#  user_id         :bigint           not null
 #
 # Indexes
 #
@@ -23,4 +24,50 @@ class PoolMembership < ApplicationRecord
   belongs_to :pool
 
   validates :user_id, uniqueness: { scope: :pool_id, message: "User is already a member of this pool" }
+
+  after_create :create_leaderboard_entries_for_existing_seasons
+  after_create :create_betslip_if_battle_in_progress
+  before_destroy :remove_leaderboard_entries
+
+  def can_be_demoted?
+    return true unless is_commissioner
+
+    other_commissioners_exist = pool.pool_memberships
+      .where(is_commissioner: true)
+      .where.not(id: id)
+      .exists?
+
+    other_commissioners_exist
+  end
+
+  private
+
+  def create_leaderboard_entries_for_existing_seasons
+    pool.league_seasons.find_each do |season|
+      LeaderboardEntry.find_or_create_by!(league_season: season, user: user) do |entry|
+        entry.total_points = 0
+        entry.ranking = nil
+        entry.update_rankings if entry.persisted?
+      end
+    end
+  end
+
+  def remove_leaderboard_entries
+    pool.league_seasons.each do |season|
+      LeaderboardEntry.where(user: user, league_season: season).destroy_all
+    end
+  end
+
+  def create_betslip_if_battle_in_progress
+    league_season = pool.league_seasons.find_by(season: Season.current)
+
+    return unless league_season
+
+    current_battle = league_season.battles.find_by(current: true)
+
+    return unless current_battle && !current_battle.locked?
+
+    current_battle.betslips.find_or_create_by!(user: user)
+  end
+
 end

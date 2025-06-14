@@ -4,6 +4,7 @@
 #
 #  id                   :bigint           not null, primary key
 #  earnings             :float            default(0.0), not null
+#  league_points        :float
 #  locked               :boolean          default(FALSE), not null
 #  max_payout_remaining :float            default(0.0), not null
 #  name                 :string
@@ -29,9 +30,10 @@ class Betslip < ApplicationRecord
 
   has_many  :bets, dependent: :destroy
 
-  enum status: { created: "created", submitted: "submitted", completed: "completed" }
+  enum status: { created: "created", filled_out: "filled_out", completed: "completed" }
 
-  scope :submitted, -> { where(status: "submitted") }
+  scope :created, -> { where(status: "created") }
+  scope :filled_out, -> { where(status: "filled_out") }
 
   attr_accessor :skip_locked_check
 
@@ -77,7 +79,7 @@ class Betslip < ApplicationRecord
 
   def set_default_name
     if name.blank? && user
-      self.name = "#{user.first_name} #{user.last_name}'s Bets"
+      self.name = "#{user.username}"
     end
   end
 

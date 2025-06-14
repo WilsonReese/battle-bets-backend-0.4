@@ -47,7 +47,7 @@ class BetsController < ApplicationController
             @betslip.bets.create!(bet.permit(:bet_option_id, :bet_amount))
           end
         end
-        render json: bets, status: :created, location: [@betslip.battle.pool, @betslip.battle, @betslip]
+        render json: bets, status: :created
       rescue ActiveRecord::RecordInvalid => e
         render json: { error: e.message }, status: :unprocessable_entity
       end
@@ -83,7 +83,6 @@ class BetsController < ApplicationController
     def update
       begin
         Bet.transaction do
-          # Extract new, updated, and removed bets from params
           new_bets = bet_params[:new_bets] || []
           updated_bets = bet_params[:updated_bets] || []
           removed_bets = bet_params[:removed_bets] || []
@@ -91,8 +90,10 @@ class BetsController < ApplicationController
           # Destroy removed bets
           Bet.where(id: removed_bets).destroy_all if removed_bets.any?
 
-          # Update existing bets
+          # Update existing bets, skip invalid IDs (like UUIDs from frontend)
           updated_bets.each do |bet|
+            next unless bet[:id].to_s.match?(/^\d+$/)  # only process numeric IDs
+
             existing_bet = Bet.find(bet[:id])
             existing_bet.update!(bet.permit(:bet_option_id, :bet_amount))
           end
@@ -102,11 +103,12 @@ class BetsController < ApplicationController
             @betslip.bets.create!(bet.permit(:bet_option_id, :bet_amount))
           end
 
-          # Render the updated bets as the response
           render json: @betslip.bets, status: :ok
         end
       rescue ActiveRecord::RecordInvalid => e
         render json: { error: e.message }, status: :unprocessable_entity
+      rescue ActiveRecord::RecordNotFound => e
+        render json: { error: "Invalid bet ID: #{e.message}" }, status: :not_found
       end
     end
 

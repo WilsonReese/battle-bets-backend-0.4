@@ -1,21 +1,41 @@
 Rails.application.routes.draw do
+  get 'leaderboard_entries/index'
+  get 'league_seasons/index'
+  get 'league_seasons/show'
   get 'games/index'
+  get "/current_user", to: "users#current"
+  get '/user_reset_status', to: 'users#reset_status'
+  patch "/users/update_profile", to: "users#update_profile"
+  patch "/users/change_password", to: "users#change_password"
   devise_for :users, path: '', path_names: {
     sign_in: 'login',
     sign_out: 'logout',
-    registration: 'signup'
+    registration: 'signup',
+    password: 'password'
   },
   controllers: {
     sessions: 'users/sessions',
-    registrations: 'users/registrations'
+    registrations: 'users/registrations',
+    confirmations: 'users/confirmations',
+    passwords: 'users/passwords'
   }
   
+  devise_scope :user do
+    patch "/password/update", to: "users/passwords#update"
+  end
+  
   resources :pools, only: %i[index show create update destroy] do
-    resources :pool_memberships, only: %i[index create destroy]
-    resources :battles, only: %i[index show create update destroy] do
-      resources :betslips, only: %i[index show create update destroy] do
-        patch 'bets', to: 'bets#update', on: :member
-        resources :bets, only: %i[index create destroy]
+    resources :pool_memberships, only: %i[index create update destroy]
+
+    # LeagueSeasons within a pool
+    resources :league_seasons, only: %i[index show create] do
+      # Leaderboard Entries for the specific LeagueSeason
+      resources :leaderboard_entries, only: %i[index]
+      resources :battles, only: %i[index show create update destroy] do
+        resources :betslips, only: %i[index show create update destroy] do
+          patch 'bets', to: 'bets#update', on: :member
+          resources :bets, only: %i[index create destroy]
+        end
       end
     end
   end
@@ -25,6 +45,8 @@ Rails.application.routes.draw do
   end
 
   resources :teams, only: :index
+
+  resources :seasons, only: [:index]
 
   # root to: "home#index"
   root to: proc { [200, { "Content-Type" => "application/json" }, ['{ "message": "API is running" }']] }
