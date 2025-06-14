@@ -2,6 +2,9 @@
 namespace :dev do
   desc "Fill the database tables with some sample data"
   task sample_data: :environment do
+
+    # Test for commit
+
     if Rails.env.development? || Rails.env.production? || Rails.env.staging?
       puts "Deleting bets, betslips, bet options, pool memberships, battles, games, users, and pools."
       Bet.delete_all
