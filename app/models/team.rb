@@ -2,12 +2,17 @@
 #
 # Table name: teams
 #
-#  id         :bigint           not null, primary key
-#  conference :string
-#  name       :string
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  espn_id    :integer
+#  id               :bigint           not null, primary key
+#  conference       :string
+#  name             :string
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  api_sports_io_id :integer
+#  espn_id          :integer
+#
+# Indexes
+#
+#  index_teams_on_api_sports_io_id  (api_sports_io_id)
 #
 class Team < ApplicationRecord
   has_many :home_games, class_name: 'Game', foreign_key: 'home_team_id', dependent: :nullify
