@@ -1,0 +1,768 @@
+{
+  "get": "games",
+  "parameters": {
+    "league": "2",
+    "season": "2023",
+    "team": "60"
+  },
+  "errors": [],
+  "results": 12,
+  "response": [
+    {
+      "game": {
+        "id": 9401,
+        "stage": "FBS (Division I-A)",
+        "week": "1",
+        "date": {
+          "timezone": "UTC",
+          "date": "2023-08-26",
+          "time": "01:10",
+          "timestamp": 1693012200
+        },
+        "venue": {
+          "name": "FirstBank Stadium",
+          "city": "Nashville"
+        },
+        "status": {
+          "short": "FT",
+          "long": "Finished",
+          "timer": null
+        }
+      },
+      "league": {
+        "id": 2,
+        "name": "NCAA",
+        "season": "2023",
+        "logo": "https://media.api-sports.io/american-football/leagues/2.png",
+        "country": {
+          "name": "USA",
+          "code": "US",
+          "flag": "https://media.api-sports.io/flags/us.svg"
+        }
+      },
+      "teams": {
+        "home": {
+          "id": 60,
+          "name": "Vanderbilt",
+          "logo": "https://media.api-sports.io/american-football/teams/60.png"
+        },
+        "away": {
+          "id": 59,
+          "name": "Hawai'i",
+          "logo": "https://media.api-sports.io/american-football/teams/59.png"
+        }
+      },
+      "scores": {
+        "home": {
+          "quarter_1": 14,
+          "quarter_2": 7,
+          "quarter_3": 7,
+          "quarter_4": 7,
+          "overtime": null,
+          "total": 35
+        },
+        "away": {
+          "quarter_1": 7,
+          "quarter_2": 7,
+          "quarter_3": 0,
+          "quarter_4": 14,
+          "overtime": null,
+          "total": 28
+        }
+      }
+    },
+    {
+      "game": {
+        "id": 9463,
+        "stage": "FBS (Division I-A)",
+        "week": "1",
+        "date": {
+          "timezone": "UTC",
+          "date": "2023-09-02",
+          "time": "23:00",
+          "timestamp": 1693695600
+        },
+        "venue": {
+          "name": "FirstBank Stadium",
+          "city": "Nashville"
+        },
+        "status": {
+          "short": "FT",
+          "long": "Finished",
+          "timer": null
+        }
+      },
+      "league": {
+        "id": 2,
+        "name": "NCAA",
+        "season": "2023",
+        "logo": "https://media.api-sports.io/american-football/leagues/2.png",
+        "country": {
+          "name": "USA",
+          "code": "US",
+          "flag": "https://media.api-sports.io/flags/us.svg"
+        }
+      },
+      "teams": {
+        "home": {
+          "id": 60,
+          "name": "Vanderbilt",
+          "logo": "https://media.api-sports.io/american-football/teams/60.png"
+        },
+        "away": {
+          "id": 82,
+          "name": "Alabama A&M",
+          "logo": "https://media.api-sports.io/american-football/teams/82.png"
+        }
+      },
+      "scores": {
+        "home": {
+          "quarter_1": 5,
+          "quarter_2": 7,
+          "quarter_3": 14,
+          "quarter_4": 21,
+          "overtime": null,
+          "total": 47
+        },
+        "away": {
+          "quarter_1": 3,
+          "quarter_2": 0,
+          "quarter_3": 7,
+          "quarter_4": 3,
+          "overtime": null,
+          "total": 13
+        }
+      }
+    },
+    {
+      "game": {
+        "id": 9500,
+        "stage": "FBS (Division I-A)",
+        "week": "2",
+        "date": {
+          "timezone": "UTC",
+          "date": "2023-09-09",
+          "time": "15:00",
+          "timestamp": 1694271600
+        },
+        "venue": {
+          "name": "Allegacy Federal Credit Union Stadium",
+          "city": "Winston-Salem"
+        },
+        "status": {
+          "short": "FT",
+          "long": "Finished",
+          "timer": null
+        }
+      },
+      "league": {
+        "id": 2,
+        "name": "NCAA",
+        "season": "2023",
+        "logo": "https://media.api-sports.io/american-football/leagues/2.png",
+        "country": {
+          "name": "USA",
+          "code": "US",
+          "flag": "https://media.api-sports.io/flags/us.svg"
+        }
+      },
+      "teams": {
+        "home": {
+          "id": 65,
+          "name": "Wake Forest",
+          "logo": "https://media.api-sports.io/american-football/teams/65.png"
+        },
+        "away": {
+          "id": 60,
+          "name": "Vanderbilt",
+          "logo": "https://media.api-sports.io/american-football/teams/60.png"
+        }
+      },
+      "scores": {
+        "home": {
+          "quarter_1": 3,
+          "quarter_2": 21,
+          "quarter_3": 3,
+          "quarter_4": 9,
+          "overtime": null,
+          "total": 36
+        },
+        "away": {
+          "quarter_1": 0,
+          "quarter_2": 14,
+          "quarter_3": 0,
+          "quarter_4": 6,
+          "overtime": null,
+          "total": 20
+        }
+      }
+    },
+    {
+      "game": {
+        "id": 9624,
+        "stage": "FBS (Division I-A)",
+        "week": "3",
+        "date": {
+          "timezone": "UTC",
+          "date": "2023-09-16",
+          "time": "23:00",
+          "timestamp": 1694905200
+        },
+        "venue": {
+          "name": "Allegiant Stadium",
+          "city": "Las Vegas"
+        },
+        "status": {
+          "short": "FT",
+          "long": "Finished",
+          "timer": null
+        }
+      },
+      "league": {
+        "id": 2,
+        "name": "NCAA",
+        "season": "2023",
+        "logo": "https://media.api-sports.io/american-football/leagues/2.png",
+        "country": {
+          "name": "USA",
+          "code": "US",
+          "flag": "https://media.api-sports.io/flags/us.svg"
+        }
+      },
+      "teams": {
+        "home": {
+          "id": 43,
+          "name": "UNLV",
+          "logo": "https://media.api-sports.io/american-football/teams/43.png"
+        },
+        "away": {
+          "id": 60,
+          "name": "Vanderbilt",
+          "logo": "https://media.api-sports.io/american-football/teams/60.png"
+        }
+      },
+      "scores": {
+        "home": {
+          "quarter_1": 0,
+          "quarter_2": 20,
+          "quarter_3": 10,
+          "quarter_4": 10,
+          "overtime": null,
+          "total": 40
+        },
+        "away": {
+          "quarter_1": 10,
+          "quarter_2": 7,
+          "quarter_3": 0,
+          "quarter_4": 20,
+          "overtime": null,
+          "total": 37
+        }
+      }
+    },
+    {
+      "game": {
+        "id": 9672,
+        "stage": "FBS (Division I-A)",
+        "week": "4",
+        "date": {
+          "timezone": "UTC",
+          "date": "2023-09-23",
+          "time": "16:00",
+          "timestamp": 1695484800
+        },
+        "venue": {
+          "name": "FirstBank Stadium",
+          "city": "Nashville"
+        },
+        "status": {
+          "short": "FT",
+          "long": "Finished",
+          "timer": null
+        }
+      },
+      "league": {
+        "id": 2,
+        "name": "NCAA",
+        "season": "2023",
+        "logo": "https://media.api-sports.io/american-football/leagues/2.png",
+        "country": {
+          "name": "USA",
+          "code": "US",
+          "flag": "https://media.api-sports.io/flags/us.svg"
+        }
+      },
+      "teams": {
+        "home": {
+          "id": 60,
+          "name": "Vanderbilt",
+          "logo": "https://media.api-sports.io/american-football/teams/60.png"
+        },
+        "away": {
+          "id": 129,
+          "name": "Kentucky",
+          "logo": "https://media.api-sports.io/american-football/teams/129.png"
+        }
+      },
+      "scores": {
+        "home": {
+          "quarter_1": 0,
+          "quarter_2": 10,
+          "quarter_3": 3,
+          "quarter_4": 15,
+          "overtime": null,
+          "total": 28
+        },
+        "away": {
+          "quarter_1": 21,
+          "quarter_2": 3,
+          "quarter_3": 7,
+          "quarter_4": 14,
+          "overtime": null,
+          "total": 45
+        }
+      }
+    },
+    {
+      "game": {
+        "id": 9735,
+        "stage": "FBS (Division I-A)",
+        "week": "5",
+        "date": {
+          "timezone": "UTC",
+          "date": "2023-09-30",
+          "time": "20:00",
+          "timestamp": 1696104000
+        },
+        "venue": {
+          "name": "FirstBank Stadium",
+          "city": "Nashville"
+        },
+        "status": {
+          "short": "FT",
+          "long": "Finished",
+          "timer": null
+        }
+      },
+      "league": {
+        "id": 2,
+        "name": "NCAA",
+        "season": "2023",
+        "logo": "https://media.api-sports.io/american-football/leagues/2.png",
+        "country": {
+          "name": "USA",
+          "code": "US",
+          "flag": "https://media.api-sports.io/flags/us.svg"
+        }
+      },
+      "teams": {
+        "home": {
+          "id": 60,
+          "name": "Vanderbilt",
+          "logo": "https://media.api-sports.io/american-football/teams/60.png"
+        },
+        "away": {
+          "id": 83,
+          "name": "Missouri",
+          "logo": "https://media.api-sports.io/american-football/teams/83.png"
+        }
+      },
+      "scores": {
+        "home": {
+          "quarter_1": 7,
+          "quarter_2": 0,
+          "quarter_3": 0,
+          "quarter_4": 14,
+          "overtime": null,
+          "total": 21
+        },
+        "away": {
+          "quarter_1": 3,
+          "quarter_2": 14,
+          "quarter_3": 7,
+          "quarter_4": 14,
+          "overtime": null,
+          "total": 38
+        }
+      }
+    },
+    {
+      "game": {
+        "id": 9781,
+        "stage": "FBS (Division I-A)",
+        "week": "6",
+        "date": {
+          "timezone": "UTC",
+          "date": "2023-10-07",
+          "time": "20:00",
+          "timestamp": 1696708800
+        },
+        "venue": {
+          "name": "Ben Hill Griffin Stadium",
+          "city": "Gainesville"
+        },
+        "status": {
+          "short": "FT",
+          "long": "Finished",
+          "timer": null
+        }
+      },
+      "league": {
+        "id": 2,
+        "name": "NCAA",
+        "season": "2023",
+        "logo": "https://media.api-sports.io/american-football/leagues/2.png",
+        "country": {
+          "name": "USA",
+          "code": "US",
+          "flag": "https://media.api-sports.io/flags/us.svg"
+        }
+      },
+      "teams": {
+        "home": {
+          "id": 113,
+          "name": "Florida",
+          "logo": "https://media.api-sports.io/american-football/teams/113.png"
+        },
+        "away": {
+          "id": 60,
+          "name": "Vanderbilt",
+          "logo": "https://media.api-sports.io/american-football/teams/60.png"
+        }
+      },
+      "scores": {
+        "home": {
+          "quarter_1": 7,
+          "quarter_2": 14,
+          "quarter_3": 7,
+          "quarter_4": 10,
+          "overtime": null,
+          "total": 38
+        },
+        "away": {
+          "quarter_1": 7,
+          "quarter_2": 0,
+          "quarter_3": 7,
+          "quarter_4": 0,
+          "overtime": null,
+          "total": 14
+        }
+      }
+    },
+    {
+      "game": {
+        "id": 9844,
+        "stage": "FBS (Division I-A)",
+        "week": "7",
+        "date": {
+          "timezone": "UTC",
+          "date": "2023-10-14",
+          "time": "16:00",
+          "timestamp": 1697299200
+        },
+        "venue": {
+          "name": "FirstBank Stadium",
+          "city": "Nashville"
+        },
+        "status": {
+          "short": "FT",
+          "long": "Finished",
+          "timer": null
+        }
+      },
+      "league": {
+        "id": 2,
+        "name": "NCAA",
+        "season": "2023",
+        "logo": "https://media.api-sports.io/american-football/leagues/2.png",
+        "country": {
+          "name": "USA",
+          "code": "US",
+          "flag": "https://media.api-sports.io/flags/us.svg"
+        }
+      },
+      "teams": {
+        "home": {
+          "id": 60,
+          "name": "Vanderbilt",
+          "logo": "https://media.api-sports.io/american-football/teams/60.png"
+        },
+        "away": {
+          "id": 109,
+          "name": "Georgia",
+          "logo": "https://media.api-sports.io/american-football/teams/109.png"
+        }
+      },
+      "scores": {
+        "home": {
+          "quarter_1": 7,
+          "quarter_2": 0,
+          "quarter_3": 0,
+          "quarter_4": 13,
+          "overtime": null,
+          "total": 20
+        },
+        "away": {
+          "quarter_1": 7,
+          "quarter_2": 17,
+          "quarter_3": 3,
+          "quarter_4": 10,
+          "overtime": null,
+          "total": 37
+        }
+      }
+    },
+    {
+      "game": {
+        "id": 9948,
+        "stage": "FBS (Division I-A)",
+        "week": "9",
+        "date": {
+          "timezone": "UTC",
+          "date": "2023-10-28",
+          "time": "23:30",
+          "timestamp": 1698535800
+        },
+        "venue": {
+          "name": "Vaught-Hemingway Stadium",
+          "city": "Oxford"
+        },
+        "status": {
+          "short": "FT",
+          "long": "Finished",
+          "timer": null
+        }
+      },
+      "league": {
+        "id": 2,
+        "name": "NCAA",
+        "season": "2023",
+        "logo": "https://media.api-sports.io/american-football/leagues/2.png",
+        "country": {
+          "name": "USA",
+          "code": "US",
+          "flag": "https://media.api-sports.io/flags/us.svg"
+        }
+      },
+      "teams": {
+        "home": {
+          "id": 131,
+          "name": "Ole Miss",
+          "logo": "https://media.api-sports.io/american-football/teams/131.png"
+        },
+        "away": {
+          "id": 60,
+          "name": "Vanderbilt",
+          "logo": "https://media.api-sports.io/american-football/teams/60.png"
+        }
+      },
+      "scores": {
+        "home": {
+          "quarter_1": 13,
+          "quarter_2": 13,
+          "quarter_3": 0,
+          "quarter_4": 7,
+          "overtime": null,
+          "total": 33
+        },
+        "away": {
+          "quarter_1": 0,
+          "quarter_2": 0,
+          "quarter_3": 7,
+          "quarter_4": 0,
+          "overtime": null,
+          "total": 7
+        }
+      }
+    },
+    {
+      "game": {
+        "id": 10014,
+        "stage": "FBS (Division I-A)",
+        "week": "10",
+        "date": {
+          "timezone": "UTC",
+          "date": "2023-11-04",
+          "time": "20:00",
+          "timestamp": 1699128000
+        },
+        "venue": {
+          "name": "FirstBank Stadium",
+          "city": "Nashville"
+        },
+        "status": {
+          "short": "FT",
+          "long": "Finished",
+          "timer": null
+        }
+      },
+      "league": {
+        "id": 2,
+        "name": "NCAA",
+        "season": "2023",
+        "logo": "https://media.api-sports.io/american-football/leagues/2.png",
+        "country": {
+          "name": "USA",
+          "code": "US",
+          "flag": "https://media.api-sports.io/flags/us.svg"
+        }
+      },
+      "teams": {
+        "home": {
+          "id": 60,
+          "name": "Vanderbilt",
+          "logo": "https://media.api-sports.io/american-football/teams/60.png"
+        },
+        "away": {
+          "id": 171,
+          "name": "Auburn",
+          "logo": "https://media.api-sports.io/american-football/teams/171.png"
+        }
+      },
+      "scores": {
+        "home": {
+          "quarter_1": 0,
+          "quarter_2": 7,
+          "quarter_3": 8,
+          "quarter_4": 0,
+          "overtime": null,
+          "total": 15
+        },
+        "away": {
+          "quarter_1": 14,
+          "quarter_2": 3,
+          "quarter_3": 14,
+          "quarter_4": 0,
+          "overtime": null,
+          "total": 31
+        }
+      }
+    },
+    {
+      "game": {
+        "id": 10076,
+        "stage": "FBS (Division I-A)",
+        "week": "11",
+        "date": {
+          "timezone": "UTC",
+          "date": "2023-11-11",
+          "time": "17:00",
+          "timestamp": 1699722000
+        },
+        "venue": {
+          "name": "Williams-Brice Stadium",
+          "city": "Columbia"
+        },
+        "status": {
+          "short": "FT",
+          "long": "Finished",
+          "timer": null
+        }
+      },
+      "league": {
+        "id": 2,
+        "name": "NCAA",
+        "season": "2023",
+        "logo": "https://media.api-sports.io/american-football/leagues/2.png",
+        "country": {
+          "name": "USA",
+          "code": "US",
+          "flag": "https://media.api-sports.io/flags/us.svg"
+        }
+      },
+      "teams": {
+        "home": {
+          "id": 188,
+          "name": "South Carolina",
+          "logo": "https://media.api-sports.io/american-football/teams/188.png"
+        },
+        "away": {
+          "id": 60,
+          "name": "Vanderbilt",
+          "logo": "https://media.api-sports.io/american-football/teams/60.png"
+        }
+      },
+      "scores": {
+        "home": {
+          "quarter_1": 6,
+          "quarter_2": 7,
+          "quarter_3": 14,
+          "quarter_4": 20,
+          "overtime": null,
+          "total": 47
+        },
+        "away": {
+          "quarter_1": 0,
+          "quarter_2": 0,
+          "quarter_3": 0,
+          "quarter_4": 6,
+          "overtime": null,
+          "total": 6
+        }
+      }
+    },
+    {
+      "game": {
+        "id": 10213,
+        "stage": "FBS (Division I-A)",
+        "week": "13",
+        "date": {
+          "timezone": "UTC",
+          "date": "2023-11-25",
+          "time": "20:30",
+          "timestamp": 1700944200
+        },
+        "venue": {
+          "name": "Neyland Stadium",
+          "city": "Knoxville"
+        },
+        "status": {
+          "short": "FT",
+          "long": "Finished",
+          "timer": null
+        }
+      },
+      "league": {
+        "id": 2,
+        "name": "NCAA",
+        "season": "2023",
+        "logo": "https://media.api-sports.io/american-football/leagues/2.png",
+        "country": {
+          "name": "USA",
+          "code": "US",
+          "flag": "https://media.api-sports.io/flags/us.svg"
+        }
+      },
+      "teams": {
+        "home": {
+          "id": 69,
+          "name": "Tennessee",
+          "logo": "https://media.api-sports.io/american-football/teams/69.png"
+        },
+        "away": {
+          "id": 60,
+          "name": "Vanderbilt",
+          "logo": "https://media.api-sports.io/american-football/teams/60.png"
+        }
+      },
+      "scores": {
+        "home": {
+          "quarter_1": 14,
+          "quarter_2": 17,
+          "quarter_3": 14,
+          "quarter_4": 3,
+          "overtime": null,
+          "total": 48
+        },
+        "away": {
+          "quarter_1": 7,
+          "quarter_2": 3,
+          "quarter_3": 0,
+          "quarter_4": 14,
+          "overtime": null,
+          "total": 24
+        }
+      }
+    }
+  ]
+}

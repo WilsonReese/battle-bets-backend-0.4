@@ -3,6 +3,7 @@
 # Table name: bet_options
 #
 #  id         :bigint           not null, primary key
+#  bet_flavor :integer
 #  category   :string
 #  long_title :string
 #  payout     :decimal(, )
@@ -27,6 +28,17 @@ class BetOption < ApplicationRecord
   validates :title, presence: true
   validates :payout, numericality: { greater_than: 0 }
   validates :category, presence: true
+  validates :bet_flavor, presence: true
+
+  enum bet_flavor: {
+    away_team_spread: 0,
+    home_team_spread: 1,
+    away_team_ml: 2,
+    home_team_ml: 3,
+    over: 4,
+    under: 5
+    # Add additional prop flavors here later
+  }
 
   before_save :set_long_title
 
