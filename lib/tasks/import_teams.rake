@@ -58,18 +58,6 @@ namespace :teams do
         api_sports_io_id ||= api_sports_name_map[normalized_location] if normalized_location.present?
 
         # Step 3: Try matching using discrepancy map (ESPN name → discrepancy value → API Sports IO name → ID)
-        # if api_sports_io_id.nil?
-        #   # Check if nickname or location matches any value in the manual map
-        #   discrepancy_entry = manual_name_map.find do |api_name, espn_name|
-        #     espn_name.strip.downcase == normalized_name || espn_name.strip.downcase == normalized_location
-        #   end
-
-        #   if discrepancy_entry
-        #     api_name, _espn_name = discrepancy_entry
-        #     normalized_api_name = api_name.strip.downcase
-        #     api_sports_io_id = api_sports_name_map[normalized_api_name]
-        #   end
-        # end
         if api_sports_io_id.nil?
           discrepancy_entry = manual_name_map.find do |api_name, espn_value|
             normalized_espn_value = if espn_value.is_a?(Hash)

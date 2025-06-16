@@ -260,6 +260,13 @@ namespace :dev do
     puts "Sample pool memberships created successfully."
 
     puts "Creating sample Seasons..."
+    season2023 = Season.create!(
+      # id: 1,
+      start_date: DateTime.new(2023, 8, 1, 0, 0, 0),
+      end_date: DateTime.new(2024, 2, 1, 0, 0, 0),
+      year: 2023
+    )
+    
     season2024 = Season.create!(
       # id: 1,
       start_date: DateTime.new(2024, 8, 1, 0, 0, 0),
