@@ -2,19 +2,21 @@
 #
 # Table name: games
 #
-#  id           :bigint           not null, primary key
-#  start_time   :datetime
-#  week         :integer
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
-#  away_team_id :integer
-#  espn_id      :string
-#  home_team_id :integer
-#  season_id    :bigint           not null
+#  id                    :bigint           not null, primary key
+#  start_time            :datetime
+#  week                  :integer
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
+#  api_sports_io_game_id :string
+#  away_team_id          :integer
+#  espn_id               :string
+#  home_team_id          :integer
+#  season_id             :bigint           not null
 #
 # Indexes
 #
-#  index_games_on_season_id  (season_id)
+#  index_games_on_api_sports_io_game_id  (api_sports_io_game_id) UNIQUE
+#  index_games_on_season_id              (season_id)
 #
 # Foreign Keys
 #
