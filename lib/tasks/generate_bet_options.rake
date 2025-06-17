@@ -165,55 +165,52 @@ namespace :bet_options do
       selected_flavors.each do |flavor|
         config = PROP_BETS_REGISTRY[flavor.to_sym]
 
-        begin
-          case config[:source]
-          when :odds_api
-            market = odds_data.first["bookmakers"].first["markets"].find { |m| m["key"] == config[:key] }
-
-						if market.nil?
-							raise "Market #{config[:key]} not found"
-						end
+				begin
+					case config[:source]
+					when :odds_api
+						market = odds_data.first["bookmakers"].first["markets"].find { |m| m["key"] == config[:key] }
+						raise "Market #{config[:key]} not found" if market.nil?
 
 						outcomes = market["outcomes"]
-
-						# puts JSON.pretty_generate(outcomes) if outcomes.is_a?(Array)
-
-						unless outcomes.is_a?(Array)
-							raise "Expected outcomes to be an Array for #{config[:key]}, got #{outcomes.class.name}"
-						end
+						raise "Expected outcomes to be an Array" unless outcomes.is_a?(Array)
 
 						outcome = outcomes.sample
+						builder = config[:title_builder]
+						title = builder&.call(outcome: outcome)
+						# Extract payout from American odds
+						price = outcome["price"]
+						payout = (1.0 / implied_probability(price)).round(1)
 
-            title = "#{outcome['description']} #{outcome['name']} #{outcome['point']}".strip
+					when :api_sports_io
+						bets = api_data.first["bookmakers"].first["bets"]
+						bet = bets.find { |b| b["id"] == config[:id] }
+						  # For overtime: only pick the "Yes" value
+  					value = if flavor.to_sym == :overtime
+										bet["values"].find { |v| v["value"].downcase == "yes" }
+										else
+											bet["values"].sample
+										end
 
-            BetOption.create!(
-              title: title,
-              payout: 2.0,
-              category: "prop",
-              game_id: game.id,
-              bet_flavor: flavor
-            )
-            puts "✅ Created #{flavor} prop: #{title}"
+  next if value.nil? # skip if "Yes" isn't found
+						builder = config[:title_builder]
+						title = builder&.call(value: value, home_team: home_team, away_team: away_team)
+						payout = value["odd"].to_f.round(1)
+					end
 
-          when :api_sports_io
-            bets = api_data.first["bookmakers"].first["bets"]
-            bet = bets.find { |b| b["id"] == config[:id] }
-            value = bet["values"].sample
+					next if title.nil?
 
-            title = "#{config[:label]} - #{value['value']}"
+					BetOption.create!(
+						title: title,
+						payout: payout,
+						category: "prop",
+						game_id: game.id,
+						bet_flavor: flavor
+					)
+					puts "✅ Created #{flavor} prop: #{title}"
 
-            BetOption.create!(
-              title: title,
-              payout: value["odd"].to_f.round(1),
-              category: "prop",
-              game_id: game.id,
-              bet_flavor: flavor
-            )
-            puts "✅ Created #{flavor} prop: #{title}"
-          end
-        rescue => e
-          puts "⚠️ Failed to create #{flavor} prop bet: #{e.message}"
-        end
+				rescue => e
+					puts "⚠️ Failed to create #{flavor} prop bet: #{e.message}"
+				end
       end
     end
 
@@ -246,14 +243,20 @@ end
 # === Prop Bets ===
 PROP_BETS_REGISTRY = {
   overtime: {
-    label: "Will the game go to Overtime?",
     source: :api_sports_io,
-    id: 12
+    id: 12,
+    title_builder: ->(value:, home_team:, away_team:) {
+      return nil if value["value"].downcase == "no"
+      "Game goes to OT"
+    }
   },
   first_team_to_score: {
-    label: "First Team to Score",
     source: :api_sports_io,
-    id: 52
+    id: 52,
+    title_builder: ->(value:, home_team:, away_team:) {
+      team = value["value"].downcase == "home" ? home_team.name : away_team.name
+      "#{team} scores first"
+    }
   },
   multi_td_scorer: {
     label: "Multi Touchdown Scorer",
@@ -265,16 +268,70 @@ PROP_BETS_REGISTRY = {
     source: :odds_api,
     key: "btts"
   }, # did not include in sample data
-  player_pass_tds: { label: "Player Passing TDs", source: :odds_api, key: "player_pass_tds" },
-  player_pass_yds: { label: "Player Passing Yards", source: :odds_api, key: "player_pass_yds" },
-  player_receptions: { label: "Player Receptions", source: :odds_api, key: "player_receptions" },
-	player_reception_tds: { label: "Player Receiving TDs", source: :odds_api, key: "player_reception_tds" },
-	player_reception_yds: { label: "Player Receiving Yards", source: :odds_api, key: "player_reception_yds" },
-	player_rush_attempts: { label: "Player Rush Attempts", source: :odds_api, key: "player_rush_attempts" },
+  player_pass_tds: {
+    source: :odds_api,
+    key: "player_pass_tds",
+    title_builder: ->(outcome:) {
+      "#{outcome['description']} throws #{outcome['name'].downcase} #{outcome['point']} passing TDs"
+    }
+  },
+  player_pass_yds: {
+    source: :odds_api,
+    key: "player_pass_yds",
+    title_builder: ->(outcome:) {
+      "#{outcome['description']} throws for #{outcome['name'].downcase} #{outcome['point']} yards"
+    }
+  },
+  player_receptions: {
+    source: :odds_api,
+    key: "player_receptions",
+    title_builder: ->(outcome:) {
+      "#{outcome['description']} has #{outcome['name'].downcase} #{outcome['point']} receptions"
+    }
+  },
+  player_reception_tds: {
+    source: :odds_api,
+    key: "player_reception_tds",
+    title_builder: ->(outcome:) {
+      "#{outcome['description']} has #{outcome['name'].downcase} #{outcome['point']} receiving TDs"
+    }
+  },
+  player_reception_yds: {
+    source: :odds_api,
+    key: "player_reception_yds",
+    title_builder: ->(outcome:) {
+      "#{outcome['description']} has #{outcome['name'].downcase} #{outcome['point']} receiving yards"
+    }
+  },
+  player_rush_attempts: {
+    source: :odds_api,
+    key: "player_rush_attempts",
+    title_builder: ->(outcome:) {
+      "#{outcome['description']} has #{outcome['name'].downcase} #{outcome['point']} rush attempts"
+    }
+  },
 	player_rush_longest: { label: "Player Longest Rush", source: :odds_api, key: "player_rush_longest" }, # did not include in sample data
-	player_rush_tds: { label: "Player Rushing TDs", source: :odds_api, key: "player_rush_tds" },
-	player_rush_yds: { label: "Player Rushing Yards", source: :odds_api, key: "player_rush_yds" },
-	player_sacks: { label: "Player Sacks", source: :odds_api, key: "player_sacks" },
+  player_rush_tds: {
+    source: :odds_api,
+    key: "player_rush_tds",
+    title_builder: ->(outcome:) {
+      "#{outcome['description']} has #{outcome['name'].downcase} #{outcome['point']} rushing TDs"
+    }
+  },
+  player_rush_yds: {
+    source: :odds_api,
+    key: "player_rush_yds",
+    title_builder: ->(outcome:) {
+      "#{outcome['description']} has #{outcome['name'].downcase} #{outcome['point']} rushing yards"
+    }
+  },
+  player_sacks: {
+    source: :odds_api,
+    key: "player_sacks",
+    title_builder: ->(outcome:) {
+      "#{outcome['description']} has #{outcome['name'].downcase} #{outcome['point']} sacks"
+    }
+  },
   player_anytime_td: { label: "Anytime TD Scorer", source: :odds_api, key: "player_anytime_td" }, # did not include in sample data
   player_1st_td: { label: "First TD Scorer", source: :odds_api, key: "player_1st_td" }, # did not include in sample data
   player_last_td: { label: "Last TD Scorer", source: :odds_api, key: "player_last_td" } # did not include in sample data
