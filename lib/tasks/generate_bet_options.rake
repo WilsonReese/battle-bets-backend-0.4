@@ -128,7 +128,7 @@ namespace :bet_options do
 
 	# Prop Bets Task
 
-	desc "Generate sample prop bet options for a given season and week"
+	desc "Generate 4 prop bets per game for a given season and week"
   task :generate_props, [:season_year, :week] => :environment do |t, args|
     require "json"
 
@@ -157,50 +157,67 @@ namespace :bet_options do
     games.each_with_index do |game, i|
       away_team = Team.find(game.away_team_id)
       home_team = Team.find(game.home_team_id)
-
       puts "📌 Game #{i + 1}: #{away_team.name} vs #{home_team.name}"
 
-      # --- Odds API Props (2 random props) ---
-      odds_markets = odds_data["bookmakers"].first["markets"]
-      available_props = odds_markets.select { |m| m["key"].start_with?("player_") }
-      available_props.sample(2).each do |market|
-        outcome = market["outcomes"].sample
-        next unless outcome
+      valid_flavors = BetOption.bet_flavors.keys.select { |flavor| PROP_BETS_REGISTRY.key?(flavor.to_sym) }
+      selected_flavors = valid_flavors.sample(4)
 
-        description = outcome["description"]
-        name = outcome["name"]
-        point = outcome["point"]
-        price = outcome["price"]
+      selected_flavors.each do |flavor|
+        config = PROP_BETS_REGISTRY[flavor.to_sym]
 
-        payout = fair_decimal_odds(price, -100).first
+        begin
+          case config[:source]
+          when :odds_api
+            market = odds_data.first["bookmakers"].first["markets"].find { |m| m["key"] == config[:key] }
 
-        BetOption.create!(
-          title: "#{description}: #{name} #{point}",
-          payout: payout,
-          category: "prop",
-          game_id: game.id,
-          bet_flavor: market["key"]
-        )
-        puts "✅ Odds prop: #{description} #{name} #{point} (#{market["key"]})"
-      end
+						if market.nil?
+							raise "Market #{config[:key]} not found"
+						end
 
-      # --- API Sports IO Props (2 fixed IDs: 12 and 52) ---
-      bets = api_data.first["bookmakers"].first["bets"]
-      bets.select { |b| [12, 52].include?(b["id"]) }.each do |bet|
-        bet["values"].sample(1).each do |val|
-          BetOption.create!(
-            title: "#{bet["name"]}: #{val["value"]}",
-            payout: val["odd"].to_f.round(1),
-            category: "prop",
-            game_id: game.id,
-            bet_flavor: bet["name"].parameterize.underscore
-          )
-          puts "✅ API Sports prop: #{bet["name"]} - #{val["value"]}"
+						outcomes = market["outcomes"]
+
+						# puts JSON.pretty_generate(outcomes) if outcomes.is_a?(Array)
+
+						unless outcomes.is_a?(Array)
+							raise "Expected outcomes to be an Array for #{config[:key]}, got #{outcomes.class.name}"
+						end
+
+						outcome = outcomes.sample
+
+            title = "#{outcome['description']} #{outcome['name']} #{outcome['point']}".strip
+
+            BetOption.create!(
+              title: title,
+              payout: 2.0,
+              category: "prop",
+              game_id: game.id,
+              bet_flavor: flavor
+            )
+            puts "✅ Created #{flavor} prop: #{title}"
+
+          when :api_sports_io
+            bets = api_data.first["bookmakers"].first["bets"]
+            bet = bets.find { |b| b["id"] == config[:id] }
+            value = bet["values"].sample
+
+            title = "#{config[:label]} - #{value['value']}"
+
+            BetOption.create!(
+              title: title,
+              payout: value["odd"].to_f.round(1),
+              category: "prop",
+              game_id: game.id,
+              bet_flavor: flavor
+            )
+            puts "✅ Created #{flavor} prop: #{title}"
+          end
+        rescue => e
+          puts "⚠️ Failed to create #{flavor} prop bet: #{e.message}"
         end
       end
     end
 
-    puts "🏁 Done generating sample prop bets"
+    puts "🏁 Done generating prop bets"
   end
 end
 
