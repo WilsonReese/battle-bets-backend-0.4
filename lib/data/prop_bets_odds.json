@@ -1,0 +1,316 @@
+{
+	"id": "a512a48a58c4329048174217b2cc7ce0",
+	"sport_key": "americanfootball_ncaaf",
+	"sport_title": "NCAAF",
+	"commence_time": "2023-08-06T01:10:00Z",
+	"home_team": "Vanderbilt",
+	"away_team": "Hawaii",
+	"bookmakers": [
+		{
+			"key": "draftkings",
+			"title": "DraftKings",
+			"markets": [
+				{
+					"key": "player_pass_tds",
+					"last_update": "2023-01-01T05:31:29Z",
+					"outcomes": [
+						{
+							"name": "Over",
+							"description": "AJ Swann",
+							"price": -205,
+							"point": 0.5
+						},
+						{
+							"name": "Under",
+							"description": "AJ Swann",
+							"price": 150,
+							"point": 0.5
+						},
+						{
+							"name": "Over",
+							"description": "Brayden Schager",
+							"price": -270,
+							"point": 0.5
+						},
+						{
+							"name": "Under",
+							"description": "Brayden Schager",
+							"price": 195,
+							"point": 0.5
+						}
+					]
+				},
+				{
+					"key": "player_pass_yds",
+					"last_update": "2023-01-01T05:31:29Z",
+					"outcomes": [
+						{
+							"name": "Over",
+							"description": "AJ Swann",
+							"price": -205,
+							"point": 200
+						},
+						{
+							"name": "Under",
+							"description": "AJ Swann",
+							"price": 150,
+							"point": 200
+						},
+						{
+							"name": "Over",
+							"description": "Brayden Schager",
+							"price": -270,
+							"point": 225
+						},
+						{
+							"name": "Under",
+							"description": "Brayden Schager",
+							"price": 195,
+							"point": 225
+						}
+					]
+				},
+				{
+					"key": "player_receptions",
+					"last_update": "2023-01-01T05:31:29Z",
+					"outcomes": [
+						{
+							"name": "Over",
+							"description": "Jayden McGowan",
+							"price": -205,
+							"point": 3.5
+						},
+						{
+							"name": "Under",
+							"description": "Jayden McGowan",
+							"price": 150,
+							"point": 3.5
+						},
+						{
+							"name": "Over",
+							"description": "Pofele Ashlock",
+							"price": -270,
+							"point": 5.5
+						},
+						{
+							"name": "Under",
+							"description": "Pofele Ashlock",
+							"price": 195,
+							"point": 5.5
+						}
+					]
+				},
+				{
+					"key": "player_reception_tds",
+					"last_update": "2023-01-01T05:31:29Z",
+					"outcomes": [
+						{
+							"name": "Over",
+							"description": "Jayden McGowan",
+							"price": -205,
+							"point": 0.5
+						},
+						{
+							"name": "Under",
+							"description": "Jayden McGowan",
+							"price": 150,
+							"point": 0.5
+						},
+						{
+							"name": "Over",
+							"description": "Pofele Ashlock",
+							"price": -270,
+							"point": 0.5
+						},
+						{
+							"name": "Under",
+							"description": "Pofele Ashlock",
+							"price": 195,
+							"point": 0.5
+						}
+					]
+				},
+				{
+					"key": "player_reception_yds",
+					"last_update": "2023-01-01T05:31:29Z",
+					"outcomes": [
+						{
+							"name": "Over",
+							"description": "Jayden McGowan",
+							"price": -205,
+							"point": 75.5
+						},
+						{
+							"name": "Under",
+							"description": "Jayden McGowan",
+							"price": 150,
+							"point": 75.5
+						},
+						{
+							"name": "Over",
+							"description": "Pofele Ashlock",
+							"price": -270,
+							"point": 65.5
+						},
+						{
+							"name": "Under",
+							"description": "Pofele Ashlock",
+							"price": 195,
+							"point": 65.5
+						}
+					]
+				},
+				{
+					"key": "player_rush_attempts",
+					"last_update": "2023-01-01T05:31:29Z",
+					"outcomes": [
+						{
+							"name": "Over",
+							"description": "Patrick Smith",
+							"price": -205,
+							"point": 12.5
+						},
+						{
+							"name": "Under",
+							"description": "Patrick Smith",
+							"price": 150,
+							"point": 12.5
+						},
+						{
+							"name": "Over",
+							"description": "Landon Sims",
+							"price": -270,
+							"point": 8.5
+						},
+						{
+							"name": "Under",
+							"description": "Landon Sims",
+							"price": 195,
+							"point": 8.5
+						}
+					]
+				},
+				{
+					"key": "player_rush_longest",
+					"last_update": "2023-01-01T05:31:29Z",
+					"outcomes": [
+						{
+							"name": "Over",
+							"description": "Patrick Smith",
+							"price": -205,
+							"point": 21.5
+						},
+						{
+							"name": "Under",
+							"description": "Patrick Smith",
+							"price": 150,
+							"point": 21.5
+						},
+						{
+							"name": "Over",
+							"description": "Landon Sims",
+							"price": -270,
+							"point": 8.5
+						},
+						{
+							"name": "Under",
+							"description": "Landon Sims",
+							"price": 195,
+							"point": 8.5
+						}
+					]
+				},
+				{
+					"key": "player_rush_tds",
+					"last_update": "2023-01-01T05:31:29Z",
+					"outcomes": [
+						{
+							"name": "Over",
+							"description": "Patrick Smith",
+							"price": -205,
+							"point": 0.5
+						},
+						{
+							"name": "Under",
+							"description": "Patrick Smith",
+							"price": 150,
+							"point": 0.5
+						},
+						{
+							"name": "Over",
+							"description": "Landon Sims",
+							"price": -270,
+							"point": 0.5
+						},
+						{
+							"name": "Under",
+							"description": "Landon Sims",
+							"price": 195,
+							"point": 0.5
+						}
+					]
+				},
+				{
+					"key": "player_rush_yds",
+					"last_update": "2023-01-01T05:31:29Z",
+					"outcomes": [
+						{
+							"name": "Over",
+							"description": "Patrick Smith",
+							"price": -205,
+							"point": 50.5
+						},
+						{
+							"name": "Under",
+							"description": "Patrick Smith",
+							"price": 150,
+							"point": 50.5
+						},
+						{
+							"name": "Over",
+							"description": "Landon Sims",
+							"price": -270,
+							"point": 45.5
+						},
+						{
+							"name": "Under",
+							"description": "Landon Sims",
+							"price": 195,
+							"point": 45.5
+						}
+					]
+				},
+				{
+					"key": "player_sacks",
+					"last_update": "2023-01-01T05:31:29Z",
+					"outcomes": [
+						{
+							"name": "Over",
+							"description": "CJ Taylor",
+							"price": -205,
+							"point": 0.5
+						},
+						{
+							"name": "Under",
+							"description": "CJ Taylor",
+							"price": 150,
+							"point": 0.5
+						},
+						{
+							"name": "Over",
+							"description": "Isaiah Tufaga",
+							"price": -270,
+							"point": 0.5
+						},
+						{
+							"name": "Under",
+							"description": "Isaiah Tufaga",
+							"price": 195,
+							"point": 0.5
+						}
+					]
+				}
+			]
+		}
+	]
+}

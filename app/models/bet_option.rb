@@ -36,8 +36,18 @@ class BetOption < ApplicationRecord
     away_team_ml: 2,
     home_team_ml: 3,
     over: 4,
-    under: 5
-    # Add additional prop flavors here later
+    under: 5,
+    overtime: 6,
+    first_team_to_score: 7,
+    player_pass_tds: 8,
+    player_pass_yds: 9,
+    player_receptions: 10,
+    player_reception_tds: 11,
+    player_reception_yds: 12,
+    player_rush_attempts: 13,
+    player_rush_tds: 14,
+    player_rush_yds: 15,
+    player_sacks: 16
   }
 
   before_save :set_long_title
