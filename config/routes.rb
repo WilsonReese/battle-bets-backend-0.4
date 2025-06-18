@@ -42,6 +42,7 @@ Rails.application.routes.draw do
   
   resources :games, only: [:index] do
     resources :bet_options, only: [:index]
+    get :my_bets, on: :member
   end
 
   resources :teams, only: :index

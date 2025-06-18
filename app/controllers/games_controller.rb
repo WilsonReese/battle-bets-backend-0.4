@@ -1,4 +1,5 @@
 class GamesController < ApplicationController
+  before_action :authenticate_user!, only: %i[ my_bets ]
   def index
     if params[:week].present? && params[:season_year].present?
       season = Season.find_by(year: params[:season_year].to_i)
@@ -22,5 +23,50 @@ class GamesController < ApplicationController
     else
       render json: { error: "Must provide week and season_year parameters" }, status: :bad_request
     end
+  end
+
+  def my_bets
+    game = Game.find(params[:id])
+
+    bets = Bet
+      .joins(:betslip, :bet_option)
+      .where(betslips: { user_id: current_user.id }, bet_options: { game_id: game.id })
+      .includes(
+        bet_option: { game: [:home_team, :away_team] },
+        betslip: { battle: { league_season: :pool } }
+      )
+
+    render json: bets.as_json(include: {
+      bet_option: {
+        only: [:id, :title, :long_title, :category, :payout, :success, :bet_flavor],
+        include: {
+          game: {
+            only: [:start_time],
+            include: {
+              home_team: { only: [:name] },
+              away_team: { only: [:name] }
+            }
+          }
+        }
+      },
+      betslip: {
+        only: [:id],
+        include: {
+          battle: {
+            only: [:id],
+            include: {
+              league_season: {
+                only: [:id],
+                include: {
+                  pool: {
+                    only: [:id, :name]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    })
   end
 end
