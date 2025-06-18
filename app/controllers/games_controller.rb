@@ -69,4 +69,41 @@ class GamesController < ApplicationController
       }
     })
   end
+
+  def league_bets
+    game  = Game.find(params[:id])
+    pool  = Pool.find(params[:pool_id])
+
+    bets = Bet
+            .joins(
+              bet_option: :game,
+              betslip:   { battle: { league_season: :pool } }
+            )
+            .where(bet_options: { game_id: game.id })
+            .where(pools:      { id: pool.id })
+            .includes(
+              bet_option: { game: [:home_team, :away_team] },          # <-- eager-load
+              betslip:    { battle: { league_season: :pool } }
+            )
+
+    render json: bets.as_json(include: {
+      bet_option: {
+        include: {
+          game: {
+            include: {
+              home_team: { only: :name },
+              away_team: { only: :name }
+            }
+          }
+        }
+      },
+      betslip: {
+        include: {
+          battle: {
+            include: { league_season: { include: :pool } }
+          }
+        }
+      }
+    })
+  end
 end

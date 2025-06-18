@@ -40,9 +40,13 @@ Rails.application.routes.draw do
     end
   end
   
-  resources :games, only: [:index] do
+  resources :games, only: %i[index show] do          # ← add :show if you need it
     resources :bet_options, only: [:index]
-    get :my_bets, on: :member
+
+    member do                                         # /games/:id/*
+      get :my_bets                                   # /games/:id/my_bets
+      get :league_bets                               # /games/:id/league_bets
+    end
   end
 
   resources :teams, only: :index
