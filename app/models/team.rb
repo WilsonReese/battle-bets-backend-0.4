@@ -2,14 +2,15 @@
 #
 # Table name: teams
 #
-#  id               :bigint           not null, primary key
-#  conference       :string
-#  long_name        :string
-#  name             :string
-#  created_at       :datetime         not null
-#  updated_at       :datetime         not null
-#  api_sports_io_id :integer
-#  espn_id          :integer
+#  id                 :bigint           not null, primary key
+#  conference         :string
+#  long_name          :string
+#  long_name_odds_api :string
+#  name               :string
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  api_sports_io_id   :integer
+#  espn_id            :integer
 #
 # Indexes
 #

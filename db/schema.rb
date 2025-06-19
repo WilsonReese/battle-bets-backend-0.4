@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_06_19_143256) do
+ActiveRecord::Schema[7.1].define(version: 2025_06_19_150544) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -140,6 +140,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_19_143256) do
     t.string "conference"
     t.integer "api_sports_io_id"
     t.string "long_name"
+    t.string "long_name_odds_api"
     t.index ["api_sports_io_id"], name: "index_teams_on_api_sports_io_id"
   end
 

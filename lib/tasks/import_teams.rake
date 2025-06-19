@@ -109,4 +109,34 @@ namespace :teams do
       unmatched.uniq.each { |name| puts "- #{name}" }
     end
   end
+
+  # Get teams from odds api
+  desc "Populate teams.long_name_odds_api by matching against lib/data/odds_api_team_data.json, count and list unmatched entries"
+  task update_odds_api_names: :environment do
+    file_path = Rails.root.join("lib", "data", "odds_api_team_data.json")
+    data = JSON.parse(File.read(file_path))
+
+    unmatched = []
+
+    data.each do |entry|
+      full_name = entry["full_name"]
+      team = Team.find_by(long_name: full_name)
+
+      if team
+        team.update(long_name_odds_api: full_name)
+        puts "✔️  #{team.name} → long_name_odds_api set to “#{full_name}”"
+      else
+        unmatched << full_name
+        puts "–  no matching Team.long_name for “#{full_name}”"
+      end
+    end
+
+    puts "\n✅ Done."
+    puts "🔢 Unmatched entries: #{unmatched.size}"
+
+    if unmatched.any?
+      puts "\n📋 List of unmatched full_names:"
+      unmatched.each { |name| puts "  • #{name}" }
+    end
+  end
 end
