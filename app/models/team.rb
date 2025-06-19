@@ -4,6 +4,7 @@
 #
 #  id               :bigint           not null, primary key
 #  conference       :string
+#  long_name        :string
 #  name             :string
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null

@@ -42,6 +42,7 @@ namespace :teams do
         espn_id = team["id"].to_i
         name = team["nickname"]
         location = team["location"]
+        long_name=team["displayName"]
 
         if name.blank? || espn_id.blank? || conference_name.blank?
           puts "⚠️ Skipping invalid team: #{team.inspect}"
@@ -84,7 +85,8 @@ namespace :teams do
           espn_id: espn_id,
           name: name,
           conference: conference_name,
-          api_sports_io_id: api_sports_io_id
+          api_sports_io_id: api_sports_io_id, 
+          long_name: long_name
         )
 
         if api_sports_io_id
