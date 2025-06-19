@@ -1,0 +1,148 @@
+{
+  "get": "games/statistics/teams",
+  "parameters": {
+    "id": "9401"
+  },
+  "errors": [],
+  "results": 2,
+  "response": [
+    {
+      "team": {
+        "id": 60,
+        "name": "Vanderbilt",
+        "logo": "https://media.api-sports.io/american-football/teams/60.png"
+      },
+      "statistics": {
+        "first_downs": {
+          "total": 17,
+          "passing": 0,
+          "rushing": 0,
+          "from_penalties": 0,
+          "third_down_efficiency": "5-12",
+          "fourth_down_efficiency": "1-3"
+        },
+        "plays": {
+          "total": 0
+        },
+        "yards": {
+          "total": 297,
+          "yards_per_play": null,
+          "total_drives": null
+        },
+        "passing": {
+          "total": 258,
+          "comp_att": "19-30",
+          "yards_per_pass": "8.6",
+          "interceptions_thrown": 0,
+          "sacks_yards_lost": null
+        },
+        "rushings": {
+          "total": 39,
+          "attempts": 26,
+          "yards_per_rush": "1.5"
+        },
+        "red_zone": {
+          "made_att": null
+        },
+        "penalties": {
+          "total": "8-72"
+        },
+        "turnovers": {
+          "total": 0,
+          "lost_fumbles": 0,
+          "interceptions": 0
+        },
+        "posession": {
+          "total": "28:38"
+        },
+        "interceptions": {
+          "total": 0
+        },
+        "fumbles_recovered": {
+          "total": 0
+        },
+        "sacks": {
+          "total": 6
+        },
+        "safeties": {
+          "total": 0
+        },
+        "int_touchdowns": {
+          "total": 1
+        },
+        "points_against": {
+          "total": 28
+        }
+      }
+    },
+    {
+      "team": {
+        "id": 59,
+        "name": "Hawai'i",
+        "logo": "https://media.api-sports.io/american-football/teams/59.png"
+      },
+      "statistics": {
+        "first_downs": {
+          "total": 19,
+          "passing": 0,
+          "rushing": 0,
+          "from_penalties": 0,
+          "third_down_efficiency": "3-11",
+          "fourth_down_efficiency": "3-4"
+        },
+        "plays": {
+          "total": 0
+        },
+        "yards": {
+          "total": 391,
+          "yards_per_play": null,
+          "total_drives": null
+        },
+        "passing": {
+          "total": 351,
+          "comp_att": "27-35",
+          "yards_per_pass": "10.0",
+          "interceptions_thrown": 0,
+          "sacks_yards_lost": null
+        },
+        "rushings": {
+          "total": 40,
+          "attempts": 25,
+          "yards_per_rush": "1.6"
+        },
+        "red_zone": {
+          "made_att": null
+        },
+        "penalties": {
+          "total": "7-59"
+        },
+        "turnovers": {
+          "total": 2,
+          "lost_fumbles": 0,
+          "interceptions": 2
+        },
+        "posession": {
+          "total": "31:22"
+        },
+        "interceptions": {
+          "total": 0
+        },
+        "fumbles_recovered": {
+          "total": 0
+        },
+        "sacks": {
+          "total": 0
+        },
+        "safeties": {
+          "total": 0
+        },
+        "int_touchdowns": {
+          "total": 0
+        },
+        "points_against": {
+          "total": 35
+        }
+      }
+    }
+  ]
+}

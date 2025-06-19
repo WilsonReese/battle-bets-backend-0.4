@@ -216,7 +216,97 @@ namespace :bet_options do
 
     puts "🏁 Done generating prop bets"
   end
+
+
+  # ========== EVALUATION TASKS =========== #
+  desc "Evaluate spread BetOptions for a given GAME_ID. Usage: rake bet_options:evaluate_spreads[<game_id>]"
+  task :evaluate_spreads, [:game_id] => :environment do |t, args|
+    # 1️⃣ Validate input
+    game_id = args[:game_id].to_i
+    unless game_id.positive?
+      puts "❌ Please pass a valid game_id: rake bet_options:evaluate_spreads[123]"
+      exit 1
+    end
+
+    game = Game.find_by(id: game_id)
+    unless game
+      puts "❌ No Game found with id=#{game_id}"
+      exit 1
+    end
+
+    # 2️⃣ Load your box‐score JSON
+    game_stats_path = Rails.root.join("lib", "data", "sample_game", "game_stats.json")
+    unless File.exist?(game_stats_path)
+      puts "❌ game_stats.json not found at #{game_stats_path}"
+      exit 1
+    end
+
+    raw = JSON.parse(File.read(game_stats_path))
+    # support either raw Array or { "response" => [...] }
+    entry = if raw.is_a?(Hash) && raw["response"].is_a?(Array)
+      raw["response"].first
+    elsif raw.is_a?(Array)
+      raw.first
+    else
+      raw
+    end
+
+    home_entry = entry.dig("teams", "home")
+    away_entry = entry.dig("teams", "away")
+    scores     = entry["scores"] || {}
+    home_score = scores.dig("home", "total").to_i
+    away_score = scores.dig("away", "total").to_i
+
+    # 3️⃣ Iterate only spread‐type bet options
+    spreads = game.bet_options.where(bet_flavor: [:home_team_spread, :away_team_spread])
+    if spreads.empty?
+      puts "ℹ️  No spread BetOptions found for Game##{game.id}"
+      exit 0
+    end
+
+    spreads.each do |opt|
+      # parse "+3.5" or "-2" from title
+      m = opt.title.match(/([+-]?)(\d+(\.\d+)?)/)
+      unless m
+        puts "⚠️  Skipping ##{opt.id}: cannot parse points from title=#{opt.title.inspect}"
+        next
+      end
+
+      sign    = (m[1] == "-") ? -1 : +1
+      points  = m[2].to_f
+
+      if opt.home_team_spread?
+
+        # TEMPORARILY COMMENTED OUT BECAUSE IT MESSES UP THE SAMPLE DATA
+
+        # confirm this opt belongs to home or away by comparing api_sports_io_id
+        # if game.home_team.api_sports_io_id.to_i != home_entry["id"].to_i
+        #   puts "⚠️  ##{opt.id}: home_team.api_sports_io_id mismatch; skipping"
+        #   next
+        # end
+
+        adjusted = home_score + sign * points
+        winner   = adjusted > away_score
+
+      else # away_team_spread
+        # if game.away_team.api_sports_io_id.to_i != away_entry["id"].to_i
+        #   puts "⚠️  ##{opt.id}: away_team.api_sports_io_id mismatch; skipping"
+        #   next
+        # end
+
+        adjusted = away_score + sign * points
+        winner   = adjusted > home_score
+      end
+
+      opt.update!(success: winner)
+      result = winner ? "✅ win" : "❌ loss"
+      puts "  • BetOption##{opt.id} (#{opt.title}): #{adjusted.round(1)} vs #{(winner ? away_score : home_score)} → #{result}"
+    end
+
+    puts "🏁 Done evaluating spreads for Game##{game.id}."
+  end
 end
+
 
 # === Odds Conversion Helpers ===
 
@@ -240,7 +330,7 @@ def fair_decimal_odds(odds1, odds2)
 end
 
 
-# === Prop Bets ===
+# ========== Prop Bets =========== #
 PROP_BETS_REGISTRY = {
   overtime: {
     source: :api_sports_io,

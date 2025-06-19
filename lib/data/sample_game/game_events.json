@@ -1,0 +1,190 @@
+{
+  "get": "games/events",
+  "parameters": {
+    "id": "9401"
+  },
+  "errors": [],
+  "results": 9,
+  "response": [
+    {
+      "quarter": "First",
+      "minute": "11:26",
+      "team": {
+        "id": 60,
+        "name": "Vanderbilt",
+        "logo": "https://media.api-sports.io/american-football/teams/60.png"
+      },
+      "player": {
+        "id": 8830,
+        "name": "Patrick Smith",
+        "image": "https://media.api-sports.io/american-football/players/8830.png"
+      },
+      "type": "TD",
+      "comment": "Patrick Smith 21 Yd Run (Two-Point Run Conversion Failed)",
+      "score": {
+        "home": 6,
+        "away": 0
+      }
+    },
+    {
+      "quarter": "First",
+      "minute": "7:13",
+      "team": {
+        "id": 59,
+        "name": "Hawai'i",
+        "logo": "https://media.api-sports.io/american-football/teams/59.png"
+      },
+      "player": {
+        "id": 13522,
+        "name": "Steven McBride",
+        "image": "https://media.api-sports.io/american-football/players/13522.png"
+      },
+      "type": "TD",
+      "comment": "Steven McBride 9 Yd pass from Brayden Schager (Matthew Shipley Kick)",
+      "score": {
+        "home": 6,
+        "away": 7
+      }
+    },
+    {
+      "quarter": "First",
+      "minute": "7:00",
+      "team": {
+        "id": 60,
+        "name": "Vanderbilt",
+        "logo": "https://media.api-sports.io/american-football/teams/60.png"
+      },
+      "player": {
+        "id": 8838,
+        "name": "Jayden McGowan",
+        "image": "https://media.api-sports.io/american-football/players/8838.png"
+      },
+      "type": "TD",
+      "comment": "Jayden McGowan 97 Yd Kickoff Return (AJ Swann Pass to Quincy Skinner Jr. for Two-Point Conversion)",
+      "score": {
+        "home": 14,
+        "away": 7
+      }
+    },
+    {
+      "quarter": "Second",
+      "minute": "14:56",
+      "team": {
+        "id": 60,
+        "name": "Vanderbilt",
+        "logo": "https://media.api-sports.io/american-football/teams/60.png"
+      },
+      "player": {
+        "id": 8839,
+        "name": "Will Sheppard",
+        "image": "https://media.api-sports.io/american-football/players/8839.png"
+      },
+      "type": "TD",
+      "comment": "Will Sheppard 7 Yd pass from AJ Swann (Jacob Borcila Kick)",
+      "score": {
+        "home": 21,
+        "away": 7
+      }
+    },
+    {
+      "quarter": "Second",
+      "minute": "13:03",
+      "team": {
+        "id": 59,
+        "name": "Hawai'i",
+        "logo": "https://media.api-sports.io/american-football/teams/59.png"
+      },
+      "player": {
+        "id": 13522,
+        "name": "Steven McBride",
+        "image": "https://media.api-sports.io/american-football/players/13522.png"
+      },
+      "type": "TD",
+      "comment": "Steven McBride 45 Yd pass from Brayden Schager (Matthew Shipley Kick)",
+      "score": {
+        "home": 21,
+        "away": 14
+      }
+    },
+    {
+      "quarter": "Third",
+      "minute": "9:32",
+      "team": {
+        "id": 60,
+        "name": "Vanderbilt",
+        "logo": "https://media.api-sports.io/american-football/teams/60.png"
+      },
+      "player": {
+        "id": 8839,
+        "name": "Will Sheppard",
+        "image": "https://media.api-sports.io/american-football/players/8839.png"
+      },
+      "type": "TD",
+      "comment": "Will Sheppard 1 Yd pass from AJ Swann (Jacob Borcila Kick)",
+      "score": {
+        "home": 28,
+        "away": 14
+      }
+    },
+    {
+      "quarter": "Fourth",
+      "minute": "14:48",
+      "team": {
+        "id": 60,
+        "name": "Vanderbilt",
+        "logo": "https://media.api-sports.io/american-football/teams/60.png"
+      },
+      "player": {
+        "id": 37121,
+        "name": "London Humphreys",
+        "image": "https://media.api-sports.io/american-football/players/37121.png"
+      },
+      "type": "TD",
+      "comment": "London Humphreys 32 Yd pass from AJ Swann (Jacob Borcila Kick)",
+      "score": {
+        "home": 35,
+        "away": 14
+      }
+    },
+    {
+      "quarter": "Fourth",
+      "minute": "11:20",
+      "team": {
+        "id": 59,
+        "name": "Hawai'i",
+        "logo": "https://media.api-sports.io/american-football/teams/59.png"
+      },
+      "player": {
+        "id": 8714,
+        "name": "Pofele Ashlock",
+        "image": "https://media.api-sports.io/american-football/players/8714.png"
+      },
+      "type": "TD",
+      "comment": "Pofele Ashlock 3 Yd pass from Brayden Schager (Matthew Shipley Kick)",
+      "score": {
+        "home": 35,
+        "away": 21
+      }
+    },
+    {
+      "quarter": "Fourth",
+      "minute": "4:49",
+      "team": {
+        "id": 59,
+        "name": "Hawai'i",
+        "logo": "https://media.api-sports.io/american-football/teams/59.png"
+      },
+      "player": {
+        "id": 37075,
+        "name": "Dalen Morris",
+        "image": "https://media.api-sports.io/american-football/players/37075.png"
+      },
+      "type": "TD",
+      "comment": "Dalen Morris 1 Yd Run (Matthew Shipley Kick)",
+      "score": {
+        "home": 35,
+        "away": 28
+      }
+    }
+  ]
+}

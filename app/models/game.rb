@@ -11,6 +11,7 @@
 #  away_team_id          :integer
 #  espn_id               :string
 #  home_team_id          :integer
+#  odds_api_game_id      :string
 #  season_id             :bigint           not null
 #
 # Indexes

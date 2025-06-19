@@ -1,0 +1,73 @@
+{
+  "get": "games",
+  "parameters": {
+    "id": "9401"
+  },
+  "errors": [],
+  "results": 1,
+  "response": [
+    {
+      "game": {
+        "id": 9401,
+        "stage": "FBS (Division I-A)",
+        "week": "1",
+        "date": {
+          "timezone": "UTC",
+          "date": "2023-08-26",
+          "time": "01:10",
+          "timestamp": 1693012200
+        },
+        "venue": {
+          "name": "FirstBank Stadium",
+          "city": "Nashville"
+        },
+        "status": {
+          "short": "FT",
+          "long": "Finished",
+          "timer": null
+        }
+      },
+      "league": {
+        "id": 2,
+        "name": "NCAA",
+        "season": "2023",
+        "logo": "https://media.api-sports.io/american-football/leagues/2.png",
+        "country": {
+          "name": "USA",
+          "code": "US",
+          "flag": "https://media.api-sports.io/flags/us.svg"
+        }
+      },
+      "teams": {
+        "home": {
+          "id": 60,
+          "name": "Vanderbilt",
+          "logo": "https://media.api-sports.io/american-football/teams/60.png"
+        },
+        "away": {
+          "id": 59,
+          "name": "Hawai'i",
+          "logo": "https://media.api-sports.io/american-football/teams/59.png"
+        }
+      },
+      "scores": {
+        "home": {
+          "quarter_1": 14,
+          "quarter_2": 7,
+          "quarter_3": 7,
+          "quarter_4": 7,
+          "overtime": null,
+          "total": 35
+        },
+        "away": {
+          "quarter_1": 7,
+          "quarter_2": 7,
+          "quarter_3": 0,
+          "quarter_4": 14,
+          "overtime": null,
+          "total": 28
+        }
+      }
+    }
+  ]
+}
