@@ -111,32 +111,83 @@ namespace :teams do
   end
 
   # Get teams from odds api
-  desc "Populate teams.long_name_odds_api by matching against lib/data/odds_api_team_data.json, count and list unmatched entries"
+  desc "Populate teams.long_name_odds_api using explicit mappings; skip Occidental"
   task update_odds_api_names: :environment do
-    file_path = Rails.root.join("lib", "data", "odds_api_team_data.json")
-    data = JSON.parse(File.read(file_path))
+    file_path   = Rails.root.join("lib", "data", "odds_api_team_data.json")
+    api_entries = JSON.parse(File.read(file_path))
 
+    # ————— your explicit Odds-API → Team.long_name mapping —————
+    mapping = {
+      "Albany"                                 => "UAlbany Great Danes",
+      "Appalachian State Mountaineers"         => "App State Mountaineers",
+      "Arkansas Pine Bluff Golden Lions"       => "Arkansas-Pine Bluff Golden Lions",
+      "Citadel Bulldogs"                       => "The Citadel Bulldogs",
+      "Dixie State Trailblazers"               => "Utah Tech Trailblazers",
+      "Gardner-Webb Runnin Bulldogs"           => "Gardner-Webb Runnin' Bulldogs",
+      "Grambling State Tigers"                 => "Grambling Tigers",
+      "Hawaii Rainbow Warriors"                => "Hawai'i Rainbow Warriors",
+      "Houston Baptist Huskies"                => "Houston Christian Huskies",
+      "Kentucky State University Thorobreds"   => "Kentucky State Thorobreds",
+      "LIU Sharks"                             => "Long Island University Sharks",
+      "Louisiana Ragin Cajuns"                 => "Louisiana Ragin' Cajuns",
+      "McNeese State Cowboys"                  => "McNeese Cowboys",
+      "Nicholls State Colonels"                => "Nicholls Colonels",
+      # "Occidental Tigers"                      => nil,   # skip
+      "Presbyterian College Blue Hose"         => "Presbyterian Blue Hose",
+      "Sam Houston State Bearkats"             => "Sam Houston Bearkats",
+      "San Jose State Spartans"                => "San José State Spartans",
+      "Southeastern Louisiana Lions"           => "SE Louisiana Lions",
+      "Southern Mississippi Golden Eagles"      => "Southern Miss Golden Eagles",
+      "Southern University Jaguars"            => "Southern Jaguars",
+      "Texas A&M-Commerce Lions"               => "East Texas A&M Lions",
+      "UMass Minutemen"                        => "East Texas A&M Lions",
+      "William and Mary Tribe"                 => "William & Mary Tribe",
+      "Yale University Bulldogs"               => "Yale Bulldogs",
+      "Youngstown St Penguins"                 => "Youngstown State Penguins",
+    }
+
+    updated   = []
     unmatched = []
 
-    data.each do |entry|
+    api_entries.each do |entry|
       full_name = entry["full_name"]
-      team = Team.find_by(long_name: full_name)
 
-      if team
-        team.update(long_name_odds_api: full_name)
-        puts "✔️  #{team.name} → long_name_odds_api set to “#{full_name}”"
+      if mapping.key?(full_name)
+        target = mapping[full_name]
+
+        if target
+          team = Team.find_by(long_name: target)
+          if team
+            team.update!(long_name_odds_api: full_name)
+            updated << [team.name, full_name]
+            puts "✔ #{team.name} ← #{full_name}"
+          else
+            unmatched << full_name
+            puts "⚠ mapping for “#{full_name}” → “#{target}” but no Team.long_name=`#{target}`"
+          end
+        else
+          puts "⏭ skipping “#{full_name}”"
+        end
+
       else
-        unmatched << full_name
-        puts "–  no matching Team.long_name for “#{full_name}”"
+        # fallback to exact match on long_name
+        team = Team.find_by(long_name: full_name)
+        if team
+          team.update!(long_name_odds_api: full_name)
+          updated << [team.name, full_name]
+          puts "✔ direct: #{team.name} ← #{full_name}"
+        else
+          unmatched << full_name
+          puts "– no match for “#{full_name}”"
+        end
       end
     end
 
     puts "\n✅ Done."
-    puts "🔢 Unmatched entries: #{unmatched.size}"
+    puts "🔄 Updated entries: #{updated.size}"
+    updated.each { |t, fn| puts " • #{t} ← #{fn}" }
 
-    if unmatched.any?
-      puts "\n📋 List of unmatched full_names:"
-      unmatched.each { |name| puts "  • #{name}" }
-    end
+    puts "\n❌ Unmatched entries: #{unmatched.size}"
+    unmatched.each { |fn| puts " • #{fn}" } if unmatched.any?
   end
 end
