@@ -49,6 +49,9 @@ module BetOptions
         OvertimeEvaluator.new(@game, @entry).call
         FirstTeamToScoreEvaluator.new(@game, @events).call
         PassingEvaluator.new(@game, @player_stats).call
+        ReceivingEvaluator.new(@game, @player_stats).call
+        RushingEvaluator.new(@game, @player_stats).call
+        SacksEvaluator.new(@game, @player_stats).call
 
         puts "\n🏁 Done evaluating all BetOptions for Game##{@game.id}."
       end
