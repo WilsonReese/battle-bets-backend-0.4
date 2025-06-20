@@ -6,6 +6,8 @@ module BetOptions
       def initialize(game_id)
         @game = Game.find(game_id)
 
+        # ========== LOAD GAME STATS ========== #
+
         # 1️⃣ Load the raw JSON (either a Hash with "response" or an Array)
         stats_path = Rails.root.join("lib", "data", "sample_game", "game_stats.json")
         raw        = JSON.parse(File.read(stats_path))
@@ -21,9 +23,20 @@ module BetOptions
         end
         raise "No game_stats entry for Game##{@game.id} (api_sports_io_game_id=#{@game.api_sports_io_game_id})" unless @entry
 
+        # ========== LOAD GAME EVENTS ========== #
+
         events_path = Rails.root.join("lib/data/sample_game/game_events.json")
         raw_events  = JSON.parse(File.read(events_path))
         @events     = raw_events.is_a?(Hash) && raw_events["response"].is_a?(Array) ? raw_events["response"] : Array(raw_events)
+
+        # ========== LOAD PLAYER STATS ========== #
+        players_path = Rails.root.join("lib/data/sample_game/player_stats.json")
+        raw_players  = JSON.parse(File.read(players_path))
+        @player_stats = if raw_players.is_a?(Hash) && raw_players["response"].is_a?(Array)
+                          raw_players["response"]
+                        else
+                          Array(raw_players)
+                        end
       end
 
       def run
@@ -35,6 +48,7 @@ module BetOptions
         OverUnderEvaluator.new(@game, @total_score).call
         OvertimeEvaluator.new(@game, @entry).call
         FirstTeamToScoreEvaluator.new(@game, @events).call
+        PassingEvaluator.new(@game, @player_stats).call
 
         puts "\n🏁 Done evaluating all BetOptions for Game##{@game.id}."
       end
