@@ -1,7 +1,7 @@
 {
   "get": "odds",
   "parameters": {
-    "game": "7532",
+    "game": "9401",
     "bookmaker": "1"
   },
   "errors": [],
@@ -9,7 +9,7 @@
   "response": [
     {
       "game": {
-        "id": 7532
+        "id": 9401
       },
       "league": {
         "id": 1,

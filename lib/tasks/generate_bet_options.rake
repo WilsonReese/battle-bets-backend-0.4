@@ -1,4 +1,4 @@
-namespace :bet_options2 do
+# namespace :bet_options2 do
   # desc "Generate sample spread and moneyline bet options for a given season and week"
   # task :generate, [:season_year, :week] => :environment do |t, args|
   #   require "json"
