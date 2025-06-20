@@ -126,7 +126,7 @@ namespace :bet_options do
     puts "🏁 Done generating sample spread and moneyline bet options"
   end
 
-	# Prop Bets Task
+	# ========== Prop Bets Task ========== #
 
 	desc "Generate 4 prop bets per game for a given season and week"
   task :generate_props, [:season_year, :week] => :environment do |t, args|
@@ -191,7 +191,7 @@ namespace :bet_options do
 											bet["values"].sample
 										end
 
-  next if value.nil? # skip if "Yes" isn't found
+          next if value.nil? # skip if "Yes" isn't found
 						builder = config[:title_builder]
 						title = builder&.call(value: value, home_team: home_team, away_team: away_team)
 						payout = value["odd"].to_f.round(1)
@@ -220,11 +220,13 @@ namespace :bet_options do
 
   # ========== EVALUATION TASKS =========== #
   desc "Evaluate spread BetOptions for a given GAME_ID. Usage: rake bet_options:evaluate_spreads[<game_id>]"
-  task :evaluate_spreads, [:game_id] => :environment do |t, args|
+  task :evaluate_bet_options, [:game_id] => :environment do |t, args| 
+    require "json"
+    
     # 1️⃣ Validate input
     game_id = args[:game_id].to_i
     unless game_id.positive?
-      puts "❌ Please pass a valid game_id: rake bet_options:evaluate_spreads[123]"
+      puts "❌ Please pass a valid game_id: rake bet_options:evaluate_bet_options[123]"
       exit 1
     end
 
@@ -234,7 +236,7 @@ namespace :bet_options do
       exit 1
     end
 
-    # 2️⃣ Load your box‐score JSON
+    # 2️⃣ Load box‐score JSON
     game_stats_path = Rails.root.join("lib", "data", "sample_game", "game_stats.json")
     unless File.exist?(game_stats_path)
       puts "❌ game_stats.json not found at #{game_stats_path}"
@@ -242,7 +244,6 @@ namespace :bet_options do
     end
 
     raw = JSON.parse(File.read(game_stats_path))
-    # support either raw Array or { "response" => [...] }
     entry = if raw.is_a?(Hash) && raw["response"].is_a?(Array)
       raw["response"].first
     elsif raw.is_a?(Array)
@@ -256,54 +257,105 @@ namespace :bet_options do
     scores     = entry["scores"] || {}
     home_score = scores.dig("home", "total").to_i
     away_score = scores.dig("away", "total").to_i
+    total_score = home_score + away_score
 
-    # 3️⃣ Iterate only spread‐type bet options
+    puts "ℹ️  Game##{game.id}: home=#{home_score}, away=#{away_score}, total=#{total_score}"
+
+    # 3️⃣ Process spreads
     spreads = game.bet_options.where(bet_flavor: [:home_team_spread, :away_team_spread])
-    if spreads.empty?
-      puts "ℹ️  No spread BetOptions found for Game##{game.id}"
-      exit 0
+    if spreads.any?
+      puts "\n🔀 Evaluating spreads:"
+      spreads.each do |opt|
+        m = opt.title.match(/([+-]?)(\d+(\.\d+)?)/)
+        unless m
+          puts "⚠️  Skipping ##{opt.id}: cannot parse points from title=#{opt.title.inspect}"
+          next
+        end
+
+        sign   = (m[1] == "-") ? -1 : +1
+        points = m[2].to_f
+
+        if opt.home_team_spread?
+          # guard (commented out)
+          # unless game.home_team.api_sports_io_id.to_i == home_entry["id"].to_i
+          #   puts "⚠️  ##{opt.id}: home_team.api_sports_io_id mismatch; skipping"
+          #   next
+          # end
+
+          adjusted = home_score + sign * points
+          winner   = adjusted > away_score
+
+        else # away_team_spread
+          # guard (commented out)
+          # unless game.away_team.api_sports_io_id.to_i == away_entry["id"].to_i
+          #   puts "⚠️  ##{opt.id}: away_team.api_sports_io_id mismatch; skipping"
+          #   next
+          # end
+
+          adjusted = away_score + sign * points
+          winner   = adjusted > home_score
+        end
+
+        opt.update!(success: winner)
+        result = winner ? "✅ win" : "❌ loss"
+        puts "  • ##{opt.id} (#{opt.title}): adjusted=#{adjusted.round(1)} vs opponent=#{ winner ? away_score : home_score } → #{result}"
+      end
+    else
+      puts "ℹ️  No spread BetOptions for Game##{game.id}"
     end
 
-    spreads.each do |opt|
-      # parse "+3.5" or "-2" from title
-      m = opt.title.match(/([+-]?)(\d+(\.\d+)?)/)
-      unless m
-        puts "⚠️  Skipping ##{opt.id}: cannot parse points from title=#{opt.title.inspect}"
-        next
+    # 4️⃣ Process money-lines
+    mls = game.bet_options.where(bet_flavor: [:home_team_ml, :away_team_ml])
+    if mls.any?
+      puts "\n🎲 Evaluating money-lines:"
+      mls.each do |opt|
+        if opt.home_team_ml?
+          # success if home_score > away_score
+          winner = home_score > away_score
+        else
+          # away_team_ml
+          winner = away_score > home_score
+        end
+
+        opt.update!(success: winner)
+        side   = opt.home_team_ml? ? "home" : "away"
+        result = winner ? "✅ win" : "❌ loss"
+        puts "  • ##{opt.id} (#{side}_team_ml): home=#{home_score}, away=#{away_score} → #{result}"
       end
-
-      sign    = (m[1] == "-") ? -1 : +1
-      points  = m[2].to_f
-
-      if opt.home_team_spread?
-
-        # TEMPORARILY COMMENTED OUT BECAUSE IT MESSES UP THE SAMPLE DATA
-
-        # confirm this opt belongs to home or away by comparing api_sports_io_id
-        # if game.home_team.api_sports_io_id.to_i != home_entry["id"].to_i
-        #   puts "⚠️  ##{opt.id}: home_team.api_sports_io_id mismatch; skipping"
-        #   next
-        # end
-
-        adjusted = home_score + sign * points
-        winner   = adjusted > away_score
-
-      else # away_team_spread
-        # if game.away_team.api_sports_io_id.to_i != away_entry["id"].to_i
-        #   puts "⚠️  ##{opt.id}: away_team.api_sports_io_id mismatch; skipping"
-        #   next
-        # end
-
-        adjusted = away_score + sign * points
-        winner   = adjusted > home_score
-      end
-
-      opt.update!(success: winner)
-      result = winner ? "✅ win" : "❌ loss"
-      puts "  • BetOption##{opt.id} (#{opt.title}): #{adjusted.round(1)} vs #{(winner ? away_score : home_score)} → #{result}"
+    else
+      puts "ℹ️  No money-line BetOptions for Game##{game.id}"
     end
 
-    puts "🏁 Done evaluating spreads for Game##{game.id}."
+    # 5️⃣ Over/Under
+    ous = game.bet_options.where(bet_flavor: [:over, :under])
+    if ous.any?
+      puts "\n📊 Evaluating over/under:"
+      ous.each do |opt|
+        # Extract the number (e.g. "46.5") from the title
+        m = opt.title.match(/(\d+(\.\d+)?)/)
+        unless m
+          puts "⚠️  Skipping ##{opt.id}: cannot parse total from title=#{opt.title.inspect}"
+          next
+        end
+
+        threshold = m[1].to_f
+        if opt.over?
+          winner = total_score > threshold
+        else
+          # under
+          winner = total_score < threshold
+        end
+
+        opt.update!(success: winner)
+        side   = opt.over? ? "OVER" : "UNDER"
+        result = winner ? "✅ win" : "❌ loss"
+        puts "  • ##{opt.id} (#{side} #{threshold}): total=#{total_score} → #{result}"
+      end
+    else
+      puts "ℹ️  No over/under BetOptions for Game##{game.id}"
+    end
+
+    puts "\n🏁 Done evaluating all BetOptions for Game##{game.id}."
   end
 end
 
