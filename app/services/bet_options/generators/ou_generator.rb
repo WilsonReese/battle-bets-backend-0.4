@@ -3,11 +3,11 @@ module BetOptions
     class OuGenerator
       def initialize(ctx)
         @game = ctx[:game]
-        @dk   = ctx[:draftkings]
+        @draftkings   = ctx[:draftkings]
       end
 
       def generate
-        market = @dk.dig("markets")&.find { |m| m["key"] == "totals" }
+        market = @draftkings.dig("markets")&.find { |m| m["key"] == "totals" }
         return puts "⚠️  No totals market for Game##{@game.id}" unless market
 
         outcomes = market["outcomes"]
