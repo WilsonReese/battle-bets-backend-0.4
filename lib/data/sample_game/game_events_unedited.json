@@ -10,8 +10,8 @@
       "quarter": "First",
       "minute": "11:26",
       "team": {
-        "id": 174,
-        "name": "Kansas St",
+        "id": 60,
+        "name": "Vanderbilt",
         "logo": "https://media.api-sports.io/american-football/teams/60.png"
       },
       "player": {
@@ -30,8 +30,8 @@
       "quarter": "First",
       "minute": "7:13",
       "team": {
-        "id": 151,
-        "name": "Iowa State",
+        "id": 59,
+        "name": "Hawai'i",
         "logo": "https://media.api-sports.io/american-football/teams/59.png"
       },
       "player": {
@@ -50,8 +50,8 @@
       "quarter": "First",
       "minute": "7:00",
       "team": {
-        "id": 174,
-        "name": "Kansas St",
+        "id": 60,
+        "name": "Vanderbilt",
         "logo": "https://media.api-sports.io/american-football/teams/60.png"
       },
       "player": {
@@ -70,8 +70,8 @@
       "quarter": "Second",
       "minute": "14:56",
       "team": {
-        "id": 174,
-        "name": "Kansas St",
+        "id": 60,
+        "name": "Vanderbilt",
         "logo": "https://media.api-sports.io/american-football/teams/60.png"
       },
       "player": {
@@ -90,8 +90,8 @@
       "quarter": "Second",
       "minute": "13:03",
       "team": {
-        "id": 151,
-        "name": "Iowa State",
+        "id": 59,
+        "name": "Hawai'i",
         "logo": "https://media.api-sports.io/american-football/teams/59.png"
       },
       "player": {
@@ -110,8 +110,8 @@
       "quarter": "Third",
       "minute": "9:32",
       "team": {
-        "id": 174,
-        "name": "Kansas St",
+        "id": 60,
+        "name": "Vanderbilt",
         "logo": "https://media.api-sports.io/american-football/teams/60.png"
       },
       "player": {
@@ -130,8 +130,8 @@
       "quarter": "Fourth",
       "minute": "14:48",
       "team": {
-        "id": 174,
-        "name": "Kansas St",
+        "id": 60,
+        "name": "Vanderbilt",
         "logo": "https://media.api-sports.io/american-football/teams/60.png"
       },
       "player": {
@@ -150,8 +150,8 @@
       "quarter": "Fourth",
       "minute": "11:20",
       "team": {
-        "id": 151,
-        "name": "Iowa State",
+        "id": 59,
+        "name": "Hawai'i",
         "logo": "https://media.api-sports.io/american-football/teams/59.png"
       },
       "player": {
@@ -170,8 +170,8 @@
       "quarter": "Fourth",
       "minute": "4:49",
       "team": {
-        "id": 151,
-        "name": "Iowa State",
+        "id": 59,
+        "name": "Hawai'i",
         "logo": "https://media.api-sports.io/american-football/teams/59.png"
       },
       "player": {

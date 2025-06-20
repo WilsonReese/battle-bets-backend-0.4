@@ -13,17 +13,17 @@ module BetOptions
 
         # 2️⃣ Clean up any temp IDs, e.g. "temp_9401_475" → "9401"
         raw_id = @game.api_sports_io_game_id.to_s
-        api_id = if raw_id.start_with?("temp_")
-                   raw_id.split("_")[1]
-                 else
-                   raw_id
-                 end
+        api_id = raw_id.start_with?("temp_") ? raw_id.split("_")[1] : raw_id
 
         # 3️⃣ Find the JSON entry whose "game.id" matches our api_id
         @entry = entries.find do |e|
           e.dig("game", "id").to_s == api_id
         end
         raise "No game_stats entry for Game##{@game.id} (api_sports_io_game_id=#{@game.api_sports_io_game_id})" unless @entry
+
+        events_path = Rails.root.join("lib/data/sample_game/game_events.json")
+        raw_events  = JSON.parse(File.read(events_path))
+        @events     = raw_events.is_a?(Hash) && raw_events["response"].is_a?(Array) ? raw_events["response"] : Array(raw_events)
       end
 
       def run
@@ -33,6 +33,8 @@ module BetOptions
         SpreadEvaluator.new(@game, @entry, @home_score, @away_score).call
         MoneyLineEvaluator.new(@game, @home_score, @away_score).call
         OverUnderEvaluator.new(@game, @total_score).call
+        OvertimeEvaluator.new(@game, @entry).call
+        FirstTeamToScoreEvaluator.new(@game, @events).call
 
         puts "\n🏁 Done evaluating all BetOptions for Game##{@game.id}."
       end

@@ -83,7 +83,7 @@ module BetOptions
           raise "Bet #{cfg[:id]} not found in api_sports_data for game #{ @game.id }" unless bet
 
           values = bet["values"]
-          val    = if cfg[:title_builder] && cfg[:id].to_i == 12
+          val    = if cfg[:title_builder] && cfg[:id].to_i == 12 #12 represents id of the bet_option from the api_sports_io side
                      # overtime: pick the “Yes” value if present
                      values.find { |v| v["value"].casecmp("yes").zero? }
                    else
