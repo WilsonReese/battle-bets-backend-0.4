@@ -1,5 +1,6 @@
 class GamesController < ApplicationController
   before_action :authenticate_user!, only: %i[ my_bets ]
+
   def index
     if params[:week].present? && params[:season_year].present?
       season = Season.find_by(year: params[:season_year].to_i)
@@ -13,7 +14,9 @@ class GamesController < ApplicationController
       Rails.logger.debug("📆 Available weeks: #{Game.where(season: season).pluck(:week).uniq.inspect}")
       Rails.logger.debug("📦 Matching games: #{Game.where(season: season, week: week).pluck(:id)}")
 
-      @games = Game.where(season: season, week: week)
+      @games = Game
+        .with_bet_options
+        .where(season: season, week: week)
 
       render json: @games.as_json(include: {
         home_team: { only: [:name, :conference] },

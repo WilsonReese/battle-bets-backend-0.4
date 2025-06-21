@@ -33,6 +33,10 @@ class Game < ApplicationRecord
 
   # validates :espn_id, uniqueness: true -- hard coded, temporarily disable
 
+  scope :with_bet_options, -> {
+    joins(:bet_options).distinct
+  }
+
   scope :within_date_range, ->(start_date, end_date) {
       where(start_time: start_date..end_date)
     }
