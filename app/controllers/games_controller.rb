@@ -28,20 +28,21 @@ class GamesController < ApplicationController
     end
   end
 
-  def my_bets
-    game = Game.find(params[:id])
+def my_bets
+  game = Game.find(params[:id])
 
-    bets = Bet
-      .joins(:betslip, :bet_option)
-      .where(betslips: { user_id: current_user.id }, bet_options: { game_id: game.id })
-      .includes(
-        bet_option: { game: [:home_team, :away_team] },
-        betslip: { battle: { league_season: :pool } }
-      )
+  bets = Bet
+    .joins(:betslip, :bet_option)
+    .where(betslips: { user_id: current_user.id }, bet_options: { game_id: game.id })
+    .includes(
+      bet_option: { game: [:home_team, :away_team] },
+      betslip: { battle: { league_season: :pool } }
+    )
 
-    render json: bets.as_json(include: {
+  bets_json = bets.as_json(
+    include: {
       bet_option: {
-        only: [:id, :title, :long_title, :category, :payout, :success, :bet_flavor],
+        only: %i[id title long_title category payout success bet_flavor],
         include: {
           game: {
             only: [:start_time],
@@ -61,17 +62,21 @@ class GamesController < ApplicationController
               league_season: {
                 only: [:id],
                 include: {
-                  pool: {
-                    only: [:id, :name]
-                  }
+                  pool: { only: %i[id name] }
                 }
               }
             }
           }
         }
       }
-    })
-  end
+    }
+  )
+
+  render json: {
+    bets: bets_json,
+    pool_count: current_user.pool_memberships.count
+  }
+end
 
   def league_bets
     game  = Game.find(params[:id])
