@@ -184,7 +184,7 @@ namespace :games do
     end
   end
 
-  # ------------- TASK 3 ------------- #
+  # ------------- TASK 3A ------------- #
   desc "Populate games.odds_api_game_id by matching against lib/data/odds_api_game_data.json"
   task update_odds_api_game_ids: :environment do
     file_path = Rails.root.join("lib", "data", "odds_api_game_data.json")
@@ -232,6 +232,22 @@ namespace :games do
       unmatched.each do |g|
         puts " • Game##{g.id}: #{g.home_team.name} @ #{g.away_team.name} on #{g.start_time.to_date}"
       end
+    end
+  end
+
+  # ========== TASK 3B ========== #
+  desc "Assign a temporary odds_api_game_id to all games that are missing one"
+  task add_temporary_odds_api_game_id: :environment do
+    TEMP_ID = "20740de7481ec1f20c2efbc30852f6c6"
+
+    games_to_update = Game.where(odds_api_game_id: nil)
+    count = games_to_update.size
+
+    if count.zero?
+      puts "ℹ️  No games without an odds_api_game_id—nothing to do."
+    else
+      games_to_update.update_all(odds_api_game_id: TEMP_ID)
+      puts "✅ Updated #{count} game#{'s' if count != 1} with temporary odds_api_game_id=#{TEMP_ID}"
     end
   end
 

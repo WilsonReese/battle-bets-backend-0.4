@@ -3,6 +3,7 @@
 # Table name: betslips
 #
 #  id                   :bigint           not null, primary key
+#  amount_bet           :float            default(0.0), not null
 #  earnings             :float            default(0.0), not null
 #  league_points        :float
 #  locked               :boolean          default(FALSE), not null
@@ -69,6 +70,10 @@ class Betslip < ApplicationRecord
     else
       Rails.logger.error "Failed to save Betslip #{id}: #{errors.full_messages.join(', ')}"
     end
+  end
+
+  def recalculate_amount_bet!
+    update!(amount_bet: bets.sum(:bet_amount))
   end
   
   private

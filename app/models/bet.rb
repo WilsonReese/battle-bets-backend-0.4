@@ -47,6 +47,9 @@ class Bet < ApplicationRecord
   after_save :update_betslip_max_payout_remaining
   after_destroy :update_betslip_max_payout_remaining
 
+  after_save    :update_betslip_budget
+  after_destroy :update_betslip_budget
+
   private
 
   def calculate_to_win_amount
@@ -83,5 +86,9 @@ class Bet < ApplicationRecord
       errors.add(:base, "Cannot create or update a bet in a locked betslip.")
       throw(:abort)
     end
+  end
+
+  def update_betslip_budget
+    betslip.recalculate_amount_bet!
   end
 end
