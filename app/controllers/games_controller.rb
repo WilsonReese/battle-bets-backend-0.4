@@ -1,6 +1,55 @@
 class GamesController < ApplicationController
   before_action :authenticate_user!, only: %i[ index my_bets ]
 
+  # def index
+  #   unless params[:week].present? && params[:season_year].present?
+  #     return render json: { error: "Must provide week and season_year parameters" },
+  #                   status: :bad_request
+  #   end
+
+  #   season = Season.find_by(year: params[:season_year].to_i)
+  #   unless season
+  #     return render json: { error: "No season found for year #{params[:season_year]}" },
+  #                   status: :not_found
+  #   end
+
+  #   week = params[:week].to_i
+
+  #   # 1️⃣ Base set: all games with bet_options in this season/week
+  #   base_games = Game
+  #     .with_bet_options
+  #     .where(season: season, week: week)
+  #     .to_a
+
+  #   # 2️⃣ Figure out which of those have bets by current_user
+  #   #    We join bets → betslips → bet_options → games to restrict to our same season/week
+  #   bet_game_ids = Bet
+  #     .joins(:betslip, bet_option: :game)
+  #     .where(
+  #       betslips:   { user_id: current_user.id },
+  #       games:       { season_id: season.id, week: week }
+  #     )
+  #     .pluck("games.id")
+  #     .uniq
+
+  #   # 3️⃣ Sort in Ruby so “bet by user” games come first, then by start_time
+  #   @games = base_games.sort_by do |game|
+  #     [
+  #       bet_game_ids.include?(game.id) ? 0 : 1,
+  #       game.start_time
+  #     ]
+  #   end
+
+  #   # 4️⃣ Render as before
+  #   render json: @games.as_json(
+  #     include: {
+  #       home_team:  { only: [:name, :conference] },
+  #       away_team:  { only: [:name, :conference] },
+  #       bet_options:{ only: [:id, :title, :long_title, :payout, :category] }
+  #     }
+  #   )
+  # end
+
   def index
     unless params[:week].present? && params[:season_year].present?
       return render json: { error: "Must provide week and season_year parameters" },
@@ -15,38 +64,42 @@ class GamesController < ApplicationController
 
     week = params[:week].to_i
 
-    # 1️⃣ Base set: all games with bet_options in this season/week
+    # 1. Load games for this season/week
     base_games = Game
       .with_bet_options
       .where(season: season, week: week)
+      .includes(:home_team, :away_team, :bet_options)
       .to_a
 
-    # 2️⃣ Figure out which of those have bets by current_user
-    #    We join bets → betslips → bet_options → games to restrict to our same season/week
-    bet_game_ids = Bet
+    # 2. Get count of bets placed by the current user, grouped by game
+    counts_by_game = Bet
       .joins(:betslip, bet_option: :game)
       .where(
-        betslips:   { user_id: current_user.id },
-        games:       { season_id: season.id, week: week }
+        betslips: { user_id: current_user.id },
+        games:    { season_id: season.id, week: week }
       )
-      .pluck("games.id")
-      .uniq
+      .group("games.id")
+      .count  # => { game_id => number of bets }
 
-    # 3️⃣ Sort in Ruby so “bet by user” games come first, then by start_time
-    @games = base_games.sort_by do |game|
-      [
-        bet_game_ids.include?(game.id) ? 0 : 1,
-        game.start_time
-      ]
+    # 3. Add user_bet_count method to each game dynamically
+    @games = base_games.sort_by { |g|
+      [counts_by_game[g.id] ? 0 : 1, g.start_time]
+    }.each do |game|
+      # virtual field
+      game.define_singleton_method(:user_bet_count) { counts_by_game[game.id] || 0 }
+
+      # 🔒 keep bet_options order deterministic
+      game.association(:bet_options).target.sort_by!(&:created_at)
     end
 
-    # 4️⃣ Render as before
+    # 4. Render the JSON
     render json: @games.as_json(
       include: {
-        home_team:  { only: [:name, :conference] },
-        away_team:  { only: [:name, :conference] },
-        bet_options:{ only: [:id, :title, :long_title, :payout, :category] }
-      }
+        home_team:    { only: [:name, :conference] },
+        away_team:    { only: [:name, :conference] },
+        bet_options:  { only: [:id, :title, :long_title, :payout, :category] }
+      },
+      methods: [:user_bet_count]
     )
   end
 

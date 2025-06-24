@@ -27,7 +27,7 @@
 #
 class Game < ApplicationRecord
   belongs_to :season
-  has_many :bet_options, dependent: :destroy
+  has_many :bet_options, -> {order(:created_at)}, dependent: :destroy
   belongs_to :home_team, class_name: 'Team'
   belongs_to :away_team, class_name: 'Team'
 
