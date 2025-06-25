@@ -10,7 +10,7 @@ class PoolsController < ApplicationController
       @pools = current_user.pools.includes(:pool_memberships, :league_seasons)
 
       enriched_pools = @pools.map do |pool|
-        league_season = pool.league_seasons.find { |s| s.season.year == 2024 }
+        league_season = pool.league_seasons.find { |s| s.season.year == 2025 }
 
         pool.as_json.merge({
           membership_count: pool.pool_memberships.size,
@@ -38,7 +38,7 @@ class PoolsController < ApplicationController
       @pool = Pool.new(pool_params.except(:start_week))
       @pool.save!
   
-      season = Season.find_by!(year: 2024) # Hard code
+      season = Season.find_by!(year: 2025) # Hard code
       @pool.pool_memberships.create!(
         user: current_user,
         is_commissioner: true
@@ -61,7 +61,7 @@ class PoolsController < ApplicationController
       @pool.update!(pool_params)
   
       if params[:start_week]
-        season = Season.find_by!(year: 2024)  # find the actual Season record
+        season = Season.find_by!(year: 2025)  # find the actual Season record
         league_season = @pool.league_seasons.find_by(season: season)
         
         if league_season

@@ -3,6 +3,7 @@
 # Table name: games
 #
 #  id                    :bigint           not null, primary key
+#  battles_locked        :boolean          default(FALSE), not null
 #  start_time            :datetime
 #  week                  :integer
 #  created_at            :datetime         not null
@@ -17,6 +18,7 @@
 # Indexes
 #
 #  index_games_on_api_sports_io_game_id  (api_sports_io_game_id) UNIQUE
+#  index_games_on_battles_locked         (battles_locked)
 #  index_games_on_season_id              (season_id)
 #
 # Foreign Keys

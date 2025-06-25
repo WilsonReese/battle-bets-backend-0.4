@@ -50,6 +50,16 @@ class Bet < ApplicationRecord
   after_save    :update_betslip_budget
   after_destroy :update_betslip_budget
 
+  def recompute_amount_won!
+    self.amount_won =
+      case bet_option.success
+      when nil   then nil                       # game not finished
+      when true  then to_win_amount             # ✅ full payout
+      when false then 0                         # ❌ lost
+      end
+    save!                                       # will trigger all after_save callbacks
+  end
+
   private
 
   def calculate_to_win_amount
@@ -57,13 +67,12 @@ class Bet < ApplicationRecord
   end
 
   def calculate_amount_won
-    if bet_option.success.nil?
-      self.amount_won = nil
-    elsif bet_option.success
-      self.amount_won = to_win_amount
-    else
-      self.amount_won = 0
-    end
+    self.amount_won =
+      case bet_option.success
+      when nil   then nil
+      when true  then to_win_amount
+      when false then 0
+      end
   end
 
   def update_betslip_earnings
@@ -88,6 +97,7 @@ class Bet < ApplicationRecord
     end
   end
 
+  # This is for updating the amount a user bet in a given betslip
   def update_betslip_budget
     betslip.recalculate_amount_bet!
   end

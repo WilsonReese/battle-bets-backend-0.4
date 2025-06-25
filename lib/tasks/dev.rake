@@ -287,14 +287,14 @@ namespace :dev do
     league_season1 = LeagueSeason.create!(
       # id: 1,
       pool: pool1,
-      season: season2024, 
+      season: season2025, 
       start_week: 1
     )
 
     league_season2 = LeagueSeason.create!(
       # id: 2,
       pool: pool2,
-      season: season2024,
+      season: season2025,
       start_week: 1
     )
 

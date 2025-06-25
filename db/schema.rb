@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_06_24_183835) do
+ActiveRecord::Schema[7.1].define(version: 2025_06_25_174715) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -81,7 +81,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_24_183835) do
     t.bigint "season_id", null: false
     t.string "api_sports_io_game_id"
     t.string "odds_api_game_id"
+    t.boolean "battles_locked", default: false, null: false
     t.index ["api_sports_io_game_id"], name: "index_games_on_api_sports_io_game_id", unique: true
+    t.index ["battles_locked"], name: "index_games_on_battles_locked"
     t.index ["season_id"], name: "index_games_on_season_id"
   end
 

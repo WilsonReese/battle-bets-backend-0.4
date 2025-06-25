@@ -51,11 +51,20 @@ class BetOption < ApplicationRecord
   }
 
   before_save :set_long_title
+  after_update_commit :cascade_result_to_bets, if: :saved_change_to_success?
 
   private
 
   def set_long_title
     game = self.game
     self.long_title = "#{game.away_team.name} at #{game.home_team.name}: #{title}"
+  end
+
+
+  def cascade_result_to_bets
+    # run in a single transaction so all betslip callbacks finish together
+    Bet.transaction do
+      bets.find_each(&:recompute_amount_won!)
+    end
   end
 end
