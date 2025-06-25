@@ -50,8 +50,13 @@ class Betslip < ApplicationRecord
   before_update :ensure_not_locked, unless: -> { skip_locked_check }
 
   def calculate_earnings
+    return unless persisted? && !destroyed?
+
     self.earnings = bets.sum { |bet| bet.amount_won.to_f }
-    save!
+
+    unless save
+      Rails.logger.error "Failed to save betslip #{id} during earnings calc: #{errors.full_messages.join(', ')}"
+    end
   end
 
   def calculate_max_payout_remaining

@@ -28,6 +28,7 @@ class PoolMembership < ApplicationRecord
   after_create :create_leaderboard_entries_for_existing_seasons
   after_create :create_betslip_if_battle_in_progress
   before_destroy :remove_leaderboard_entries
+  before_destroy :destroy_betslips_for_pool
 
   def can_be_demoted?
     return true unless is_commissioner
@@ -56,6 +57,19 @@ class PoolMembership < ApplicationRecord
     pool.league_seasons.each do |season|
       LeaderboardEntry.where(user: user, league_season: season).destroy_all
     end
+  end
+
+  def destroy_betslips_for_pool
+    # 1. Nuke bets first so no FK complaints in some DB setups
+    Bet.joins(betslip: { battle: { league_season: :pool } })
+      .where(betslips: { user_id: user_id }, pools: { id: pool_id })
+      .delete_all
+
+    # 2. Now nuke the betslips
+    Betslip
+      .joins(battle: { league_season: :pool })
+      .where(user_id: user_id, pools: { id: pool_id })
+      .delete_all
   end
 
   def create_betslip_if_battle_in_progress
