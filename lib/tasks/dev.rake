@@ -28,7 +28,7 @@ namespace :dev do
       email: "reese@example.com",
       password: "password123",
       password_confirmation: "password123",
-      username: "reesemmmmmmmmmmmmmmm",
+      username: "reese",
       first_name: "Reese",
       last_name: "Wilson", 
       confirmed_at: Time.now
@@ -335,198 +335,145 @@ namespace :dev do
 
 
     puts "Updated Leaderboard Entries successfully."
-    
+  end
 
-    puts "Creating sample battles..."
+  desc "Create 100 users, 6 demo pools, pool memberships, and league seasons"
+  task expanded_sample_data: :environment do
+    # puts "🧹  Clearing old sample data…"
+    # PoolMembership.delete_all
+    # LeagueSeason.delete_all
+    # Pool.delete_all
+    # User.where.not(username: 'reese').delete_all  # keep the real Reese if already present
 
-    # Will need to re-create this to be associated with a league season
-    # battle1 = Battle.create!(
-    #   # id: 1,
-    #   start_date: DateTime.new(2024, 9, 8, 0, 0, 0),
-    #   end_date: DateTime.new(2024, 9, 14, 23, 59, 59),
-    #   league_season: league_season1,
-    #   locked: true,
-    #   week: 1,
-    #   status: 2,
-    # )
-    # Battle.find_by!(league_season: league_season1, week: 1).update!(locked: true, status: 2)
+    puts "👥  Seeding users…"
+    users = []
 
+    # Ensure the 'reese' account exists
+    users << User.find_or_create_by!(username: "reese") do |u|
+      u.email                 = "reese@example.com"
+      u.first_name            = "Reese"
+      u.last_name             = "Wilson"
+      u.password              = "password123"
+      u.password_confirmation = "password123"
+      u.confirmed_at          = Time.current
+    end
 
-    # battle2 = Battle.create!(
-    #   # id: 2,
-    #   start_date: DateTime.new(2024, 9, 15, 0, 0, 0),
-    #   end_date: DateTime.new(2024, 9, 21, 23, 59, 59),
-    #   league_season: league_season1,
-    #   locked: true,
-    #   week: 2,
-    #   status: 2,
-    # )
+    # Create 99 more fake users
+    99.times do
+      username = nil
 
-    # battle3 = Battle.create!(
-    #   # id: 3,
-    #   start_date: DateTime.new(2024, 9, 22, 0, 0, 0),
-    #   end_date: DateTime.new(2024, 9, 28, 23, 59, 59),
-    #   league_season: league_season1,
-    #   locked: true,
-    #   week: 3,
-    #   status: 2,
-    # )
+      loop do
+        username_candidate = Faker::Internet.unique.username(specifier: 5..12).gsub(/[^a-zA-Z0-9_]/, '_')
+        if username_candidate =~ /^[a-zA-Z_][a-zA-Z0-9_]*$/
+          username = username_candidate
+          break
+        end
+      end
 
-    # battle4 = Battle.create!(
-    #   # id: 4,
-    #   start_date: DateTime.new(2025, 12, 1, 0, 0, 0),
-    #   end_date: DateTime.new(2025, 12, 7, 23, 59, 59),
-    #   league_season: league_season1, 
-    #   week: 10,
-    #   status: 0,
-    #   current: false,
-    # )
+      users << User.create!(
+        email:                 Faker::Internet.unique.email,
+        username:              username,
+        first_name:            Faker::Name.first_name,
+        last_name:             Faker::Name.last_name,
+        password:              "password123",
+        password_confirmation: "password123",
+        confirmed_at:          Time.current
+      )
+    end
 
-    # battle5 = Battle.create!(
-    #   # id: 5,
-    #   start_date: DateTime.new(2025, 12, 1, 0, 0, 0),
-    #   end_date: DateTime.new(2025, 12, 7, 23, 59, 59),
-    #   league_season: league_season2,
-    #   week: 10,
-    #   status: 0,
-    #   current: false,
-    # )
+    puts "🏆  Creating demo pools…"
+    pool_specs = [
+      { name: "6 Man League",  size: 6  },
+      { name: "10 Man League", size: 10 },
+      { name: "15 Man League", size: 15 },
+      { name: "22 Man League", size: 22 },
+      { name: "35 Man League", size: 35 },
+      { name: "100 Man League",size: 100 }
+    ]
 
-    # battle6 = Battle.create!(
-    #   # id: 5,
-    #   start_date: DateTime.new(2025, 12, 8, 0, 0, 0),
-    #   end_date: DateTime.new(2025, 12, 14, 23, 59, 59),
-    #   league_season: league_season1,
-    #   week: 11,
-    #   status: 0,
-    # )
+    pool_specs.each do |spec|
+      pool = Pool.create!(name: spec[:name])
 
-    # battle7 = Battle.create!(
-    #   # id: 5,
-    #   start_date: DateTime.new(2025, 12, 8, 0, 0, 0),
-    #   end_date: DateTime.new(2025, 12, 14, 23, 59, 59),
-    #   league_season: league_season2,
-    #   week: 11,
-    #   status: 0,
-    # )
+      # --- memberships ---------------------------------------------------
+      # Always include Reese
+      members = [users.first] + users.sample(spec[:size] - 1)
 
-    puts "Sample battles created successfully."
-    puts "Skipping sample betslips..."
-    # betslip1 = Betslip.create!(
-    #   id: 1,
-    #   user: user1,
-    #   battle: battle1,
-    #   name: 'User 1 Betslip'
-    # )
+      members.each_with_index do |user, i|
+        PoolMembership.find_or_create_by!(user: user, pool: pool) do |membership|
+          membership.is_commissioner = i < 2 # Reese + 1 other commissioner
+        end
+      end
 
-    # betslip2 = Betslip.create!(
-    #   id: 2,
-    #   user: user2,
-    #   battle: battle1,
-    #   name: 'User 2 Betslip'
-    # )
+      # --- league season --------------------------------------------------
+      season_2025 = Season.find_or_create_by!(year: 2025)
+      LeagueSeason.create!(
+        pool:       pool,
+        season:     season_2025,
+        start_week: 1
+      )
 
-    puts "Skipped betslips successfully."
-    puts "Skip creating teams:"
-    
-    # team_names = ["Vanderbilt", "Oklahoma", "Tennessee", "Texas", "Alabama", "Auburn", "Texas A&M", "LSU", "Ole Miss", "Mississippi St", "Missouri", "Arkansas", "Florida", "Georgia", "S Carolina", "Kentucky", "Penn St", "Oregon", "Iowa St", "Arizona St", "SMU", "Clemson"]
-    # teams = team_names.map.with_index(1) do |name, index|
-    #   Team.create!(id: index, name: name)
-    # end
+      puts "  → #{spec[:name]} seeded with #{spec[:size]} members"
+    end
 
-    puts "Sample teams skipped successfully."
-    puts "Skip creating sample games..."
+    puts "✅  Sample data generated!"
+  end
 
-    # games = [
-    #   { id: 1, start_time: "2025-12-07 15:00:00", away_team: "Georgia", home_team: "Texas" },
-    #   { id: 2, start_time: "2025-12-07 19:00:00", away_team: "Penn State", home_team: "Oregon" },
-    #   { id: 3, start_time: "2025-12-07 11:00:00", away_team: "Iowa State", home_team: "Arizona St" },
-    #   { id: 4, start_time: "2025-12-07 19:00:00", away_team: "Clemson", home_team: "SMU" },
-    #   { id: 5, start_time: "2025-12-07 19:00:00", away_team: "Tennessee", home_team: "Vanderbilt" },
-    #   { id: 6, start_time: "2025-12-07 19:00:00", away_team: "Mississippi St", home_team: "South Carolina" }
-    # ]
+  desc "Reset sample data: clear bets, betslips, options, battles; reset leaderboard and season state"
+  task reset_sample_data: :environment do
+    puts "🧹 Resetting sample data…"
 
-    # games.each do |g|
-    #   away = Team.find_by!(name: g[:away_team])
-    #   home = Team.find_by!(name: g[:home_team])
+    puts "🗑️  Deleting bets, betslips, bet options, and battles…"
+    Bet.delete_all
+    Betslip.delete_all
+    BetOption.delete_all
+    Battle.delete_all
 
-    #   Game.create!(
-    #     id: g[:id],
-    #     start_time: g[:start_time],
-    #     season: season2024,
-    #     week: 1,
-    #     away_team: away,
-    #     home_team: home
-    #   )
-    # end 
+    puts "🔄 Resetting leaderboard entries…"
+    LeaderboardEntry.update_all(total_points: 0, ranking: nil)
 
+    puts "🔄 Unlocking all games…"
+    Game.update_all(battles_locked: false)
 
-    puts "Skipped creating sample games successfully."
-    puts "Skip creating sample bet options..."
+    puts "🔄 Resetting current_week on all seasons…"
+    Season.update_all(current_week: 0)
 
-    # bet_option1 = BetOption.create!(
-    #   id: 1,
-    #   title: "Vanderbilt -6.5",
-    #   payout: 2.0,
-    #   category: "spread",
-    #   game: game1
-    # )
+    puts "✅ Sample data has been reset."
+  end
 
-    # bet_option2 = BetOption.create!(
-    #   id: 2,  
-    #   title: "Tennessee + 6.5",
-    #   payout: 2.0,
-    #   category: "spread",
-    #   game: game1
-    # )
+  desc "Populate each betslip with a single random bet"
+  task sample_bets: :environment do
+    amount_choices = [100, 200, 300, 400, 500]
 
-    # bet_option3 = BetOption.create!(
-    #   id: 3,  
-    #   title: "Over 45.5 Points",
-    #   payout: 2.0,
-    #   category: "ou",
-    #   game: game1
-    # )
+    total_created = 0
+    total_skipped = 0
 
-    # bet_option4 = BetOption.create!(
-    #   id: 4,
-    #   title: "Under 45.5 Points",
-    #   payout: 2.0,
-    #   category: "ou",
-    #   game: game1
-    # )
+    puts "🎲  Creating sample bets…"
 
-    puts "Sample bet options skipped successfully."
-    puts "Skipping sample bets..."
+    Betslip.find_each do |betslip|
+      attempts = 0
+      created  = false
 
-    # Bet.create!(
-    #   id: 1,
-    #   betslip: betslip1,
-    #   # bet_option: BetOption.first,
-    #   bet_amount: 100,
-    # )
+      while attempts < 5 && !created
+        bet_option = BetOption.order(Arel.sql('RANDOM()')).first
+        attempts  += 1
 
-    # Bet.create!(
-    #   id: 2,
-    #   betslip: betslip1,
-    #   bet_option: bet_option3,
-    #   bet_amount: 600,
-    # )
+        begin
+          Bet.create!(
+            betslip:      betslip,
+            bet_option:   bet_option,
+            bet_amount:   amount_choices.sample
+          )
+          total_created += 1
+          created = true
+        rescue ActiveRecord::RecordInvalid => e
+          # most likely uniqueness validation on (betslip_id, bet_option_id)
+          puts "❌ Skipped betslip ##{betslip.id}: #{e.record.errors.full_messages.join(', ')}"
 
-    # Bet.create!(
-    #   id: 3,
-    #   betslip: betslip2,
-    #   bet_option: bet_option2,
-    #   bet_amount: 400,
-    # )
+          total_skipped += 1 if attempts == 5
+        end
+      end
+    end
 
-    # Bet.create!(
-    #   id: 4,
-    #   betslip: betslip2,
-    #   bet_option: bet_option3,
-    #   bet_amount: 200,
-    # )
-
-    puts "Sample bets skipped successfully."
+    puts "✅  #{total_created} bets created, #{total_skipped} skipped."
   end
 end
