@@ -50,14 +50,24 @@ class Bet < ApplicationRecord
   after_save    :update_betslip_budget
   after_destroy :update_betslip_budget
 
-  def recompute_amount_won!
+  def recompute_amount_won!    
+    # 1️⃣ skip the “betslip locked” guard for this programmatic update
+    self.skip_locked_check  = true          # skip check on this Bet
+    betslip.skip_locked_check = true        # skip check on the Betslip callbacks, too
+
+    # 2️⃣ re-compute amount_won
     self.amount_won =
       case bet_option.success
-      when nil   then nil                       # game not finished
-      when true  then to_win_amount             # ✅ full payout
-      when false then 0                         # ❌ lost
+      when nil   then nil
+      when true  then to_win_amount
+      when false then 0
       end
-    save!                                       # will trigger all after_save callbacks
+
+    save!                                     # after_save callbacks still run
+  ensure
+    # 3️⃣ clean up so normal validations work elsewhere
+    self.skip_locked_check = false
+    betslip.skip_locked_check = false
   end
 
   private
@@ -72,7 +82,7 @@ class Bet < ApplicationRecord
       when nil   then nil
       when true  then to_win_amount
       when false then 0
-      end
+    end
   end
 
   def update_betslip_earnings

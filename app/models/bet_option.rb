@@ -51,7 +51,7 @@ class BetOption < ApplicationRecord
   }
 
   before_save :set_long_title
-  after_update_commit :cascade_result_to_bets, if: :saved_change_to_success?
+  after_update_commit :cascade_result_to_bets
 
   private
 

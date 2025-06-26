@@ -51,30 +51,63 @@ class Battle < ApplicationRecord
 
   # app/models/battle.rb
 
+  # def complete!
+  #   ActiveRecord::Base.transaction do
+  #     update!(status: :completed)
+
+  #     # Sort the betslips in the battle by earnings
+  #     betslips_with_earnings = betslips.to_a.sort_by { |b| -b.earnings }
+
+  #     top_earnings = betslips_with_earnings.first&.earnings
+  #     return if top_earnings.nil?
+
+  #     betslips_with_earnings.each do |betslip|
+  #       points = betslip.earnings == top_earnings ? 20 : 10
+
+  #       entry = LeaderboardEntry.find_or_create_by!(
+  #         user_id: betslip.user_id,
+  #         league_season_id: league_season_id
+  #       )
+
+  #       # Increase the points on the leaderboard entry
+  #       entry.increment!(:total_points, points)
+        
+  #       # Add league points to the betslip
+  #       betslip.skip_locked_check = true
+  #       betslip.update!(league_points: points)
+  #     end
+  #   end
+  # end
+
   def complete!
     ActiveRecord::Base.transaction do
       update!(status: :completed)
 
-      # Sort the betslips in the battle by earnings
-      betslips_with_earnings = betslips.to_a.sort_by { |b| -b.earnings }
+      betslips_ranked = betslips.order(earnings: :desc, max_payout_remaining: :desc)
+      size            = betslips_ranked.size
 
-      top_earnings = betslips_with_earnings.first&.earnings
-      return if top_earnings.nil?
+      # build rank array with ties handled
+      rank = 0
+      prev = nil
 
-      betslips_with_earnings.each do |betslip|
-        points = betslip.earnings == top_earnings ? 20 : 10
+      betslips_ranked.each_with_index do |bs, idx|
+        # increment rank only when distinct earnings/max
+        if prev&.earnings != bs.earnings || prev&.max_payout_remaining != bs.max_payout_remaining
+          rank = idx + 1
+        end
+        prev = bs
 
+        points = SeasonScoringService.points_for(rank, size)
+
+        # update leaderboard entry
         entry = LeaderboardEntry.find_or_create_by!(
-          user_id: betslip.user_id,
+          user_id: bs.user_id,
           league_season_id: league_season_id
         )
-
-        # Increase the points on the leaderboard entry
         entry.increment!(:total_points, points)
-        
-        # Add league points to the betslip
-        betslip.skip_locked_check = true
-        betslip.update!(league_points: points)
+
+        # store on betslip for UI
+        bs.update!(league_points: points, skip_locked_check: true)
       end
     end
   end
