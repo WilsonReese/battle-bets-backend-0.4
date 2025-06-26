@@ -29,8 +29,6 @@ class Betslip < ApplicationRecord
   belongs_to :user
   belongs_to :battle
 
-  # Test
-
   has_many  :bets, dependent: :destroy
 
   enum status: { created: "created", filled_out: "filled_out", completed: "completed" }
