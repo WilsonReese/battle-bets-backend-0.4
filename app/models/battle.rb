@@ -104,7 +104,7 @@ class Battle < ApplicationRecord
           user_id: bs.user_id,
           league_season_id: league_season_id
         )
-        entry.increment!(:total_points, points)
+        entry.update!(total_points: entry.total_points + points)
 
         # store on betslip for UI
         bs.update!(league_points: points, skip_locked_check: true)

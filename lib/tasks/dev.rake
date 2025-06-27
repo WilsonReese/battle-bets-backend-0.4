@@ -429,7 +429,20 @@ namespace :dev do
     Battle.delete_all
 
     puts "🔄 Resetting leaderboard entries…"
-    LeaderboardEntry.update_all(total_points: 0, ranking: nil)
+    # LeaderboardEntry.update_all(total_points: 0, ranking: nil)
+    LeagueSeason.includes(:leaderboard_entries).find_each do |league_season|
+      entries = league_season.leaderboard_entries
+
+      # Reset scores and rankings first
+      entries.find_each do |entry|
+        entry.update_columns(total_points: 0, ranking: nil) # no callbacks needed here
+      end
+
+      # Recalculate rankings (will set all to rank 1 since all have 0)
+      if entries.any?
+        entries.first.update_rankings # triggers ranking update for whole season
+      end
+    end
 
     puts "🔄 Unlocking all games…"
     Game.update_all(battles_locked: false)
