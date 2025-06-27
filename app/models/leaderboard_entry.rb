@@ -27,8 +27,10 @@ class LeaderboardEntry < ApplicationRecord
 
   validates :total_points, presence: true
 
+  attr_accessor :skip_ranking_update
+
   # After save callback to trigger ranking updates
-  after_save :update_rankings
+  after_save :update_rankings, unless: :skip_ranking_update
 
   # Method to update rankings for entries in the same league season
   def update_rankings
@@ -47,6 +49,24 @@ class LeaderboardEntry < ApplicationRecord
       end
 
       entry.update_column(:ranking, current_rank)  # Use update_column to skip callbacks for performance
+      previous_points = entry.total_points
+    end
+  end
+
+  def self.update_rankings_for(league_season_id)
+    entries = where(league_season_id: league_season_id).order(total_points: :desc)
+
+    current_rank = 0
+    previous_points = nil
+    rank_counter = 0
+
+    entries.each do |entry|
+      rank_counter += 1
+      if entry.total_points != previous_points
+        current_rank = rank_counter
+      end
+
+      entry.update_column(:ranking, current_rank) # fast + no callbacks
       previous_points = entry.total_points
     end
   end

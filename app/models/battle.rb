@@ -86,12 +86,11 @@ class Battle < ApplicationRecord
       betslips_ranked = betslips.order(earnings: :desc, max_payout_remaining: :desc)
       size            = betslips_ranked.size
 
-      # build rank array with ties handled
       rank = 0
       prev = nil
+      updated_entries = {}
 
       betslips_ranked.each_with_index do |bs, idx|
-        # increment rank only when distinct earnings/max
         if prev&.earnings != bs.earnings || prev&.max_payout_remaining != bs.max_payout_remaining
           rank = idx + 1
         end
@@ -99,16 +98,22 @@ class Battle < ApplicationRecord
 
         points = SeasonScoringService.points_for(rank, size)
 
-        # update leaderboard entry
-        entry = LeaderboardEntry.find_or_create_by!(
+        entry = LeaderboardEntry.find_or_initialize_by(
           user_id: bs.user_id,
           league_season_id: league_season_id
         )
-        entry.update!(total_points: entry.total_points + points)
+        entry.total_points ||= 0
+        entry.total_points += points
+        entry.skip_ranking_update = true  # ⛔️ Prevent callback
+        updated_entries[entry.user_id] = entry
 
-        # store on betslip for UI
         bs.update!(league_points: points, skip_locked_check: true)
       end
+
+      updated_entries.values.each(&:save!)
+
+      # ✅ Call ranking update once
+      LeaderboardEntry.update_rankings_for(league_season_id)
     end
   end
 
