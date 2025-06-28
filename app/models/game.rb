@@ -40,6 +40,12 @@ class Game < ApplicationRecord
   }
 
   scope :within_date_range, ->(start_date, end_date) {
-      where(start_time: start_date..end_date)
-    }
+    where(start_time: start_date..end_date)
+  }
+
+  scope :saturday_games_central, -> {
+    where(
+      "EXTRACT(DOW FROM start_time AT TIME ZONE 'UTC' AT TIME ZONE 'America/Chicago') = ?", 6 # SQL from ChatGPT
+    )
+  }
 end

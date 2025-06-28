@@ -5,7 +5,7 @@ namespace :games do
   task :import_week, [:week, :season_year] => :environment do |t, args|
 
     puts "🧹 Clearing existing games..."
-    Game.delete_all # Hard code / temporary - This needs to be fixed to just delete games from the season and year
+    # Game.delete_all # Hard code / temporary - This needs to be fixed to just delete games from the season and year
 
     week = args[:week].to_i
     season_year = args[:season_year].to_i

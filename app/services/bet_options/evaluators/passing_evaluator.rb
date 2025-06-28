@@ -34,7 +34,7 @@ module BetOptions
 
           # 3️⃣ Find that player in our Passing‐group array
 
-          # UPDATE NEEDED: Add Fuzzy Matching here
+          # HARD CODE -- UPDATE NEEDED: Add Fuzzy Matching here
 
           pdata = @passing_players.find { |p| p.dig("player","name") == player_name }
           unless pdata

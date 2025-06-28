@@ -9,7 +9,25 @@ class BetslipsController < ApplicationController
         # Return only the betslip for the current user
         @betslip = @battle.betslips.find_by(user: current_user)
         
-        render json: @betslip
+        render json: @betslip.as_json(include: {
+          bets: {
+            only: [:id, :bet_amount, :to_win_amount, :amount_won],
+            include: {
+              bet_option: {
+                only: [:title, :long_title, :payout, :category, :success],
+                include: {
+                  game: {
+                    only: [:id, :start_time],
+                    include: {
+                      home_team: { only: [:name] },
+                      away_team: { only: [:name] }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        })
       else
         # Return all betslips for the battle
         @betslips = @battle.betslips.includes(bets: { bet_option: :game })

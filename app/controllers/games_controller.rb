@@ -19,6 +19,7 @@ class GamesController < ApplicationController
     base_games = Game
       .with_bet_options
       .where(season: season, week: week)
+      .saturday_games_central # 👈 only Saturday games in Central Time
       .includes(:home_team, :away_team, :bet_options)
       .to_a
 
