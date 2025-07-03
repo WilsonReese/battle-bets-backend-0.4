@@ -275,7 +275,6 @@ namespace :dev do
     )
 
     season2025 = Season.create!(
-      # id: 1,
       start_date: DateTime.new(2025, 8, 1, 0, 0, 0),
       end_date: DateTime.new(2026, 2, 1, 0, 0, 0),
       year: 2025
