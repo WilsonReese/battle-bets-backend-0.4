@@ -82,6 +82,18 @@ Rails.application.configure do
 
   # use domain for mailer - make sure to put in my actual domain
   # config.action_mailer.default_url_options = { host: 'example.com' }
+  config.action_mailer.delivery_method = :postmark
+  config.action_mailer.postmark_settings = {
+    api_token: ENV["POSTMARK_API_TOKEN"]
+  }
+  config.action_mailer.default_url_options = {
+    host: ENV["APP_HOST"], protocol: "https"
+  }
+  config.action_mailer.perform_deliveries = true
+  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.default_options = {
+    from: ENV["MAILER_FROM"]
+  }
 
   # Enable DNS rebinding protection and other `Host` header attacks.
   # config.hosts = [

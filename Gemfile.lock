@@ -235,6 +235,11 @@ GEM
     orm_adapter (0.5.0)
     os (1.1.4)
     pg (1.5.9)
+    postmark (1.25.1)
+      json
+    postmark-rails (0.22.1)
+      actionmailer (>= 3.0.0)
+      postmark (>= 1.21.3, < 2.0)
     pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -365,6 +370,7 @@ DEPENDENCIES
   kredis
   letter_opener
   pg (~> 1.4)
+  postmark-rails
   pry-rails
   puma (>= 5.0)
   rack-cors

@@ -47,6 +47,7 @@ gem "faker"
 gem "http"
 gem "table_print"
 gem 'google-apis-sheets_v4'
+gem 'postmark-rails'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
