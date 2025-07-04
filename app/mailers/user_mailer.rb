@@ -19,7 +19,7 @@ class UserMailer < Devise::Mailer
         resource: {
           first_name: @resource.first_name || "there"
         },
-        confirmation_url: confirmation_url
+        confirmation_url: @confirmation_url
       }
     )
   end
