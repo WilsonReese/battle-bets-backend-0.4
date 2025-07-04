@@ -16,6 +16,7 @@ class UserMailer < Devise::Mailer
       client = Postmark::ApiClient.new(ENV["POSTMARK_API_KEY"])
 
       client.deliver_with_template(
+        Rails.logger.info "🔢 Postmark Template ID: #{ENV['POSTMARK_CONFIRMATION_TEMPLATE_ID']}"
         from: ENV.fetch("MAILER_FROM", "no-reply@battlebets.app"),
         to: @resource.email,
         template_id: ENV["POSTMARK_CONFIRMATION_TEMPLATE_ID"].to_i,
