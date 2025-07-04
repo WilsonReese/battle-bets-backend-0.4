@@ -13,7 +13,7 @@ class UserMailer < Devise::Mailer
 
     if Rails.env.production? || Rails.env.staging?
       # ✅ Use Postmark API in production/staging
-      client = Postmark::ApiClient.new(ENV["POSTMARK_API_KEY"])
+      client = Postmark::ApiClient.new(ENV["POSTMARK_API_TOKEN"])
       Rails.logger.info "🔢 Postmark Template ID: #{ENV['POSTMARK_CONFIRMATION_TEMPLATE_ID']}"
 
       client.deliver_with_template(
