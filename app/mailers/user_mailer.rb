@@ -11,6 +11,16 @@ class UserMailer < Devise::Mailer
     @resource = record
     @confirmation_url = user_confirmation_url(confirmation_token: token)
 
-    mail(to: @resource.email, subject: "Confirm your Battle Bets account")
+    mail(
+      to: @resource.email,
+      template_id: ENV["POSTMARK_CONFIRMATION_TEMPLATE_ID"], # ⬅️ Template ID from Postmark
+      message_stream: "outbound",
+      template_model: {
+        resource: {
+          first_name: @resource.first_name || "there"
+        },
+        confirmation_url: confirmation_url
+      }
+    )
   end
 end
