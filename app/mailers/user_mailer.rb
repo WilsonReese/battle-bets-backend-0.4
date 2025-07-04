@@ -21,9 +21,7 @@ class UserMailer < Devise::Mailer
         to: @resource.email,
         template_id: ENV["POSTMARK_CONFIRMATION_TEMPLATE_ID"].to_i,
         template_model: {
-          resource: {
-            first_name: @resource.first_name || "there"
-          },
+          first_name: @resource.first_name || "there",
           confirmation_url: @confirmation_url
         }
       )
