@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Battle Bets Confirmation</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Saira:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Saira', Verdana, sans-serif;
+      background-color: #F8F8F8;
+      color: #061826;
+      text-align: center;
+      padding: 50px 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background-color: #ffffff;
+      border-radius: 10px;
+      padding: 40px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    a {
+      color: #54D18C;
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <% if resource.errors.empty? %>
+      <h1 style="color:#54D18C;">Success!</h1>
+      <p>Your account has been confirmed. You can now return to the app.</p>
+    <% else %>
+      <h1 style="color:#AB1126;">Oops!</h1>
+      <p><%= resource.errors.full_messages.join(", ") %></p>
+    <% end %>
+    <hr></hr>
+    <p><a href="https://battlebets.app">Go to battlebets.app</a></p>
+  </div>
+</body>
+</html>
