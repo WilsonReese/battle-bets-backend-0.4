@@ -27,12 +27,12 @@ class Users::PasswordsController < Devise::PasswordsController
       resource.update!(
         resetting_password: true,
         resetting_password_set_at: Time.current,
-        reset_password_token: nil,          # 🔐 Invalidate token
-        reset_password_sent_at: nil         # 🔐 Clear timestamp too (optional)
+        reset_password_token: nil,
+        reset_password_sent_at: nil
       )
-      render plain: "Password reset activated. Please return to the app."
+      # 👇 Let it render `edit.html.erb`
     else
-      render plain: "Invalid or expired token", status: :unprocessable_entity
+      # 👇 Still let it render, resource will not be persisted and error will show
     end
   end
 

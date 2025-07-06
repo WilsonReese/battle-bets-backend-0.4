@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Battle Bets Confirmation</title>
+  <title>Battle Bets Password Reset</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -35,14 +35,14 @@
 </head>
 <body>
   <div class="container">
-    <% if resource.errors.empty? %>
-      <h1 style="color:#54D18C;">Success!</h1>
-      <p>Your account has been confirmed. You can now return to the app.</p>
+    <% if resource && resource.persisted? %>
+      <h1 style="color:#54D18C;">Reset Started</h1>
+      <p>Your password reset has been activated. Please return to the app to complete the reset.</p>
     <% else %>
-      <h1 style="color:#AB1126;">Oops!</h1>
-      <p><%= resource.errors.full_messages.join(", ") %></p>
+      <h1 style="color:#AB1126;">Invalid or Expired Link</h1>
+      <p>The password reset link is invalid or has expired. Please request a new one.</p>
     <% end %>
-    <hr></hr>
+    <hr>
     <p><a href="https://battlebets.app">Go to battlebets.app</a></p>
   </div>
 </body>
