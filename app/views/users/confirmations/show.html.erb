@@ -38,6 +38,7 @@
     <% if resource.errors.empty? %>
       <h1 style="color:#54D18C;">Success!</h1>
       <p>Your account has been confirmed. You can now return to the app.</p>
+      <p>You may need to swipe to refresh.</p>
     <% else %>
       <h1 style="color:#AB1126;">Oops!</h1>
       <p><%= resource.errors.full_messages.join(", ") %></p>

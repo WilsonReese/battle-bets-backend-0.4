@@ -314,7 +314,7 @@ Devise.setup do |config|
     jwt.revocation_requests = [
       ['DELETE', %r{^/logout$}]
     ]
-    jwt.expiration_time = 1.years.to_i # Set token expiration to 1 year
+    jwt.expiration_time = 10.years.to_i # Set token expiration to 1 year
   end
 
   # ==> Configuration for :registerable
