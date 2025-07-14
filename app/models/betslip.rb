@@ -44,6 +44,7 @@ class Betslip < ApplicationRecord
   validates :locked, inclusion: { in: [true, false] }
   validates :user_id, uniqueness: { scope: :battle_id, message: "already has a betslip for this battle" }
   validate :battle_not_locked, on: :create
+  validate :totals_within_budget
 
   before_create :set_default_status
   before_create :set_default_name
@@ -80,6 +81,25 @@ class Betslip < ApplicationRecord
   def recalculate_amount_bet!
     update!(amount_bet: bets.sum(:bet_amount))
   end
+
+  def totals_within_budget
+    # sum up bets by the budget key
+    subtotals = Hash.new(0)
+    bets.each do |bet|
+      key = BettingRules::CATEGORY_TO_BUDGET[ bet.bet_option.category ]
+      subtotals[key] += bet.bet_amount if key
+    end
+
+    subtotals.each do |budget_key, total|
+      cap = BettingRules::DEFAULT_BUDGETS[budget_key]
+      if total > cap
+        errors.add(
+          :base,
+          "#{budget_key.humanize} bets exceed the $#{cap} budget (you’ve tried to bet $#{total})"
+        )
+      end
+    end
+  end
   
   private
 
@@ -103,6 +123,16 @@ class Betslip < ApplicationRecord
   def battle_not_locked
     if battle.locked?
       errors.add(:base, "Cannot create a betslip for a locked battle.")
+    end
+  end
+
+  def budget_key_for(category)
+    case category
+    when "spread", "ou"      then "spread_ou"
+    when "money_line"        then "money_line"
+    when "prop"              then "prop"
+    else
+      nil
     end
   end
 

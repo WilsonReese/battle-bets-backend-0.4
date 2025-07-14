@@ -33,6 +33,7 @@ class Bet < ApplicationRecord
     scope: :betslip_id, 
     message: "This bet option is already added to the betslip" 
   }
+  validate :amount_within_option_limits
 
   # I added a line here so I would have something to commit.
 
@@ -64,10 +65,22 @@ class Bet < ApplicationRecord
       end
 
     save!                                     # after_save callbacks still run
-  ensure
+    ensure
     # 3️⃣ clean up so normal validations work elsewhere
-    self.skip_locked_check = false
-    betslip.skip_locked_check = false
+      self.skip_locked_check = false
+      betslip.skip_locked_check = false
+  end
+
+  def amount_within_option_limits
+    rules = BettingRules::RULES[ bet_option.category ]
+    return unless rules
+
+    if bet_amount < rules[:min] || bet_amount > rules[:max]
+      errors.add(
+        :bet_amount,
+        "must be between $#{rules[:min]} and $#{rules[:max]} for #{bet_option.category.humanize}"
+      )
+    end
   end
 
   private
