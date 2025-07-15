@@ -96,8 +96,8 @@ class BetsController < ApplicationController
 
   def set_betslip
     # @betslip = Betslip.find(params[:id])
-      id = params[:betslip_id] || params[:id]
-  @betslip = Betslip.find(id)
+    id = params[:betslip_id] || params[:id]
+    @betslip = Betslip.find(id)
   end
 
   def authorize_betslip_owner!

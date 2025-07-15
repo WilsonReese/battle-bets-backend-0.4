@@ -13,15 +13,24 @@ class GamesController < ApplicationController
                     status: :not_found
     end
 
-    week = season.current_week.to_i
+    week = (params[:week].presence || season.current_week.to_s).to_i
+    week = 1 if week.zero?
 
     # 1. Load games for this season/week
-    base_games = Game
-      .with_bet_options
-      .where(season: season, week: week)
-      .saturday_games_central # 👈 only Saturday games in Central Time
-      .includes(:home_team, :away_team, :bet_options)
-      .to_a
+    if season.current_week.to_i == 0
+      base_games = Game
+        .where(season: season, week: week)
+        .weekend_games_central # 👈 only weekend games in Central Time
+        .includes(:home_team, :away_team)
+        .to_a
+    else
+      base_games = Game
+        .with_bet_options
+        .where(season: season, week: week)
+        .weekend_games_central # 👈 only weekend games in Central Time
+        .includes(:home_team, :away_team, :bet_options)
+        .to_a
+    end
 
     # 2. Get count of bets placed by the current user, grouped by game
     counts_by_game = Bet
