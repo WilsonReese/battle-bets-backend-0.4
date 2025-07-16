@@ -317,8 +317,8 @@ Devise.setup do |config|
 
     # temporary toggle for staging / CI: set this in your staging config vars
     # if Rails.env.staging? || ENV['DISABLE_JWT_REVOCATION'] == 'true'
-      jwt.revocation_strategy = Devise::JWT::RevocationStrategies::Null
-      Rails.logger.info "[JWT] ⛔️ revocation disabled (Null strategy applied)"
+      # jwt.revocation_strategy = Devise::JWT::RevocationStrategies::Null
+      # Rails.logger.info "[JWT] ⛔️ revocation disabled (Null strategy applied)"
     # else
     #   jwt.revocation_strategy = Devise::JWT::RevocationStrategies::JTIMatcher
     # end
