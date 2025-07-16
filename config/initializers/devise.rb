@@ -315,14 +315,6 @@ Devise.setup do |config|
       ['DELETE', %r{^/logout$}]
     ]
 
-    # temporary toggle for staging / CI: set this in your staging config vars
-    # if Rails.env.staging? || ENV['DISABLE_JWT_REVOCATION'] == 'true'
-      jwt.revocation_strategy = Devise::JWT::RevocationStrategies::Null
-      Rails.logger.info "[JWT] ⛔️ revocation disabled (Null strategy applied)"
-    # else
-    #   jwt.revocation_strategy = Devise::JWT::RevocationStrategies::JTIMatcher
-    # end
-
     jwt.expiration_time = 10.years.to_i # Set token expiration to 1 year
   end
 
