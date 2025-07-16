@@ -5,15 +5,15 @@ class Users::SessionsController < Devise::SessionsController
 
   # PUBLIC: override the sign-out action
   # If the token no longer maps to a real user, just return 200 OK
-  def destroy
-    unless current_user
-      Rails.logger.warn "Logout called on missing user—skipping JWT revocation."
-      return head :ok
-    end
+  # def destroy
+  #   unless current_user
+  #     Rails.logger.warn "Logout called on missing user—skipping JWT revocation."
+  #     return head :ok
+  #   end
 
-    # Otherwise, let Devise + devise-jwt revoke and then call respond_to_on_destroy
-    super
-  end
+  #   # Otherwise, let Devise + devise-jwt revoke and then call respond_to_on_destroy
+  #   super
+  # end
 
   private
 
