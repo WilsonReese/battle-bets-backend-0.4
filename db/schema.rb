@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_07_24_205150) do
+ActiveRecord::Schema[7.1].define(version: 2025_07_26_032130) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -168,6 +168,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_24_205150) do
     t.boolean "resetting_password", default: false
     t.datetime "resetting_password_set_at"
     t.integer "favorite_team_id"
+    t.integer "ambassador"
     t.index "lower((username)::text)", name: "index_users_on_lower_username", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["favorite_team_id"], name: "index_users_on_favorite_team_id"

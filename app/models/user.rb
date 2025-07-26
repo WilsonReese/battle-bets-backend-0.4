@@ -3,6 +3,7 @@
 # Table name: users
 #
 #  id                        :bigint           not null, primary key
+#  ambassador                :integer
 #  avatar                    :string
 #  confirmation_sent_at      :datetime
 #  confirmation_token        :string
@@ -68,6 +69,12 @@ class User < ApplicationRecord
   validate :password_complexity
   validates :first_name, presence: true
   validates :last_name, presence: true
+
+  enum ambassador: {
+    reese_wilson:     0,
+    logan_dunn:   1,
+    # …add more keys as needed
+  }, _prefix: :ambassador
 
   private
 

@@ -3,6 +3,7 @@
 # Table name: users
 #
 #  id                        :bigint           not null, primary key
+#  ambassador                :integer
 #  avatar                    :string
 #  confirmation_sent_at      :datetime
 #  confirmation_token        :string
