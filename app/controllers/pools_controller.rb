@@ -7,7 +7,11 @@ class PoolsController < ApplicationController
   def index
     begin
       Rails.logger.info "Attempting to fetch pools for user: #{current_user.inspect}"
-      @pools = current_user.pools.includes(:pool_memberships, :league_seasons)
+      @pools = Pool
+        .joins(:pool_memberships)
+        .where(pool_memberships: { user_id: current_user.id })
+        .order("pool_memberships.created_at ASC")
+        .includes(:pool_memberships, :league_seasons)
 
       enriched_pools = @pools.map do |pool|
         league_season = pool.league_seasons.find { |s| s.season.year == 2025 }
