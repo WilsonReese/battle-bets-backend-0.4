@@ -21,10 +21,12 @@
 #  username                  :string
 #  created_at                :datetime         not null
 #  updated_at                :datetime         not null
+#  favorite_team_id          :integer
 #
 # Indexes
 #
 #  index_users_on_email                 (email) UNIQUE
+#  index_users_on_favorite_team_id      (favorite_team_id)
 #  index_users_on_jti                   (jti) UNIQUE
 #  index_users_on_lower_username        (lower((username)::text)) UNIQUE
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
@@ -44,6 +46,11 @@ class User < ApplicationRecord
   has_many :pool_memberships, dependent: :destroy
   has_many :leaderboard_entries, dependent: :destroy
   has_many :betslips, dependent: :destroy
+
+  belongs_to :favorite_team,
+            class_name: "Team",
+            optional: true,
+            foreign_key: :favorite_team_id
   
   
   # Indirect Associations

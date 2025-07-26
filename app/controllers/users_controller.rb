@@ -2,6 +2,7 @@ class UsersController < ApplicationController
   before_action :authenticate_user!, only: %i[current update_profile change_password]
 
   def current
+    favorite_team = current_user.favorite_team
     render json: {
       id: current_user.id,
       email: current_user.email,
@@ -10,7 +11,9 @@ class UsersController < ApplicationController
       first_name: current_user.first_name,
       last_name: current_user.last_name,
       resetting_password: current_user.resetting_password,
-      created_at: current_user.created_at
+      created_at: current_user.created_at,
+      favorite_team_id: current_user.favorite_team_id,
+      favorite_team: favorite_team && { id: favorite_team.id, name: favorite_team.name }
     }
   end
 
@@ -42,6 +45,6 @@ class UsersController < ApplicationController
   private
 
   def profile_params
-    params.require(:user).permit(:first_name, :last_name, :username)
+    params.require(:user).permit(:first_name, :last_name, :username, :favorite_team_id)
   end
 end

@@ -42,16 +42,29 @@ class GamesController < ApplicationController
       .group("games.id")
       .count  # => { game_id => number of bets }
 
-    # 3. Add user_bet_count method to each game dynamically
-    @games = base_games.sort_by { |g|
-      [counts_by_game[g.id] ? 0 : 1, g.start_time]
-    }.each do |game|
-      # virtual field
-      game.define_singleton_method(:user_bet_count) { counts_by_game[game.id] || 0 }
+    fav_team_id = current_user.favorite_team_id
 
-      # 🔒 keep bet_options order deterministic
-      game.association(:bet_options).target.sort_by!(&:created_at)
-    end
+    # 3. Add user_bet_count method to each game dynamically
+  @games = base_games.sort_by do |g|
+    has_bet   = counts_by_game[g.id].to_i > 0
+    bet_group = has_bet ? 0 : 1
+    fav_group =
+      if bet_group.zero?
+        # keep all bet‑games together
+        0
+      else
+        # among the non‑bet games, promote favorite‑team games
+        [g.home_team_id, g.away_team_id].include?(fav_team_id) ? 0 : 1
+      end
+
+    [bet_group, fav_group, g.start_time]
+  end.each do |game|
+    # virtual field
+    game.define_singleton_method(:user_bet_count) { counts_by_game[game.id] || 0 }
+
+    # keep bet_options order deterministic
+    game.association(:bet_options).target.sort_by!(&:created_at)
+  end
 
     # 4. Render the JSON
     render json: @games.as_json(

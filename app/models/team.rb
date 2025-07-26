@@ -20,6 +20,11 @@ class Team < ApplicationRecord
   has_many :home_games, class_name: 'Game', foreign_key: 'home_team_id', dependent: :nullify
   has_many :away_games, class_name: 'Game', foreign_key: 'away_team_id', dependent: :nullify
 
+  has_many :fans,
+          class_name: "User",
+          foreign_key: :favorite_team_id,
+          dependent: :nullify
+
   validates :name, presence: true, uniqueness: true
 
   def self.eligible_for_import

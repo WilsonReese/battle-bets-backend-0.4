@@ -21,10 +21,12 @@
 #  username                  :string
 #  created_at                :datetime         not null
 #  updated_at                :datetime         not null
+#  favorite_team_id          :integer
 #
 # Indexes
 #
 #  index_users_on_email                 (email) UNIQUE
+#  index_users_on_favorite_team_id      (favorite_team_id)
 #  index_users_on_jti                   (jti) UNIQUE
 #  index_users_on_lower_username        (lower((username)::text)) UNIQUE
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
