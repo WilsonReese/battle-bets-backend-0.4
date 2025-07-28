@@ -10,9 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_07_26_032130) do
+ActiveRecord::Schema[7.1].define(version: 2025_07_28_014745) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "announcements", force: :cascade do |t|
+    t.string "title", null: false
+    t.text "paragraph", null: false
+    t.string "link"
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "battles", force: :cascade do |t|
     t.datetime "start_date"
