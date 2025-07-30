@@ -1,3 +1,7 @@
+require 'net/http'
+require 'uri'
+require 'json'
+
 namespace :games do
   # ------------- TASK 1A ------------- #
   # Import all games for a given week
@@ -180,6 +184,102 @@ namespace :games do
       puts "\n📋 Unmatched Game IDs:"
       unmatched.each do |g|
         puts " • ##{g.id}: #{g.home_team.name} @ #{g.away_team.name} on #{g.start_time.to_date}"
+      end
+    end
+  end
+
+  # ------------- TASK 2C ------------- #
+  # Task for getting the api-sports-io ids for each game but actually using the JSON response
+  desc "Backfill api_sports_io_game_id by fetching from API‑Sports instead of local JSON"
+  task :add_api_sports_game_ids, [:league_id, :season_year] => :environment do |t, args|
+    # allow arguments or default to league=2 (NCAA) season=2025
+    args.with_defaults(league_id: 2, season_year: 2025)
+
+    puts "🌐 Fetching games from API‑Sports (league=#{args.league_id}, season=#{args.season_year})…"
+    uri = URI("#{API_SPORTS_IO_BASE_URL}/games")
+    uri.query = URI.encode_www_form(
+      league: args.league_id,
+      season: args.season_year
+    )
+
+    req = Net::HTTP::Get.new(uri)
+    req['x-apisports-key'] = API_SPORTS_IO_KEY
+    req['Accept'] = 'application/json'
+
+    res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+      http.request(req)
+    end
+
+    unless res.is_a?(Net::HTTPSuccess)
+      puts "❌ HTTP Error #{res.code}: #{res.message}"
+      exit(1)
+    end
+
+    payload    = JSON.parse(res.body)
+    game_data  = payload['response'] || []
+    puts "✅ Retrieved #{game_data.size} games from API‑Sports"
+
+    skipped_for_missing_team = 0
+    updated   = 0
+    unmatched = []
+
+    Game.where(api_sports_io_game_id: nil).find_each do |game|
+      ht_id = game.home_team&.api_sports_io_id
+      at_id = game.away_team&.api_sports_io_id
+
+      if ht_id.blank? || at_id.blank?
+        skipped_for_missing_team += 1
+        puts "⚠️  SKIP ##{game.id}: missing team API IDs (home: #{ht_id.inspect}, away: #{at_id.inspect})"
+        next
+      end
+
+      ht_i = ht_id.to_i
+      at_i = at_id.to_i
+
+      # find candidates matching both team IDs
+      candidates = game_data.select do |e|
+        home_id = e.dig('teams','home','id').to_i
+        away_id = e.dig('teams','away','id').to_i
+
+        # either exact or reversed
+        (home_id == ht_i && away_id == at_i) ||
+        (home_id == at_i && away_id == ht_i)
+      end
+
+      # if multiple, narrow by timestamp ±1 day
+      if candidates.size > 1
+        window = (game.start_time.to_i - 86_400)..(game.start_time.to_i + 86_400)
+        candidates.select! do |e|
+          ts = e.dig('game','date','timestamp')
+          ts && window.cover?(ts)
+        end
+      end
+
+      case candidates.size
+      when 1
+        entry = candidates.first
+        game.update!(api_sports_io_game_id: entry.dig('game','id'))
+        puts "✅ Matched ##{game.id} on #{game.start_time.to_date} → API ID #{entry['game']['id']}"
+        updated += 1
+
+      when 0
+        unmatched << game
+        puts "❌ NO MATCH for ##{game.id} (#{ht_i}/#{at_i} on #{game.start_time.to_date})"
+
+      else
+        unmatched << game
+        puts "❌ AMBIGUOUS for ##{game.id}: #{candidates.size} candidates"
+      end
+    end
+
+    puts "\n🏁 Done!"
+    puts "• Skipped (missing team IDs): #{skipped_for_missing_team}"
+    puts "• Updated: #{updated}"
+    puts "• Unmatched or ambiguous: #{unmatched.size}"
+    if unmatched.any?
+      puts "\n— Unmatched Games —"
+      unmatched.each do |g|
+        puts "  • ##{g.id}: #{g.home_team&.name} @ #{g.away_team&.name} (#{g.start_time.to_date})"
       end
     end
   end

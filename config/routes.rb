@@ -56,6 +56,16 @@ Rails.application.routes.draw do
 
   resources :announcements, only: [:index]
 
+  namespace :api do
+    namespace :v1 do
+      # proxy for api-sports-io games endpoint
+      get 'api_sports/games', to: 'api_sports#games'
+
+      # and later, if you add teams:
+      # get 'api_sports/teams',  to: 'api_sports#teams'
+    end
+  end
+
   # root to: "home#index"
   root to: proc { [200, { "Content-Type" => "application/json" }, ['{ "message": "API is running" }']] }
 end
