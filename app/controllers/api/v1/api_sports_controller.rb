@@ -19,6 +19,34 @@ module Api
         render json: { error: e.message }, status: :bad_gateway
       end
 
+      # GET /api/v1/api_sports/game_statistics/teams?id=13838
+      def team_statistics
+        # only allow the game ID param
+        query = params.permit(:id).to_h
+
+        # proxy the call
+        payload = ApiSportsClient.team_statistics(query)
+
+        # render just the `response` array
+        render json: payload['response']
+      rescue => e
+        render json: { error: e.message }, status: :bad_gateway
+      end
+
+      # GET /api/v1/api_sports/game_statistics/players?id=13838
+      def player_statistics
+        # only allow the game ID param
+        query = params.permit(:id).to_h
+
+        # proxy the call
+        payload = ApiSportsClient.player_statistics(query)
+
+        # render just the `response` array
+        render json: payload['response']
+      rescue => e
+        render json: { error: e.message }, status: :bad_gateway
+      end
+
       # you can add more actions here:
       # def teams
       #   query = params.permit(:league, :page).to_h

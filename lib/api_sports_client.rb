@@ -30,5 +30,15 @@ class ApiSportsClient
     fetch('/games', params)
   end
 
+  def self.team_statistics(params = {})
+    fetch('/games/statistics/teams', params)
+  end
+
+  # Response | GET : https://v1.american-football.api-sports.io/games/statistics/players?id=13838
+  def self.player_statistics(params = {})
+    fetch('/games/statistics/players', params)
+  end
+
+
   # add more helpers as needed...
 end

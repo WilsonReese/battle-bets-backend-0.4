@@ -61,6 +61,12 @@ Rails.application.routes.draw do
       # proxy for api-sports-io games endpoint
       get 'api_sports/games', to: 'api_sports#games'
 
+      # new team-statistics proxy
+      get 'api_sports/game_statistics/teams', to: 'api_sports#team_statistics'
+
+      # new player-statistics proxy
+      get 'api_sports/game_statistics/players', to: 'api_sports#player_statistics'
+
       # and later, if you add teams:
       # get 'api_sports/teams',  to: 'api_sports#teams'
     end
