@@ -1,4 +1,5 @@
 require "json"
+require "api_sports_client"
 
 module BetOptions
   module Evaluators
@@ -7,29 +8,31 @@ module BetOptions
         @game = Game.find(game_id)
 
         # ========== LOAD GAME STATS ========== #
-
-        # 1️⃣ Load the raw JSON (either a Hash with "response" or an Array)
-        stats_path = Rails.root.join("lib", "data", "sample_game", "game_stats.json")
-        raw        = JSON.parse(File.read(stats_path))
-        entries    = raw.is_a?(Hash) && raw["response"].is_a?(Array) ? raw["response"] : Array(raw)
-
-        # 2️⃣ Clean up any temp IDs, e.g. "temp_9401_475" → "9401"
+        # normalize the ID (strip any "temp_...")
         raw_id = @game.api_sports_io_game_id.to_s
         api_id = raw_id.start_with?("temp_") ? raw_id.split("_")[1] : raw_id
 
-        # 3️⃣ Find the JSON entry whose "game.id" matches our api_id
-        @entry = entries.find do |e|
-          e.dig("game", "id").to_s == api_id
+        # hit /games?id=#{api_id}
+        payload = ApiSportsClient.games(id: api_id)
+        entries = payload.fetch("response", [])
+
+        # find the one entry matching our game
+        @entry = entries.find { |e|
+          e.dig("game","id").to_s == api_id
+        }
+        unless @entry
+          raise "No game_stats entry for Game##{@game.id} (api_sports_io_game_id=#{@game.api_sports_io_game_id})"
         end
-        raise "No game_stats entry for Game##{@game.id} (api_sports_io_game_id=#{@game.api_sports_io_game_id})" unless @entry
 
         # ========== LOAD GAME EVENTS ========== #
 
+        # NEED TO DO This is the API Sports IO game/events end point (for a specific game)
         events_path = Rails.root.join("lib/data/sample_game/game_events.json")
         raw_events  = JSON.parse(File.read(events_path))
         @events     = raw_events.is_a?(Hash) && raw_events["response"].is_a?(Array) ? raw_events["response"] : Array(raw_events)
 
         # ========== LOAD PLAYER STATS ========== #
+        # NEED TO DO This is the API Sports IO game/statistics/players end point (for a specific game)
         players_path = Rails.root.join("lib/data/sample_game/player_stats.json")
         raw_players  = JSON.parse(File.read(players_path))
         @player_stats = if raw_players.is_a?(Hash) && raw_players["response"].is_a?(Array)

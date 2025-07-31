@@ -287,6 +287,8 @@ namespace :games do
   # ------------- TASK 3A ------------- #
   desc "Populate games.odds_api_game_id by matching against lib/data/odds_api_game_data.json"
   task update_odds_api_game_ids: :environment do
+
+    # NEED TO DO - Fix this so I pull the actual games and not just 
     file_path = Rails.root.join("lib", "data", "odds_api_game_data.json")
     payload   = JSON.parse(File.read(file_path))
 
