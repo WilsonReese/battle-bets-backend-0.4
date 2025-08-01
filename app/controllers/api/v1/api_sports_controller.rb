@@ -3,7 +3,7 @@ module Api
   module V1
     class ApiSportsController < ApplicationController
       # whitelist only the params you actually want to forward
-      ALLOWED_GAME_PARAMS = %i[league season date team page per_page]
+      ALLOWED_GAME_PARAMS = %i[id league season date team page per_page]
 
       # GET /api/v1/api_sports/games
       def games
