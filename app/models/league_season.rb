@@ -20,7 +20,7 @@
 #  fk_rails_...  (season_id => seasons.id)
 #
 class LeagueSeason < ApplicationRecord
-  belongs_to :season
+  belongs_to :season, foreign_key: :season_id
   belongs_to :pool
   has_many :battles, dependent: :destroy
   has_many :leaderboard_entries, dependent: :destroy

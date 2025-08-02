@@ -143,8 +143,7 @@ class GamesController < ApplicationController
               betslip:    { battle: { league_season: :pool } }
             )
 
-    render json: bets.as_json(include: {
-      # battle_locked: game.battles_locked,
+    serialized = bets.as_json(include: {
       bet_option: {
         include: {
           game: {
@@ -156,13 +155,14 @@ class GamesController < ApplicationController
           }
         }
       },
-      betslip: {
-        include: {
-          battle: {
-            include: { league_season: { include: :pool } }
-          }
-        }
-      }
+      betslip: { include: { battle: { include: { league_season: { include: :pool } } } } }
     })
+
+    render json: {
+      battle_locked: game.battles_locked,
+      bets: serialized
+    }
+  rescue => e
+    render json: { error: e.message }, status: :internal_server_error
   end
 end

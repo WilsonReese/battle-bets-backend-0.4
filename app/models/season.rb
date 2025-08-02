@@ -17,6 +17,7 @@ class Season < ApplicationRecord
   validates :current_week, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   def self.current
-    where.not(current_week: nil).order(current_week: :desc).first
+    # where.not(current_week: nil).order(current_week: :desc).first
+    where(year: 2025).first
   end
 end
