@@ -17,7 +17,7 @@ class PoolsController < ApplicationController
         league_season = pool.league_seasons.find { |s| s.season.year == 2025 }
 
         pool.as_json.merge({
-          membership_count: pool.pool_memberships.size,
+          membership_count: PoolMembership.where(pool_id: pool.id).count,
           start_week: league_season&.start_week,
           has_started: league_season&.has_started?
         })
@@ -33,7 +33,15 @@ class PoolsController < ApplicationController
 
   # GET /pools/:id
   def show
-    render json: @pool
+    # find the league_season for the current year just like you did in #index
+
+    render json: @pool.as_json.merge(
+      membership_count: @pool.pool_memberships.size,
+    )
+  rescue => e
+    Rails.logger.error "Error in PoolsController#show: #{e.message}"
+    Rails.logger.error e.backtrace.join("\n")
+    render json: { error: "Internal Server Error" }, status: :internal_server_error
   end
 
   # POST /pools

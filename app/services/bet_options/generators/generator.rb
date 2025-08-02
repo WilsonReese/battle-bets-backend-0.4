@@ -11,7 +11,7 @@ module BetOptions
         @games  = Game.where(season: @season, week: @week)
 
         # This is GET Odds for a specific game (but the JSON file just does DraftKings)
-        uri = URI("#{ODDS_API_BASE_URL}/v4/sports/americanfootball_nfl_preseason/odds")
+        uri = URI("#{ODDS_API_BASE_URL}/v4/sports/americanfootball_ncaaf/odds")
         uri.query = URI.encode_www_form(
           apiKey:      ODDS_API_KEY,
           regions:     "us",

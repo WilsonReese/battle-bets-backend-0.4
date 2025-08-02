@@ -144,10 +144,11 @@ class GamesController < ApplicationController
             )
 
     render json: bets.as_json(include: {
-      battle_locked: game.battles_locked,
+      # battle_locked: game.battles_locked,
       bet_option: {
         include: {
           game: {
+            methods: [:battles_locked],
             include: {
               home_team: { only: :name },
               away_team: { only: :name }
