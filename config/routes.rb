@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   get 'league_seasons/index'
   get 'league_seasons/show'
   get 'games/index'
+  resource :user, only: [:destroy]
   get "/current_user", to: "users#current"
   get '/user_reset_status', to: 'users#reset_status'
   get "/ambassadors", to: "ambassadors#index"

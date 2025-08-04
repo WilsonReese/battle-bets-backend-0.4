@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :authenticate_user!, only: %i[current update_profile change_password]
+  before_action :authenticate_user!, only: %i[current update_profile change_password destroy]
 
   def current
     favorite_team = current_user.favorite_team
@@ -39,6 +39,16 @@ class UsersController < ApplicationController
       render json: { message: "Password updated successfully." }, status: :ok
     else
       render json: { errors: current_user.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+    # DELETE /user
+  def destroy
+    if current_user.destroy
+      head :no_content
+    else
+      render json: { errors: current_user.errors.full_messages },
+             status: :unprocessable_entity
     end
   end
 
