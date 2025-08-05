@@ -1,6 +1,6 @@
 class PoolsController < ApplicationController
   before_action :set_pool, only: %i[show update destroy]
-  before_action :authenticate_user!, only: %i[index show create update destroy]
+  before_action :authenticate_user!, only: %i[index show create update destroy community_league]
   before_action :authorize_commissioner!, only: %i[update destroy]
 
   # GET /pools
@@ -92,6 +92,28 @@ class PoolsController < ApplicationController
   # DELETE /pools/:id
   def destroy
     @pool.destroy
+  end
+
+  # GET /pools/community_league
+  def community_league
+    # find the one pool marked as the community league
+    league = Pool.find_by(community_league: true)
+
+    if league
+      is_member = league.pool_memberships
+                        .where(user_id: current_user.id)
+                        .exists?
+
+      render json: {
+        id:               league.id,
+        invite_token:     league.invite_token,
+        membership_count: league.pool_memberships.count,
+        is_member:        is_member
+      }
+    else
+      # no community league configured
+      render json: {}
+    end
   end
 
   private

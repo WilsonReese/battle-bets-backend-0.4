@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_07_28_014745) do
+ActiveRecord::Schema[7.1].define(version: 2025_08_04_201936) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -133,6 +133,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_28_014745) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "invite_token"
+    t.boolean "community_league", default: false, null: false
     t.index ["invite_token"], name: "index_pools_on_invite_token", unique: true
   end
 

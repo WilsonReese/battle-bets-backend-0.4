@@ -27,6 +27,9 @@ Rails.application.routes.draw do
   end
   
   resources :pools, only: %i[index show create update destroy] do
+    collection do
+      get :community_league
+    end
     resources :pool_memberships, only: %i[index create update destroy]
 
     # LeagueSeasons within a pool

@@ -2,11 +2,12 @@
 #
 # Table name: pools
 #
-#  id           :bigint           not null, primary key
-#  invite_token :string
-#  name         :string
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
+#  id               :bigint           not null, primary key
+#  community_league :boolean          default(FALSE), not null
+#  invite_token     :string
+#  name             :string
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
 #
 # Indexes
 #
