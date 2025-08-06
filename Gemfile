@@ -43,10 +43,9 @@ gem "awesome_print"
 gem "devise"
 gem 'devise-jwt'
 gem "dotenv-rails"
-gem "faker"
 gem "http"
 gem "table_print"
-gem 'google-apis-sheets_v4'
+# gem 'google-apis-sheets_v4'
 gem 'postmark-rails'
 
 group :development, :test do
@@ -67,5 +66,7 @@ group :development do
   gem "rufo"
   gem "specs_to_readme"
   gem 'letter_opener'
+  gem "faker"
+  gem 'derailed_benchmarks'
 end
 
