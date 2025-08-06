@@ -31,7 +31,8 @@ namespace :dev do
       username: "reese",
       first_name: "Reese",
       last_name: "Wilson", 
-      confirmed_at: Time.now
+      confirmed_at: Time.now,
+      favorite_team_id: 6121
     )
 
     user2 = User.create!(
@@ -42,7 +43,8 @@ namespace :dev do
       username: "logan",
       first_name: "Logan",
       last_name: "Dunn",
-      confirmed_at: Time.now
+      confirmed_at: Time.now,
+      favorite_team_id: 6115
     )
     user3 = User.create!(
       # id: 3,
@@ -158,7 +160,7 @@ namespace :dev do
 
     pool1 = Pool.create!(
       # id: 1,
-      name: "Pool 1"
+      name: "Battle Bets Community League"
     )
 
     pool2 = Pool.create!(
