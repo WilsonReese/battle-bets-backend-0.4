@@ -83,6 +83,7 @@ Rails.application.routes.draw do
   post "diag/compact", to: "diag#compact"
   get  "diag/mem",     to: "diag#mem"
   get "/diag/owner", to: "diag#owner"
+  get "/diag/holders", to: "diag#holders"
 
 
 
