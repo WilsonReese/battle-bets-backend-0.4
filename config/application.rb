@@ -1,16 +1,16 @@
 require_relative "boot"
 
-# require "rails/all"
-require "active_model/railtie"
-require "active_job/railtie"
-require "active_record/railtie"
-require "action_controller/railtie"
-require "action_mailer/railtie"
-require "action_cable/engine" # Uncomment if you ever use WebSockets
-# require "active_storage/engine" # Uncomment if you ever use file uploads
-# require "action_text/engine" # Uncomment if you ever use rich text
-# require "action_mailbox/engine" # ❌ KEEP THIS COMMENTED OUT
-require "rails/test_unit/railtie" # ❌ Not used
+require "rails/all"
+# require "active_model/railtie"
+# require "active_job/railtie"
+# require "active_record/railtie"
+# require "action_controller/railtie"
+# require "action_mailer/railtie"
+# require "action_cable/engine" # Uncomment if you ever use WebSockets
+# # require "active_storage/engine" # Uncomment if you ever use file uploads
+# # require "action_text/engine" # Uncomment if you ever use rich text
+# # require "action_mailbox/engine" # ❌ KEEP THIS COMMENTED OUT
+# require "rails/test_unit/railtie" # ❌ Not used
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
