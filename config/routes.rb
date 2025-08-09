@@ -85,6 +85,7 @@ Rails.application.routes.draw do
   get "/diag/owner", to: "diag#owner"
   get "/diag/holders", to: "diag#holders"
   get "/diag/thread_refs", to: "diag#thread_refs"
+  get "/diag/thread_path", to: "diag#thread_path"
 
 
 

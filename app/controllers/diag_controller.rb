@@ -380,4 +380,108 @@ class DiagController < ApplicationController
       thread_hits: hits
     }
   end
+
+  def thread_path
+    require "objspace"
+
+    target = find_big_json_string
+    return render json: { error: "no big JSON string" } unless target
+
+    # try each live thread and produce a short path of class names to `target`
+    Thread.list.each do |t|
+      path = bfs_path_to_target(t, target, max_nodes: 50_000, max_depth: 8)
+      next unless path
+
+      return render json: {
+        target: { size: target.bytesize, head: safe_head(target) },
+        thread: t.object_id,
+        path_classes: path.map { |obj| obj.class.name },
+        path_kinds:   path.map { |obj| kind_of_obj(obj) }
+      }
+    end
+
+    render json: { target: { size: target.bytesize, head: safe_head(target) }, note: "no thread path found (try right after hitting the endpoint 2–3x)" }
+  end
+
+  private
+
+  def safe_head(str)
+    str.encode("UTF-8", invalid: :replace, undef: :replace, replace: "?").byteslice(0, 160)
+  rescue
+    "<preview unavailable>"
+  end
+
+  # find the largest JSON-looking String (>500KB)
+  def find_big_json_string
+    biggest = nil
+    ObjectSpace.each_object(String) do |s|
+      next if s.bytesize < 500_000
+      head = s.byteslice(0, 2)
+      next unless head == "[{" || head == "{\""
+      biggest = s if biggest.nil? || s.bytesize > biggest.bytesize
+    end
+    biggest
+  end
+
+  def reachable(obj)
+    ObjectSpace.reachable_objects_from(obj)
+  rescue
+    []
+  end
+
+  def kind_of_obj(o)
+    case o
+    when Hash  then "Hash"
+    when Array then "Array"
+    else o.class.name
+    end
+  end
+
+  # Breadth-first search from `root` to `needle`, bounded, returning the path (objects)
+  def bfs_path_to_target(root, needle, max_nodes:, max_depth:)
+    seen = {}
+    queue = []
+    parent = {}  # child.__id__ -> parent.__id__
+    objects = {} # id -> object (to reconstruct path)
+
+    root_id = root.__id__
+    seen[root_id] = true
+    objects[root_id] = root
+    queue << [root, 0]
+
+    visits = 0
+
+    while (pair = queue.shift)
+      node, depth = pair
+      return reconstruct_path(objects, parent, node, needle) if node.equal?(needle)
+      next if depth >= max_depth
+
+      children = reachable(node)
+      children.each do |child|
+        id = child.__id__
+        next if seen[id]
+        seen[id] = true
+        parent[id] = node.__id__
+        objects[id] = child
+        return reconstruct_path(objects, parent, child, needle) if child.equal?(needle)
+        queue << [child, depth + 1]
+      end
+
+      visits += 1
+      break if visits > max_nodes
+    end
+
+    nil
+  end
+
+  def reconstruct_path(objects, parent, node, needle)
+    # Walk back from `node` (which equals or is near `needle`) to root
+    path = [node]
+    cur_id = node.__id__
+    while parent.key?(cur_id)
+      cur_id = parent[cur_id]
+      path << objects[cur_id]
+    end
+    path.reverse
+  end
 end
