@@ -95,4 +95,89 @@ class DiagController < ApplicationController
 
     render json: data
   end
+
+  def owner
+    require "objspace"
+
+    # 1) pick the biggest JSON-like string (>500KB)
+    target = nil
+    ObjectSpace.each_object(String) do |s|
+      next if s.bytesize < 500_000
+      head = s.byteslice(0, 2)
+      next unless head == "[{" || head == "{\""
+      target = s if target.nil? || s.bytesize > target.bytesize
+    end
+    return render json: { error: "no big JSON string found" } unless target
+
+    info = {
+      size: target.bytesize,
+      preview: (target.encode("UTF-8", invalid: :replace, undef: :replace, replace: "?").byteslice(0, 180) rescue "<preview>"),
+    }
+
+    # 2) Try to find a container that directly holds it (Array/Hash)
+    owner = nil
+
+    # scan a bounded number of arrays
+    scanned = 0
+    ObjectSpace.each_object(Array) do |a|
+      scanned += 1
+      break if scanned > 50_000
+      begin
+        if a.include?(target)
+          owner = { kind: "Array", class: a.class.name, sample_types: a.first(5).map { |e| e.class.name } }
+          break
+        end
+      rescue
+      end
+    end
+
+    if owner.nil?
+      scanned = 0
+      ObjectSpace.each_object(Hash) do |h|
+        scanned += 1
+        break if scanned > 50_000
+        begin
+          if h.value?(target)
+            owner = { kind: "Hash", class: h.class.name, key_types: h.keys.first(5).map { |k| k.class.name } }
+            break
+          end
+        rescue
+        end
+      end
+    end
+
+    # 3) Check some likely roots too
+
+    likely = {}
+
+    # Rails.logger buffer/formatter
+    begin
+      lg = Rails.logger
+      likely[:logger_class] = lg.class.name
+      likely[:logger_formatter] = lg.formatter.class.name if lg.respond_to?(:formatter)
+    rescue; end
+
+    # Threads and thread locals (Puma threads persist)
+    begin
+      thread_hits = []
+      Thread.list.each do |t|
+        next unless t.key?(:last_response) || t.keys.any?
+        # check any thread locals that equal target
+        t.keys.each do |k|
+          v = t[k] rescue nil
+          if v.equal?(target)
+            thread_hits << { thread: t.object_id, key: k.to_s }
+          end
+        end
+      end
+      likely[:thread_hits] = thread_hits if thread_hits.any?
+    rescue; end
+
+    # Rails.cache quick class check (ensure not MemoryStore)
+    begin
+      likely[:cache_store_class] = Rails.cache.class.name
+    rescue; end
+
+    render json: { target: info, container_owner: owner || "not found", likely: likely }
+  end
 end

@@ -82,6 +82,8 @@ Rails.application.routes.draw do
   # end
   post "diag/compact", to: "diag#compact"
   get  "diag/mem",     to: "diag#mem"
+  get "/diag/owner", to: "diag#owner"
+
 
 
   # root to: "home#index"
