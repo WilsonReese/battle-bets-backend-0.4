@@ -10,58 +10,39 @@ class DiagController < ApplicationController
   end
 
   def mem
-    require "get_process_mem"
+    # Get resident set size in MB
+    rss_mb = (`ps -o rss= -p #{Process.pid}`.to_i / 1024.0).round(1)
 
-    stats  = GC.stat.slice(:heap_live_slots, :heap_free_slots, :old_objects, :total_allocated_objects, :malloc_increase_bytes)
-    counts = ObjectSpace.count_objects.slice(:T_STRING, :T_ARRAY, :T_HASH) rescue {}
-
-    largest_strings = []
-    largest_arrays  = []
-    largest_hashes  = []
-
-    # Helper to safely preview objects
-    safe_preview = ->(obj) {
-      str = obj.inspect rescue obj.to_s rescue "<uninspectable>"
-      str[0..200] # limit preview size
+    # Always include lightweight GC stats
+    data = {
+      rss_mb: rss_mb,
+      gc: GC.stat.slice(:heap_live_slots, :heap_free_slots, :old_objects, :total_allocated_objects, :malloc_increase_bytes)
     }
 
-    # Strings
-    ObjectSpace.each_object(String) do |s|
-      next if s.encoding == Encoding::BINARY # skip binary blobs
-      largest_strings << { size: s.bytesize, preview: safe_preview.call(s) }
-    end
-    largest_strings.sort_by! { |h| -h[:size] }
-    largest_strings = largest_strings.first(5)
+    # Only include expensive object scans if explicitly requested
+    if params[:full] == "true"
+      data[:objs] = {
+        T_STRING: ObjectSpace.each_object(String).count,
+        T_ARRAY:  ObjectSpace.each_object(Array).count,
+        T_HASH:   ObjectSpace.each_object(Hash).count
+      }
 
-    # Arrays
-    ObjectSpace.each_object(Array) do |a|
-      begin
-        largest_arrays << { length: a.length, sample: safe_preview.call(a[0..4]) }
-      rescue
-        next
-      end
-    end
-    largest_arrays.sort_by! { |h| -h[:length] }
-    largest_arrays = largest_arrays.first(5)
+      data[:largest_strings] = ObjectSpace.each_object(String)
+        .sort_by(&:bytesize)
+        .last(5)
+        .map { |s| { size: s.bytesize, preview: s[0, 200] } }
 
-    # Hashes
-    ObjectSpace.each_object(Hash) do |h|
-      begin
-        largest_hashes << { length: h.length, keys_sample: safe_preview.call(h.keys[0..4]) }
-      rescue
-        next
-      end
-    end
-    largest_hashes.sort_by! { |h| -h[:length] }
-    largest_hashes = largest_hashes.first(5)
+      data[:largest_arrays] = ObjectSpace.each_object(Array)
+        .sort_by(&:size)
+        .last(5)
+        .map { |a| { length: a.size, sample: a.first(5) } }
 
-    render json: {
-      rss_mb: GetProcessMem.new.mb.round(1),
-      gc: stats,
-      objs: counts,
-      largest_strings: largest_strings,
-      largest_arrays: largest_arrays,
-      largest_hashes: largest_hashes
-    }
+      data[:largest_hashes] = ObjectSpace.each_object(Hash)
+        .sort_by(&:size)
+        .last(5)
+        .map { |h| { length: h.size, keys_sample: h.keys.first(5) } }
+    end
+
+    render json: data
   end
 end
