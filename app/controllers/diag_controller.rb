@@ -387,20 +387,23 @@ class DiagController < ApplicationController
     target = find_big_json_string
     return render json: { error: "no big JSON string" } unless target
 
-    # try each live thread and produce a short path of class names to `target`
     Thread.list.each do |t|
-      path = bfs_path_to_target(t, target, max_nodes: 50_000, max_depth: 8)
+      path, parent = bfs_path_with_parent(t, target, max_nodes: 60_000, max_depth: 10)
       next unless path
+
+      last  = path.last         # should be target or near
+      prev  = path[-2]          # the object that references the target
+      owner = inspect_owner_edge(prev, target)
 
       return render json: {
         target: { size: target.bytesize, head: safe_head(target) },
         thread: t.object_id,
-        path_classes: path.map { |obj| obj.class.name },
-        path_kinds:   path.map { |obj| kind_of_obj(obj) }
+        path_classes: path.map { |o| o.class.name },
+        owner_hint: owner
       }
     end
 
-    render json: { target: { size: target.bytesize, head: safe_head(target) }, note: "no thread path found (try right after hitting the endpoint 2–3x)" }
+    render json: { target: { size: target.bytesize, head: safe_head(target) }, note: "no path found; try right after a few API hits" }
   end
 
   private
@@ -474,14 +477,109 @@ class DiagController < ApplicationController
     nil
   end
 
-  def reconstruct_path(objects, parent, node, needle)
-    # Walk back from `node` (which equals or is near `needle`) to root
-    path = [node]
-    cur_id = node.__id__
-    while parent.key?(cur_id)
-      cur_id = parent[cur_id]
-      path << objects[cur_id]
+  def reconstruct_path(nodes, parent, leaf_id)
+    path = []
+    cur  = leaf_id
+    while cur
+      path << nodes[cur]
+      cur = parent[cur]
     end
     path.reverse
   end
+
+  def bfs_path_with_parent(root, needle, max_nodes:, max_depth:)
+    seen   = {}
+    queue  = []
+    parent = {}  # child_id -> parent_id
+    nodes  = {}  # id -> object
+
+    rid = root.__id__
+    seen[rid]  = true
+    nodes[rid] = root
+    queue << [root, 0]
+
+    visits = 0
+
+    while (pair = queue.shift)
+      node, depth = pair
+      return [reconstruct_path(nodes, parent, node.__id__), parent] if node.equal?(needle)
+      next if depth >= max_depth
+
+      children = reachable(node)
+      children.each do |child|
+        cid = child.__id__
+        next if seen[cid]
+        seen[cid] = true
+        parent[cid] = node.__id__
+        nodes[cid]  = child
+        return [reconstruct_path(nodes, parent, cid), parent] if child.equal?(needle)
+        queue << [child, depth + 1]
+      end
+
+      visits += 1
+      break if visits > max_nodes
+    end
+
+    nil
+  end
+
+  def inspect_owner_edge(owner_obj, target)
+    return { note: "no owner (target was root?)" } if owner_obj.nil?
+
+    info = { owner_class: owner_obj.class.name }
+
+    # 1) Check instance variables that directly point at target
+    begin
+      iv_hits = []
+      owner_obj.instance_variables.each do |ivar|
+        v = owner_obj.instance_variable_get(ivar)
+        if v.equal?(target)
+          iv_hits << ivar.to_s
+        end
+      end
+      info[:ivars_pointing_to_target] = iv_hits unless iv_hits.empty?
+    rescue
+    end
+
+    # 2) If Hash, check keys/values
+    if owner_obj.is_a?(Hash)
+      begin
+        key_hits = []
+        val_hits = []
+        owner_obj.each do |k, v|
+          key_hits << (k.is_a?(String) ? k : k.inspect) if k.equal?(target)
+          val_hits << (k.is_a?(String) ? k : k.inspect) if v.equal?(target)
+        end
+        info[:hash_keys_equal_target]   = key_hits unless key_hits.empty?
+        info[:hash_values_equal_target] = val_hits unless val_hits.empty?
+      rescue
+      end
+    end
+
+    # 3) If Array, check if it contains target
+    if owner_obj.is_a?(Array)
+      begin
+        if owner_obj.include?(target)
+          info[:array_contains_target] = true
+        end
+      rescue
+      end
+    end
+
+    # 4) Common reader methods that might return the big string
+    %i[body string to_str].each do |m|
+      next unless owner_obj.respond_to?(m)
+      begin
+        val = owner_obj.public_send(m)
+        if val.equal?(target)
+          info[:method_pointing_to_target] = m.to_s
+        end
+      rescue
+      end
+    end
+
+    info
+  end
+  
+
 end
