@@ -432,6 +432,27 @@ def fiber_owner
   }
 end
 
+def fiber_pinpoint
+  require "objspace"
+
+  target = find_big_json_string
+  return render json: { error: "no big JSON string" } unless target
+
+  results = []
+
+  ObjectSpace.each_object(Fiber) do |fib|
+    hit = scan_fiber_for_owner(fib, target, max_depth: 4, max_nodes: 80_000)
+    next unless hit
+    results << hit
+    break if results.size >= 3
+  end
+
+  render json: {
+    target: { size: target.bytesize, head: safe_head(target) },
+    hits: results.presence || "none"
+  }
+end
+
 private
 
 def safe_head(str)
@@ -570,6 +591,101 @@ def key_preview(k)
   when Symbol then k.to_s
   else k.inspect
   end
+end
+
+def scan_fiber_for_owner(fiber, target, max_depth:, max_nodes:)
+  # BFS from the fiber; at each node, try to find an exact owner field/key/method == target
+  seen   = {}
+  queue  = []
+  parent = {}  # child_id -> parent_id
+  nodes  = {}  # id -> object
+
+  fid = fiber.__id__
+  seen[fid]  = true
+  nodes[fid] = fiber
+  queue << [fiber, 0]
+
+  visits = 0
+
+  while (pair = queue.shift)
+    node, depth = pair
+
+    # Check whether THIS node owns the target directly (ivar/hash key/method)
+    owner_hint = precise_owner_hit(node, target)
+    if owner_hint
+      path = reconstruct_path(nodes, parent, node.__id__)
+      return {
+        fiber: fiber.object_id,
+        owner_class: node.class.name,
+        owner_hint: owner_hint,
+        path_classes: path.map { |o| o.class.name }
+      }
+    end
+
+    next if depth >= max_depth
+
+    # Traverse
+    reachable(node).each do |child|
+      cid = child.__id__
+      next if seen[cid]
+      seen[cid] = true
+      parent[cid] = node.__id__
+      nodes[cid]  = child
+      queue << [child, depth + 1]
+    end
+
+    visits += 1
+    break if visits > max_nodes
+  end
+
+  nil
+end
+
+def precise_owner_hit(obj, target)
+  # 1) instance vars
+  begin
+    obj.instance_variables.each do |ivar|
+      v = obj.instance_variable_get(ivar)
+      return { via: "ivar", ivar: ivar.to_s } if v.equal?(target)
+    end
+  rescue
+  end
+
+  # 2) Hash keys/values
+  if obj.is_a?(Hash)
+    begin
+      obj.each do |k, v|
+        return { via: "hash_key", key: key_preview(k) }   if k.equal?(target)
+        return { via: "hash_val", key: key_preview(k) }   if v.equal?(target)
+      end
+      # Helpful preview for env-like hashes
+      if obj.respond_to?(:keys)
+        sample = obj.keys.take(12).map { |k| key_preview(k) }
+        return { via: "hash_scan", sample_keys: sample } if sample.any? { |s| s =~ /\Arack|action_dispatch|puma|response|body/i }
+      end
+    rescue
+    end
+  end
+
+  # 3) Arrays
+  if obj.is_a?(Array)
+    begin
+      return { via: "array_includes" } if obj.include?(target)
+    rescue
+    end
+  end
+
+  # 4) Common readers
+  %i[body string to_str to_s].each do |m|
+    next unless obj.respond_to?(m)
+    begin
+      val = obj.public_send(m)
+      return({ via: "method", method: m.to_s }) if val.equal?(target)
+    rescue
+    end
+  end
+
+  nil
 end
   
 
