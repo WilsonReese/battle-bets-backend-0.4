@@ -313,20 +313,21 @@ class DiagController < ApplicationController
     target = nil
     ObjectSpace.each_object(String) do |s|
       next if s.bytesize < 500_000
-      head = s.byteslice(0,2)
+      head = s.byteslice(0, 2)
       next unless head == "[{" || head == "{\""
       target = s if target.nil? || s.bytesize > target.bytesize
     end
     return render json: { error: "no big JSON string" } unless target
 
-    encode = ->(s) {
-      s.encode("UTF-8", invalid: :replace, undef: :replace, replace: "?").byteslice(0,160)
-    rescue
-      "<preview unavailable>"
+    encode = ->(str) {
+      begin
+        str.encode("UTF-8", invalid: :replace, undef: :replace, replace: "?").byteslice(0, 160)
+      rescue StandardError
+        "<preview unavailable>"
+      end
     }
 
-    # shallow-ish graph search from an object
-    graph_has = ->(root, needle, cap=20_000) do
+    graph_has = ->(root, needle, cap = 20_000) do
       seen = {}
       q = [root]
       visited = 0
@@ -339,7 +340,7 @@ class DiagController < ApplicationController
         break if visited > cap
         begin
           ObjectSpace.reachable_objects_from(node).each { |child| q << child }
-        rescue
+        rescue StandardError
         end
       end
       false
@@ -351,22 +352,15 @@ class DiagController < ApplicationController
       next if keys.empty?
       key_hits = []
       keys.each do |k|
-        begin
-          v = t[k]
-        rescue
-          v = nil
-        end
+        v = (t[k] rescue nil)
         next if v.nil?
-
-        direct = v.equal?(target)
+        direct   = v.equal?(target)
         indirect = !direct && graph_has.call(v, target, 20_000)
         next unless direct || indirect
 
         entry = { key: k.to_s, val_class: (v.class.name rescue nil) }
-
         if v.is_a?(Hash)
           entry[:val_size] = v.size
-          # try to find a subkey path (one level) that points at target
           v.each do |kk, vv|
             if vv.equal?(target)
               entry[:sub_hit] = { subkey: kk.to_s, sub_val_class: (vv.class.name rescue nil) }
@@ -376,10 +370,8 @@ class DiagController < ApplicationController
         elsif v.is_a?(Array)
           entry[:val_size] = v.length
         end
-
         key_hits << entry
       end
-
       hits << { thread: t.object_id, keys: key_hits } unless key_hits.empty?
     end
 
