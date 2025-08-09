@@ -45,7 +45,6 @@ gem 'devise-jwt'
 gem "dotenv-rails"
 gem "http"
 gem "table_print"
-# gem 'google-apis-sheets_v4'
 gem 'postmark-rails'
 
 group :development, :test do
