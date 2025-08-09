@@ -15,54 +15,53 @@ class DiagController < ApplicationController
     stats  = GC.stat.slice(:heap_live_slots, :heap_free_slots, :old_objects, :total_allocated_objects, :malloc_increase_bytes)
     counts = ObjectSpace.count_objects.slice(:T_STRING, :T_ARRAY, :T_HASH) rescue {}
 
-    # Helper to make strings safe for JSON
-    def safe_string(str)
-      str.encode("UTF-8", invalid: :replace, undef: :replace, replace: "?")[0..100]
-    rescue
-      "<binary data>"
-    end
+    largest_strings = []
+    largest_arrays  = []
+    largest_hashes  = []
 
-    # Sample largest retained strings (over 100 bytes)
-    string_samples = []
-    begin
-      ObjectSpace.each_object(String) do |s|
-        next if s.bytesize < 100
-        string_samples << { size: s.bytesize, preview: safe_string(s) }
-      end
-      string_samples = string_samples.sort_by { |h| -h[:size] }.first(5)
-    rescue => e
-      string_samples = ["Error scanning strings: #{e.message}"]
-    end
+    # Helper to safely preview objects
+    safe_preview = ->(obj) {
+      str = obj.inspect rescue obj.to_s rescue "<uninspectable>"
+      str[0..200] # limit preview size
+    }
 
-    # Sample largest retained arrays
-    array_samples = []
-    begin
-      ObjectSpace.each_object(Array) do |a|
-        array_samples << { length: a.length, sample: a[0..2].map { |x| safe_string(x.to_s) } }
-      end
-      array_samples = array_samples.sort_by { |h| -h[:length] }.first(5)
-    rescue => e
-      array_samples = ["Error scanning arrays: #{e.message}"]
+    # Strings
+    ObjectSpace.each_object(String) do |s|
+      next if s.encoding == Encoding::BINARY # skip binary blobs
+      largest_strings << { size: s.bytesize, preview: safe_preview.call(s) }
     end
+    largest_strings.sort_by! { |h| -h[:size] }
+    largest_strings = largest_strings.first(5)
 
-    # Sample largest retained hashes
-    hash_samples = []
-    begin
-      ObjectSpace.each_object(Hash) do |h|
-        hash_samples << { length: h.length, keys: h.keys.first(3).map { |x| safe_string(x.to_s) } }
+    # Arrays
+    ObjectSpace.each_object(Array) do |a|
+      begin
+        largest_arrays << { length: a.length, sample: safe_preview.call(a[0..4]) }
+      rescue
+        next
       end
-      hash_samples = hash_samples.sort_by { |h| -h[:length] }.first(5)
-    rescue => e
-      hash_samples = ["Error scanning hashes: #{e.message}"]
     end
+    largest_arrays.sort_by! { |h| -h[:length] }
+    largest_arrays = largest_arrays.first(5)
+
+    # Hashes
+    ObjectSpace.each_object(Hash) do |h|
+      begin
+        largest_hashes << { length: h.length, keys_sample: safe_preview.call(h.keys[0..4]) }
+      rescue
+        next
+      end
+    end
+    largest_hashes.sort_by! { |h| -h[:length] }
+    largest_hashes = largest_hashes.first(5)
 
     render json: {
       rss_mb: GetProcessMem.new.mb.round(1),
       gc: stats,
       objs: counts,
-      largest_strings: string_samples,
-      largest_arrays: array_samples,
-      largest_hashes: hash_samples
+      largest_strings: largest_strings,
+      largest_arrays: largest_arrays,
+      largest_hashes: largest_hashes
     }
   end
 end
