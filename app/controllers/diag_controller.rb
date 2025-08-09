@@ -58,7 +58,16 @@ class DiagController < ApplicationController
       ObjectSpace.each_object(String).lazy.reject { |s| s.encoding == Encoding::ASCII_8BIT },
       n: 5,
       metric: ->(s) { s.bytesize }
-    ).map { |(size, s)| { size: size, preview: safe_string.call(s, limit: 200) } }
+    ).map do |(size, s)|
+      info = {}
+      if ObjectSpace.respond_to?(:allocation_sourcefile)
+        info[:file]       = ObjectSpace.allocation_sourcefile(s)
+        info[:line]       = ObjectSpace.allocation_sourceline(s)
+        info[:method]     = ObjectSpace.allocation_method_id(s).to_s rescue nil
+        info[:class_path] = ObjectSpace.allocation_class_path(s).to_s rescue nil
+      end
+      { size: size, preview: safe_string.call(s, limit: 200) }.merge(info)
+    end
 
     # Top arrays by length (only show element classes so we never dump huge contents)
     top_arrays = top_n.call(
