@@ -15,12 +15,19 @@ class DiagController < ApplicationController
     stats  = GC.stat.slice(:heap_live_slots, :heap_free_slots, :old_objects, :total_allocated_objects, :malloc_increase_bytes)
     counts = ObjectSpace.count_objects.slice(:T_STRING, :T_ARRAY, :T_HASH) rescue {}
 
-    # Sample largest retained strings (over 100 bytes) to avoid noise
+    # Helper to make strings safe for JSON
+    def safe_string(str)
+      str.encode("UTF-8", invalid: :replace, undef: :replace, replace: "?")[0..100]
+    rescue
+      "<binary data>"
+    end
+
+    # Sample largest retained strings (over 100 bytes)
     string_samples = []
     begin
       ObjectSpace.each_object(String) do |s|
         next if s.bytesize < 100
-        string_samples << { size: s.bytesize, preview: s[0..100] }
+        string_samples << { size: s.bytesize, preview: safe_string(s) }
       end
       string_samples = string_samples.sort_by { |h| -h[:size] }.first(5)
     rescue => e
@@ -31,7 +38,7 @@ class DiagController < ApplicationController
     array_samples = []
     begin
       ObjectSpace.each_object(Array) do |a|
-        array_samples << { length: a.length, sample: a[0..2] }
+        array_samples << { length: a.length, sample: a[0..2].map { |x| safe_string(x.to_s) } }
       end
       array_samples = array_samples.sort_by { |h| -h[:length] }.first(5)
     rescue => e
@@ -42,7 +49,7 @@ class DiagController < ApplicationController
     hash_samples = []
     begin
       ObjectSpace.each_object(Hash) do |h|
-        hash_samples << { length: h.length, keys: h.keys.first(3) }
+        hash_samples << { length: h.length, keys: h.keys.first(3).map { |x| safe_string(x.to_s) } }
       end
       hash_samples = hash_samples.sort_by { |h| -h[:length] }.first(5)
     rescue => e
