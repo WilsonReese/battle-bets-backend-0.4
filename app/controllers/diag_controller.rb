@@ -306,4 +306,86 @@ class DiagController < ApplicationController
     }
   end
 
+  def thread_refs
+    require "objspace"
+
+    # Find the biggest JSON-like string (>500KB)
+    target = nil
+    ObjectSpace.each_object(String) do |s|
+      next if s.bytesize < 500_000
+      head = s.byteslice(0,2)
+      next unless head == "[{" || head == "{\""
+      target = s if target.nil? || s.bytesize > target.bytesize
+    end
+    return render json: { error: "no big JSON string" } unless target
+
+    encode = ->(s) {
+      s.encode("UTF-8", invalid: :replace, undef: :replace, replace: "?").byteslice(0,160)
+    rescue
+      "<preview unavailable>"
+    }
+
+    # shallow-ish graph search from an object
+    graph_has = ->(root, needle, cap=20_000) do
+      seen = {}
+      q = [root]
+      visited = 0
+      while (node = q.shift)
+        return true if node.equal?(needle)
+        id = node.__id__
+        next if seen[id]
+        seen[id] = true
+        visited += 1
+        break if visited > cap
+        begin
+          ObjectSpace.reachable_objects_from(node).each { |child| q << child }
+        rescue
+        end
+      end
+      false
+    end
+
+    hits = []
+    Thread.list.each do |t|
+      keys = (t.keys rescue [])
+      next if keys.empty?
+      key_hits = []
+      keys.each do |k|
+        begin
+          v = t[k]
+        rescue
+          v = nil
+        end
+        next if v.nil?
+
+        direct = v.equal?(target)
+        indirect = !direct && graph_has.call(v, target, 20_000)
+        next unless direct || indirect
+
+        entry = { key: k.to_s, val_class: (v.class.name rescue nil) }
+
+        if v.is_a?(Hash)
+          entry[:val_size] = v.size
+          # try to find a subkey path (one level) that points at target
+          v.each do |kk, vv|
+            if vv.equal?(target)
+              entry[:sub_hit] = { subkey: kk.to_s, sub_val_class: (vv.class.name rescue nil) }
+              break
+            end
+          end
+        elsif v.is_a?(Array)
+          entry[:val_size] = v.length
+        end
+
+        key_hits << entry
+      end
+
+      hits << { thread: t.object_id, keys: key_hits } unless key_hits.empty?
+    end
+
+    render json: {
+      target: { size: target.bytesize, head: encode.call(target) },
+      thread_hits: hits
+    }
+  end
 end
