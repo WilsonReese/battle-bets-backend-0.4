@@ -441,7 +441,7 @@ def fiber_pinpoint
   results = []
 
   ObjectSpace.each_object(Fiber) do |fib|
-    hit = scan_fiber_for_owner(fib, target, max_depth: 4, max_nodes: 80_000)
+    hit = scan_fiber_for_owner(fib, target, max_depth: 8, max_nodes: 200_000)
     next unless hit
     results << hit
     break if results.size >= 3
@@ -642,26 +642,68 @@ def scan_fiber_for_owner(fiber, target, max_depth:, max_nodes:)
 end
 
 def precise_owner_hit(obj, target)
-  # 1) instance vars
+  # 1) direct ivars
   begin
     obj.instance_variables.each do |ivar|
       v = obj.instance_variable_get(ivar)
       return { via: "ivar", ivar: ivar.to_s } if v.equal?(target)
+      # nested: array contains target
+      if v.is_a?(Array) && v.include?(target)
+        return { via: "ivar_array_includes", ivar: ivar.to_s }
+      end
+      # nested: Rack::BodyProxy or similar wrapping an array
+      if v && v.respond_to?(:instance_variable_get)
+        inner = v.instance_variable_get(:@body) rescue nil
+        if inner.equal?(target)
+          return { via: "ivar_wrapper_body_eq", ivar: ivar.to_s, wrapper: v.class.name }
+        elsif inner.is_a?(Array) && inner.include?(target)
+          return { via: "ivar_wrapper_array_includes", ivar: ivar.to_s, wrapper: v.class.name }
+        end
+      end
     end
   rescue
   end
 
-  # 2) Hash keys/values
+  # 2) Hash keys/values (Rack env)
   if obj.is_a?(Hash)
     begin
       obj.each do |k, v|
-        return { via: "hash_key", key: key_preview(k) }   if k.equal?(target)
-        return { via: "hash_val", key: key_preview(k) }   if v.equal?(target)
+        # direct key/value equality
+        return({ via: "hash_key", key: key_preview(k) }) if k.equal?(target)
+        return({ via: "hash_val", key: key_preview(k) }) if v.equal?(target)
+
+        # value is array containing target (e.g. response body array)
+        if v.is_a?(Array) && v.include?(target)
+          return({ via: "hash_val_array_includes", key: key_preview(k) })
+        end
+
+        # value is a wrapper that has @body or similar
+        if v && v.respond_to?(:instance_variable_get)
+          inner = v.instance_variable_get(:@body) rescue nil
+          if inner.equal?(target)
+            return({ via: "hash_val_wrapper_body_eq", key: key_preview(k), wrapper: v.class.name })
+          elsif inner.is_a?(Array) && inner.include?(target)
+            return({ via: "hash_val_wrapper_array_includes", key: key_preview(k), wrapper: v.class.name })
+          end
+        end
+
+        # special: ActionDispatch::Response has @body (array)
+        if v && v.class.name == "ActionDispatch::Response"
+          body = v.instance_variable_get(:@body) rescue nil
+          if body.equal?(target)
+            return({ via: "hash_val_response_body_eq", key: key_preview(k) })
+          elsif body.is_a?(Array) && body.include?(target)
+            return({ via: "hash_val_response_body_array", key: key_preview(k) })
+          end
+        end
       end
-      # Helpful preview for env-like hashes
+
+      # env preview for context
       if obj.respond_to?(:keys)
-        sample = obj.keys.take(12).map { |k| key_preview(k) }
-        return { via: "hash_scan", sample_keys: sample } if sample.any? { |s| s =~ /\Arack|action_dispatch|puma|response|body/i }
+        sample = obj.keys.take(15).map { |k| key_preview(k) }
+        if sample.any? { |s| s =~ /\A(rack|action_dispatch|puma|response|body)/i }
+          return({ via: "hash_scan", sample_keys: sample })
+        end
       end
     rescue
     end
@@ -670,7 +712,7 @@ def precise_owner_hit(obj, target)
   # 3) Arrays
   if obj.is_a?(Array)
     begin
-      return { via: "array_includes" } if obj.include?(target)
+      return({ via: "array_includes" }) if obj.include?(target)
     rescue
     end
   end
@@ -681,6 +723,7 @@ def precise_owner_hit(obj, target)
     begin
       val = obj.public_send(m)
       return({ via: "method", method: m.to_s }) if val.equal?(target)
+      return({ via: "method_array_includes", method: m.to_s }) if val.is_a?(Array) && val.include?(target)
     rescue
     end
   end
