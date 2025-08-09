@@ -188,69 +188,93 @@ class DiagController < ApplicationController
     target = nil
     ObjectSpace.each_object(String) do |s|
       next if s.bytesize < 500_000
-      head = s.byteslice(0,2)
+      head = s.byteslice(0, 2)
       next unless head == "[{" || head == "{\""
       target = s if target.nil? || s.bytesize > target.bytesize
     end
     return render json: { error: "no big JSON string" } unless target
 
-    # Helper to see if an object *directly* references the string
+    # Helper: does obj directly reference target?
     refs_target = ->(obj) do
-      ObjectSpace.reachable_objects_from(obj).any? { |child| child.equal?(target) } rescue false
+      begin
+        ObjectSpace.reachable_objects_from(obj).any? { |child| child.equal?(target) }
+      rescue
+        false
+      end
     end
 
     suspects = {}
 
-    # 1) ActionDispatch::Response (Rails response objects)
+    # 1) ActionDispatch::Response
     begin
       responses = []
-      ObjectSpace.each_object(ActionDispatch::Response) do |r|
-        if refs_target.call(r)
-          responses << { obj: r.object_id, status: r.status rescue nil, body_class: (r.body.class.name rescue nil) }
+      if defined?(ActionDispatch::Response)
+        ObjectSpace.each_object(ActionDispatch::Response) do |r|
+          next unless refs_target.call(r)
+          status = (r.status rescue nil)
+          body_class = (r.body.class.name rescue nil)
+          responses << { obj: r.object_id, status: status, body_class: body_class }
         end
       end
       suspects[:action_dispatch_response] = responses unless responses.empty?
-    rescue; end
+    rescue
+    end
 
-    # 2) Rack::BodyProxy (wrapped response bodies)
+    # 2) Rack::BodyProxy
     begin
       proxies = []
-      ObjectSpace.each_object(Rack::BodyProxy) do |bp|
-        proxies << { obj: bp.object_id } if refs_target.call(bp)
+      if defined?(Rack::BodyProxy)
+        ObjectSpace.each_object(Rack::BodyProxy) do |bp|
+          proxies << { obj: bp.object_id } if refs_target.call(bp)
+        end
       end
       suspects[:rack_body_proxy] = proxies unless proxies.empty?
-    rescue; end
+    rescue
+    end
 
-    # 3) StringIO / Tempfile buffers
+    # 3) StringIO / Tempfile
     begin
       ios = []
       ObjectSpace.each_object(StringIO) { |io| ios << { obj: io.object_id } if refs_target.call(io) }
       suspects[:stringio] = ios unless ios.empty?
-    rescue; end
+    rescue
+    end
     begin
       temps = []
       ObjectSpace.each_object(Tempfile) { |tf| temps << { obj: tf.object_id } if refs_target.call(tf) }
       suspects[:tempfile] = temps unless temps.empty?
-    rescue; end
+    rescue
+    end
 
     # 4) Thread locals (Puma threads persist)
     begin
       hits = []
       Thread.list.each do |t|
-        # quick check whether any TL directly references target
-        tl_keys = (t.keys rescue [])
-        tl_keys.each do |k|
+        keys = (t.keys rescue [])
+        keys.each do |k|
           v = (t[k] rescue nil)
-          if v.equal?(target) || refs_target.call(v)
-            hits << { thread: t.object_id, key: k.to_s, val_class: v.class.name rescue nil }
+          next if v.nil?
+          direct = v.equal?(target)
+          indirect = refs_target.call(v)
+          if direct || indirect
+            val_class = (v.class.name rescue nil)
+            hits << { thread: t.object_id, key: k.to_s, val_class: val_class }
           end
         end
       end
       suspects[:thread_locals] = hits unless hits.empty?
-    rescue; end
+    rescue
+    end
+
+    head_preview =
+      begin
+        target.encode("UTF-8", invalid: :replace, undef: :replace, replace: "?").byteslice(0, 180)
+      rescue
+        "<preview unavailable>"
+      end
 
     render json: {
-      target: { size: target.bytesize, head: (target[0,100].encode("UTF-8", invalid: :replace, undef: :replace, replace: "?") rescue "<>") },
+      target: { size: target.bytesize, head: head_preview },
       suspects: (suspects.empty? ? "none" : suspects),
     }
   end
