@@ -184,7 +184,7 @@ class DiagController < ApplicationController
   def holders
     require "objspace"
 
-    # Find largest JSON-looking string (>500KB)
+    # 1) locate the largest JSON-looking string (>500KB)
     target = nil
     ObjectSpace.each_object(String) do |s|
       next if s.bytesize < 500_000
@@ -194,88 +194,116 @@ class DiagController < ApplicationController
     end
     return render json: { error: "no big JSON string" } unless target
 
-    # Helper: does obj directly reference target?
-    refs_target = ->(obj) do
+    encode = lambda do |s|
       begin
-        ObjectSpace.reachable_objects_from(obj).any? { |child| child.equal?(target) }
-      rescue
-        false
-      end
-    end
-
-    suspects = {}
-
-    # 1) ActionDispatch::Response
-    begin
-      responses = []
-      if defined?(ActionDispatch::Response)
-        ObjectSpace.each_object(ActionDispatch::Response) do |r|
-          next unless refs_target.call(r)
-          status = (r.status rescue nil)
-          body_class = (r.body.class.name rescue nil)
-          responses << { obj: r.object_id, status: status, body_class: body_class }
-        end
-      end
-      suspects[:action_dispatch_response] = responses unless responses.empty?
-    rescue
-    end
-
-    # 2) Rack::BodyProxy
-    begin
-      proxies = []
-      if defined?(Rack::BodyProxy)
-        ObjectSpace.each_object(Rack::BodyProxy) do |bp|
-          proxies << { obj: bp.object_id } if refs_target.call(bp)
-        end
-      end
-      suspects[:rack_body_proxy] = proxies unless proxies.empty?
-    rescue
-    end
-
-    # 3) StringIO / Tempfile
-    begin
-      ios = []
-      ObjectSpace.each_object(StringIO) { |io| ios << { obj: io.object_id } if refs_target.call(io) }
-      suspects[:stringio] = ios unless ios.empty?
-    rescue
-    end
-    begin
-      temps = []
-      ObjectSpace.each_object(Tempfile) { |tf| temps << { obj: tf.object_id } if refs_target.call(tf) }
-      suspects[:tempfile] = temps unless temps.empty?
-    rescue
-    end
-
-    # 4) Thread locals (Puma threads persist)
-    begin
-      hits = []
-      Thread.list.each do |t|
-        keys = (t.keys rescue [])
-        keys.each do |k|
-          v = (t[k] rescue nil)
-          next if v.nil?
-          direct = v.equal?(target)
-          indirect = refs_target.call(v)
-          if direct || indirect
-            val_class = (v.class.name rescue nil)
-            hits << { thread: t.object_id, key: k.to_s, val_class: val_class }
-          end
-        end
-      end
-      suspects[:thread_locals] = hits unless hits.empty?
-    rescue
-    end
-
-    head_preview =
-      begin
-        target.encode("UTF-8", invalid: :replace, undef: :replace, replace: "?").byteslice(0, 180)
+        s.encode("UTF-8", invalid: :replace, undef: :replace, replace: "?").byteslice(0, 180)
       rescue
         "<preview unavailable>"
       end
+    end
+
+    # helpers
+    safe_reachable = lambda { |obj|
+      begin
+        ObjectSpace.reachable_objects_from(obj)
+      rescue
+        []
+      end
+    }
+
+    graph_has = lambda { |root, needle, max_nodes|
+      seen = {}
+      queue = [root]
+      visited = 0
+      while (node = queue.shift)
+        return true if node.equal?(needle)
+        id = node.__id__
+        next if seen[id]
+        seen[id] = true
+        visited += 1
+        break if visited > max_nodes
+        safe_reachable.call(node).each { |child| queue << child }
+      end
+      false
+    }
+
+    # 2) assemble likely roots to probe
+    roots = []
+    begin
+      roots << Rails
+      roots << Rails.application if defined?(Rails) && Rails.respond_to?(:application)
+      roots << Rails.application.middleware if Rails.application.respond_to?(:middleware)
+    rescue; end
+
+    begin
+      lg = Rails.logger
+      roots << lg if lg
+      roots << lg.formatter if lg && lg.respond_to?(:formatter) && lg.formatter
+      if lg && lg.instance_variables.include?(:@loggers)
+        arr = lg.instance_variable_get(:@loggers) rescue []
+        arr.each { |l2| roots << l2 }
+      end
+    rescue; end
+
+    begin
+      roots << Thread.main
+      Thread.list.each { |t| roots << t }
+    rescue; end
+
+    # Common rack/rails classes if loaded
+    roots << ActionDispatch::Response if defined?(ActionDispatch::Response)
+    roots << Rack::BodyProxy          if defined?(Rack::BodyProxy)
+
+    # 3) scan roots with a bigger cap (still bounded)
+    hits = []
+    roots.uniq.each do |root|
+      begin
+        klass = root.is_a?(Module) ? root.name : root.class.name
+        refs  = graph_has.call(root, target, 50_000) # widened from 10–20k
+        hits << { root_class: klass, refs: refs }
+      rescue
+        # ignore
+      end
+    end
+
+    # 4) also try deeper on specific object instances (responses/body proxies)
+    adr_hits = []
+    if defined?(ActionDispatch::Response)
+      begin
+        ObjectSpace.each_object(ActionDispatch::Response) do |r|
+          if graph_has.call(r, target, 25_000)
+            status     = (r.status rescue nil)
+            body_class = begin
+              b = r.body
+              b.class.name
+            rescue
+              nil
+            end
+            adr_hits << { obj: r.object_id, status: status, body_class: body_class }
+          end
+          break if adr_hits.size >= 5
+        end
+      rescue; end
+    end
+
+    bp_hits = []
+    if defined?(Rack::BodyProxy)
+      begin
+        ObjectSpace.each_object(Rack::BodyProxy) do |bp|
+          if graph_has.call(bp, target, 25_000)
+            bp_hits << { obj: bp.object_id }
+          end
+          break if bp_hits.size >= 5
+        end
+      rescue; end
+    end
 
     render json: {
-      target: { size: target.bytesize, head: head_preview },
-      suspects: (suspects.empty? ? "none" : suspects),
+      target: { size: target.bytesize, head: encode.call(target) },
+      root_hits: hits,
+      action_dispatch_response: (adr_hits.empty? ? nil : adr_hits),
+      rack_body_proxy:          (bp_hits.empty?  ? nil : bp_hits)
     }
   end
+
 end
