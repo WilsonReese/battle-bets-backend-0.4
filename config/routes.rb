@@ -76,6 +76,11 @@ Rails.application.routes.draw do
     end
   end
 
+  namespace :diag do
+    post :compact, to: "diag#compact"
+    get  :mem,     to: "diag#mem"     # optional, used in step 2
+  end
+
   # root to: "home#index"
   root to: proc { [200, { "Content-Type" => "application/json" }, ['{ "message": "API is running" }']] }
 end
