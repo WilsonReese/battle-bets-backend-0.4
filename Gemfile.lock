@@ -350,6 +350,7 @@ DEPENDENCIES
   devise-jwt
   dotenv-rails
   faker
+  get_process_mem
   http
   jbuilder
   kredis
