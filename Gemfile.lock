@@ -228,6 +228,9 @@ GEM
       racc (~> 1.4)
     nokogiri (1.16.6-x86_64-linux)
       racc (~> 1.4)
+    oj (3.16.11)
+      bigdecimal (>= 3.0)
+      ostruct (>= 0.2)
     orm_adapter (0.5.0)
     ostruct (0.6.3)
     pg (1.5.9)
@@ -355,6 +358,7 @@ DEPENDENCIES
   jbuilder
   kredis
   letter_opener
+  oj
   pg (~> 1.4)
   postmark-rails
   pry-rails
