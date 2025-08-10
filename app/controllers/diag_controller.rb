@@ -462,7 +462,13 @@ def pin_env
   hits = []
   ObjectSpace.each_object(Hash) do |h|
     # Heuristic: real Rack envs have these keys
-    next unless h.key?("rack.version") && h.key?("REQUEST_METHOD")
+    begin
+      keys = h.keys
+      next unless keys.any? { |k| k.to_s == "rack.version" } &&
+                  keys.any? { |k| k.to_s == "REQUEST_METHOD" }
+    rescue
+      next
+    end
     path = find_path_inside(h, target, max_depth: 7, seen: {})
     if path
       hits << {
