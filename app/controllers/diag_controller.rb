@@ -632,6 +632,7 @@ end
 
 require "net/http"
 require "uri"
+require "objspace"
 
 def probe_after
   # 1) Hit your big endpoint from inside the dyno
@@ -717,6 +718,88 @@ def probe_after
   res[:rack_env] = env_hit || { status: "not found" }
 
   render json: res
+end
+
+def probe_after_path
+  # 1) Hit your big endpoint from inside the dyno
+  uri = URI.parse("#{request.base_url}/api/v1/api_sports/games?league=2&season=2025")
+  Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == "https") do |http|
+    req = Net::HTTP::Get.new(uri.request_uri)
+    # If your app needs auth here, add the header.
+    req["Connection"] = "close"  # avoid HTTP keep-alive just for the probe
+    http.request(req)
+  end
+
+  # 2) Wait a moment so the request should be fully finished
+  delay = (params[:delay].presence || 3).to_i
+  sleep delay
+
+  # 3) Locate the big JSON string and its array holder
+  target = find_big_json_string
+  return render json: { note: "no big JSON after delay=#{delay}s" } unless target
+
+  arr_holder = nil
+  ObjectSpace.each_object(Array) do |arr|
+    begin
+      if arr.include?(target)
+        arr_holder = arr
+        break
+      end
+    rescue
+    end
+  end
+  unless arr_holder
+    return render json: {
+      target: { size: target.bytesize, head: safe_head(target) },
+      note: "no array holder found after delay=#{delay}s"
+    }
+  end
+
+  # 4) From each live Thread (and its Fiber), try to find a short path to the array holder
+  path_info = nil
+  ObjectSpace.each_object(Thread) do |thr|
+    path = bfs_path_to_target(thr, arr_holder, max_nodes: 150_000, max_depth: 10) rescue nil
+    if path
+      parent = path[-2] # object that directly points to the array
+      edge   = inspect_owner_edge(parent, arr_holder)
+      path_info = {
+        thread_id: thr.object_id,
+        path_classes: path.map { |o| o.class.name },
+        owner_class: parent&.class&.name,
+        owner_edge: edge
+      }
+      break
+    end
+
+    # also check current Fiber if any
+    begin
+      fib = thr.backtrace_locations && Fiber.current rescue nil
+    rescue
+      fib = nil
+    end
+    if fib
+      path = bfs_path_to_target(fib, arr_holder, max_nodes: 150_000, max_depth: 10) rescue nil
+      if path
+        parent = path[-2]
+        edge   = inspect_owner_edge(parent, arr_holder)
+        path_info = {
+          thread_id: thr.object_id,
+          via: "fiber",
+          path_classes: path.map { |o| o.class.name },
+          owner_class: parent&.class&.name,
+          owner_edge: edge
+        }
+        break
+      end
+    end
+  end
+
+  render json: {
+    after_delay_sec: delay,
+    target: { size: target.bytesize, head: safe_head(target) },
+    array_holder: { length: arr_holder.length },
+    path_info: path_info || { note: "no thread/fiber path found within limits" }
+  }
 end
 
 private

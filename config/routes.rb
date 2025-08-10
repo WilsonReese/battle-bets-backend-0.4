@@ -92,6 +92,7 @@ Rails.application.routes.draw do
   get "/diag/pin_response_holders", to: "diag#pin_response_holders"
   get "/diag/array_path", to: "diag#array_path"
   get "/diag/probe_after", to: "diag#probe_after"
+  get "/diag/probe_after_path", to: "diag#probe_after_path"
 
 
 
