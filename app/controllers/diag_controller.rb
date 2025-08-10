@@ -630,6 +630,95 @@ def array_path
   end
 end
 
+require "net/http"
+require "uri"
+
+def probe_after
+  # 1) Hit your big endpoint from inside the dyno
+  uri = URI.parse("#{request.base_url}/api/v1/api_sports/games?league=2&season=2025")
+  Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == "https") do |http|
+    req = Net::HTTP::Get.new(uri.request_uri)
+    # include auth header if your app needs it; otherwise omit
+    http.request(req) # we don’t store the body; let it be GC’able
+  end
+
+  # 2) Wait a moment to let the request finish and middleware unwind
+  sleep (params[:delay].presence || 2).to_i
+
+  # 3) Run the same holder scans you used in array_path
+  target = find_big_json_string
+  result = { after_delay_sec: (params[:delay].presence || 2).to_i }
+
+  unless target
+    return render json: result.merge(note: "no big JSON string found after delay")
+  end
+
+  res = { target: { size: target.bytesize, head: safe_head(target) }, checks: {} }
+
+  # Array holder?
+  arr_holder = nil
+  ObjectSpace.each_object(Array) do |arr|
+    begin
+      if arr.include?(target)
+        arr_holder = arr
+        break
+      end
+    rescue
+    end
+  end
+  res[:array_holder] = arr_holder ? { class: arr_holder.class.name, length: arr_holder.length } : { status: "not found" }
+
+  # BodyProxy?
+  bp_hit = nil
+  ObjectSpace.each_object(Object) do |o|
+    next unless o.class.name == "Rack::BodyProxy"
+    begin
+      inner = o.instance_variable_get(:@body) rescue nil
+      if inner.equal?(target) || (inner.is_a?(Array) && inner.include?(target))
+        bp_hit = { holder: "Rack::BodyProxy" }
+        break
+      end
+    rescue
+    end
+  end
+  res[:bodyproxy] = bp_hit || { status: "not found" }
+
+  # ActionDispatch::Response?
+  ad_hit = nil
+  ObjectSpace.each_object(Object) do |o|
+    next unless o.class.name == "ActionDispatch::Response"
+    begin
+      body = o.instance_variable_get(:@body) rescue nil
+      if body.equal?(target) || (body.is_a?(Array) && body.include?(target))
+        ad_hit = { holder: "ActionDispatch::Response" }
+        break
+      end
+    rescue
+    end
+  end
+  res[:action_dispatch_response] = ad_hit || { status: "not found" }
+
+  # Rack env (safe key scan)
+  env_hit = nil
+  ObjectSpace.each_object(Hash) do |h|
+    keys = (h.keys rescue nil)
+    next unless keys
+    begin
+      next unless keys.any? { |k| k.to_s == "rack.response_body" }
+      key_obj = keys.find { |k| (k.to_s rescue nil) == "rack.response_body" }
+      val = h[key_obj] rescue nil
+      if val && (val.equal?(target) || (val.is_a?(Array) && val.include?(target)))
+        env_hit = { holder: "Rack env via rack.response_body", val_class: val.class.name }
+        break
+      end
+    rescue
+    end
+  end
+  res[:rack_env] = env_hit || { status: "not found" }
+
+  render json: res
+end
+
 private
 
 def safe_head(str)
