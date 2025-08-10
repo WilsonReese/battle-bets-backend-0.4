@@ -546,7 +546,9 @@ def array_path
   target = find_big_json_string
   return render json: { error: "no big JSON string" } unless target
 
-  # find the array that contains the target string
+  result = { target: { size: target.bytesize, head: safe_head(target) }, checks: {} }
+
+  # 1) Find the array that includes the string (if any)
   arr_holder = nil
   ObjectSpace.each_object(Array) do |arr|
     begin
@@ -557,30 +559,75 @@ def array_path
     rescue
     end
   end
-  return render json: { error: "no array holder found" } unless arr_holder
-
-  # bounded BFS from likely roots to the array holder (not the string)
-  roots = []
-  ObjectSpace.each_object(Fiber)  { |f| roots << f }
-  ObjectSpace.each_object(Thread) { |t| roots << t }
-  ObjectSpace.each_object(Hash)   { |h| roots << h if h["rack.version"] && h["REQUEST_METHOD"] }
-
-  path = nil
-  roots.each do |root|
-    path = bfs_path_to_target(root, arr_holder, max_nodes: 200_000, max_depth: 10)
-    break if path
+  if arr_holder
+    result[:array_holder] = { class: arr_holder.class.name, length: arr_holder.length }
+  else
+    result[:checks][:array] = "not found"
   end
 
-  # annotate the hop that directly points to the array holder
-  owner = path && path[-2]
-  hint  = owner ? inspect_owner_edge(owner, arr_holder) : { note: "no owner found" }
+  # 2) Rack::BodyProxy -> @body
+  bodyproxy_hit = nil
+  ObjectSpace.each_object(Object) do |obj|
+    next unless obj.class.name == "Rack::BodyProxy"
+    begin
+      inner = obj.instance_variable_get(:@body) rescue nil
+      if inner.equal?(target) || (inner.is_a?(Array) && inner.include?(target))
+        bodyproxy_hit = { holder: "Rack::BodyProxy", via: inner.equal?(target) ? "@body==target" : "@body includes target" }
+        break
+      end
+    rescue
+    end
+  end
+  result[:bodyproxy] = bodyproxy_hit || { status: "not found" }
 
-  render json: {
-    target:  { size: target.bytesize, head: safe_head(target) },
-    holder:  { class: arr_holder.class.name, length: arr_holder.length },
-    path_classes: (path ? path.map { |o| o.class.name } : []),
-    owner_hint: hint
-  }
+  # 3) ActionDispatch::Response -> @body
+  ad_hit = nil
+  ObjectSpace.each_object(Object) do |obj|
+    next unless obj.class.name == "ActionDispatch::Response"
+    begin
+      body = obj.instance_variable_get(:@body) rescue nil
+      if body.equal?(target) || (body.is_a?(Array) && body.include?(target))
+        ad_hit = { holder: "ActionDispatch::Response", via: body.equal?(target) ? "@body==target" : "@body includes target" }
+        break
+      end
+    rescue
+    end
+  end
+  result[:action_dispatch_response] = ad_hit || { status: "not found" }
+
+  # 4) Rack env Hashes: look for rack.response_body safely
+  env_hit = nil
+  ObjectSpace.each_object(Hash) do |h|
+    keys = (h.keys rescue nil)
+    next unless keys
+    begin
+      next unless keys.any? { |k| k.to_s == "rack.response_body" }
+      val = nil
+      # Avoid encoding issues: find the actual key object that stringifies to "rack.response_body"
+      found_key = keys.find { |k| (k.to_s rescue nil) == "rack.response_body" }
+      val = h[found_key] rescue nil
+      if val && (val.equal?(target) || (val.is_a?(Array) && val.include?(target)))
+        env_hit = { holder: "Rack env", via: "rack.response_body", val_class: val.class.name }
+        break
+      end
+    rescue
+    end
+  end
+  result[:rack_env] = env_hit || { status: "not found" }
+
+  # 5) If we found any holder, try BFS to reconstruct a short path to it
+  holder_obj = arr_holder || (bodyproxy_hit && "Rack::BodyProxy") || (ad_hit && "ActionDispatch::Response")
+  if arr_holder
+    path = bfs_path_to_target(Thread.main, arr_holder, max_nodes: 150_000, max_depth: 10) rescue nil
+    result[:path_classes] = path&.map { |o| o.class.name }
+  end
+
+  # Final
+  if result.values.any? { |v| v.is_a?(Hash) && v[:holder] }
+    render json: result
+  else
+    render json: result.merge(error: "no holder found for current target; try triggering the big endpoint and calling this immediately"), status: :not_found
+  end
 end
 
 private
