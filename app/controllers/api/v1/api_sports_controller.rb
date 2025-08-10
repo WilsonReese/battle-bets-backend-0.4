@@ -13,8 +13,8 @@ module Api
         # call our service
         payload = ApiSportsClient.games(query)
 
-        # Drop the server-side keep-alive for this response only
-        response.set_header('Connection', 'close')
+        # # Drop the server-side keep-alive for this response only
+        # response.set_header('Connection', 'close')
 
         # return just the 'response' array
         render json: payload['response']
