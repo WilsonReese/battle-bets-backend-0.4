@@ -802,6 +802,109 @@ def probe_after_path
   }
 end
 
+def fiber_edges
+  require "objspace"
+
+  # 1) Find the big JSON string and its array holder
+  target = find_big_json_string
+  return render json: { error: "no big JSON string present" }, status: 404 unless target
+
+  arr_holder = nil
+  ObjectSpace.each_object(Array) do |arr|
+    begin
+      if arr.include?(target)
+        arr_holder = arr
+        break
+      end
+    rescue
+    end
+  end
+  return render json: { error: "array holder not found" }, status: 404 unless arr_holder
+
+  # 2) Find a Fiber that owns the array holder (shortest path from any Thread/Fiber)
+  owner_fiber = nil
+  owner_path  = nil
+
+  ObjectSpace.each_object(Thread) do |thr|
+    # try via thread
+    path = bfs_path_to_target(thr, arr_holder, max_nodes: 150_000, max_depth: 10) rescue nil
+    if path && path[-2].is_a?(Fiber)
+      owner_fiber = path[-2]
+      owner_path  = path
+      break
+    end
+
+    # also try via fibers we can discover
+    # (reachable children of thread often include a Fiber)
+    begin
+      reachable(thr).each do |child|
+        next unless child.is_a?(Fiber)
+        path2 = bfs_path_to_target(child, arr_holder, max_nodes: 150_000, max_depth: 10) rescue nil
+        if path2 && path2[-2].is_a?(Fiber)
+          owner_fiber = path2[-2]
+          owner_path  = path2
+          break
+        end
+      end
+    rescue
+    end
+    break if owner_fiber
+  end
+
+  return render json: { error: "no fiber owner found" }, status: 404 unless owner_fiber
+
+  # 3) Look ONLY one hop down from the owner fiber to see which object references the array
+  children = reachable(owner_fiber)
+  direct_edge = nil
+  children.each do |child|
+    next unless child.equal?(arr_holder) || (child.is_a?(Array) && child.equal?(arr_holder))
+    # we found a direct edge: owner_fiber -> arr_holder
+    direct_edge = { via: "reachable child equals array holder" }
+    break
+  end
+
+  # If not directly the array, find which child points to it and how
+  unless direct_edge
+    children.each do |child|
+      begin
+        # Does this child point at arr_holder?
+        edge = inspect_owner_edge(child, arr_holder)
+        next if edge == {} || edge == { owner_class: child.class.name }
+        # We found the immediate owner of the array holder
+        direct_edge = {
+          intermediate_owner_class: child.class.name,
+          edge: edge
+        }
+        break
+      rescue
+      end
+    end
+  end
+
+  # 4) Also dump Fiber instance vars (rare, but easy to check)
+  ivars = {}
+  begin
+    owner_fiber.instance_variables.each do |ivar|
+      val = owner_fiber.instance_variable_get(ivar) rescue nil
+      ivars[ivar.to_s] = {
+        val_class: (val.class.name rescue nil),
+        equals_array_holder: val.equal?(arr_holder),
+        equals_target: val.equal?(target)
+      }
+    end
+  rescue
+  end
+
+  render json: {
+    target: { size: target.bytesize, head: safe_head(target) },
+    array_holder: { length: arr_holder.length },
+    path_classes: owner_path ? owner_path.map { |o| o.class.name } : [],
+    owner_fiber_id: owner_fiber.object_id,
+    direct_edge: direct_edge || { note: "owner fiber points to array via an internal structure; no simple ivar/hash key detected" },
+    owner_fiber_ivars: ivars
+  }
+end
+
 private
 
 def safe_head(str)
