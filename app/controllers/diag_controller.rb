@@ -534,6 +534,49 @@ def pin_response_holders
   render json: hits.empty? ? { result: "not found" } : { result: "found", hits: hits }
 end
 
+def array_path
+  require "objspace"
+
+  target = find_big_json_string
+  return render json: { error: "no big JSON string" } unless target
+
+  # find the array that contains the target string
+  arr_holder = nil
+  ObjectSpace.each_object(Array) do |arr|
+    begin
+      if arr.include?(target)
+        arr_holder = arr
+        break
+      end
+    rescue
+    end
+  end
+  return render json: { error: "no array holder found" } unless arr_holder
+
+  # bounded BFS from likely roots to the array holder (not the string)
+  roots = []
+  ObjectSpace.each_object(Fiber)  { |f| roots << f }
+  ObjectSpace.each_object(Thread) { |t| roots << t }
+  ObjectSpace.each_object(Hash)   { |h| roots << h if h["rack.version"] && h["REQUEST_METHOD"] }
+
+  path = nil
+  roots.each do |root|
+    path = bfs_path_to_target(root, arr_holder, max_nodes: 200_000, max_depth: 10)
+    break if path
+  end
+
+  # annotate the hop that directly points to the array holder
+  owner = path && path[-2]
+  hint  = owner ? inspect_owner_edge(owner, arr_holder) : { note: "no owner found" }
+
+  render json: {
+    target:  { size: target.bytesize, head: safe_head(target) },
+    holder:  { class: arr_holder.class.name, length: arr_holder.length },
+    path_classes: (path ? path.map { |o| o.class.name } : []),
+    owner_hint: hint
+  }
+end
+
 private
 
 def safe_head(str)
