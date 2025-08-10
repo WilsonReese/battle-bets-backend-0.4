@@ -89,6 +89,7 @@ Rails.application.routes.draw do
   get "/diag/fiber_owner", to: "diag#fiber_owner"
   get "/diag/fiber_pinpoint", to: "diag#fiber_pinpoint"
   get "/diag/pin_env", to: "diag#pin_env"
+  get "/diag/pin_response_holders", to: "diag#pin_response_holders"
 
 
 

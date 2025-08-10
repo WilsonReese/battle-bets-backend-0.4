@@ -478,6 +478,62 @@ def pin_env
   render json: hits.empty? ? { result: "not found" } : { result: "found", hits: hits }
 end
 
+def pin_response_holders
+  require "objspace"
+
+  target = find_big_json_string
+  return render json: { error: "no big JSON string" } unless target
+
+  hits = []
+
+  # 1) ActionDispatch::Response
+  ObjectSpace.each_object(Object) do |obj|
+    next unless obj.class.name == "ActionDispatch::Response"
+    begin
+      body = obj.instance_variable_get(:@body) rescue nil
+      if body.equal?(target)
+        hits << { holder: "ActionDispatch::Response", via: "@body == target" }
+        break
+      elsif body.is_a?(Array) && body.include?(target)
+        hits << { holder: "ActionDispatch::Response", via: "@body includes target" }
+        break
+      end
+    rescue
+    end
+  end
+
+  # 2) Rack::BodyProxy (common wrapper that holds @body)
+  ObjectSpace.each_object(Object) do |obj|
+    next unless obj.class.name == "Rack::BodyProxy"
+    begin
+      inner = obj.instance_variable_get(:@body) rescue nil
+      if inner.equal?(target)
+        hits << { holder: "Rack::BodyProxy", via: "@body == target" }
+        break
+      elsif inner.is_a?(Array) && inner.include?(target)
+        hits << { holder: "Rack::BodyProxy", via: "@body includes target" }
+        break
+      end
+    rescue
+    end
+  end
+
+  # 3) Arrays used as response bodies directly (Rack allows [String])
+  if hits.empty?
+    ObjectSpace.each_object(Array) do |arr|
+      begin
+        if arr.include?(target)
+          hits << { holder: "Array", via: "array includes target", sample_size: arr.size }
+          break
+        end
+      rescue
+      end
+    end
+  end
+
+  render json: hits.empty? ? { result: "not found" } : { result: "found", hits: hits }
+end
+
 private
 
 def safe_head(str)
