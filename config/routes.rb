@@ -88,6 +88,7 @@ Rails.application.routes.draw do
   get "/diag/thread_path", to: "diag#thread_path"
   get "/diag/fiber_owner", to: "diag#fiber_owner"
   get "/diag/fiber_pinpoint", to: "diag#fiber_pinpoint"
+  get "/diag/pin_env", to: "diag#pin_env"
 
 
 

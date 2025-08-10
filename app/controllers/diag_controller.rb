@@ -453,6 +453,31 @@ def fiber_pinpoint
   }
 end
 
+def pin_env
+  require "objspace"
+
+  target = find_big_json_string
+  return render json: { error: "no big JSON string" } unless target
+
+  hits = []
+  ObjectSpace.each_object(Hash) do |h|
+    # Heuristic: real Rack envs have these keys
+    next unless h.key?("rack.version") && h.key?("REQUEST_METHOD")
+    path = find_path_inside(h, target, max_depth: 7, seen: {})
+    if path
+      hits << {
+        env_object_id: h.object_id,
+        path: path,                       # chain of {kind, key/index/ivar, class}
+        head: safe_head(target),
+        size: target.bytesize
+      }
+      break if hits.size >= 2
+    end
+  end
+
+  render json: hits.empty? ? { result: "not found" } : { result: "found", hits: hits }
+end
+
 private
 
 def safe_head(str)
@@ -724,6 +749,77 @@ def precise_owner_hit(obj, target)
       val = obj.public_send(m)
       return({ via: "method", method: m.to_s }) if val.equal?(target)
       return({ via: "method_array_includes", method: m.to_s }) if val.is_a?(Array) && val.include?(target)
+    rescue
+    end
+  end
+
+  nil
+end
+
+# Deep scan *inside one container*, returning a labeled path to target.
+# Path records look like: { kind: "hash_key", key: "rack.response_body", class: "Hash" }
+def find_path_inside(obj, target, max_depth:, seen:)
+  return nil if max_depth < 0
+  oid = obj.__id__
+  return nil if seen[oid]
+  seen[oid] = true
+
+  # Direct hit
+  return [] if obj.equal?(target)
+
+  # Hash: scan keys/values and drill down
+  if obj.is_a?(Hash)
+    obj.each do |k, v|
+      return [{ kind: "hash_key", key: key_preview(k), class: obj.class.name }] if k.equal?(target)
+      return [{ kind: "hash_val", key: key_preview(k), class: obj.class.name }] if v.equal?(target)
+
+      # Dive into value
+      sub = find_path_inside(v, target, max_depth: max_depth - 1, seen: seen)
+      if sub
+        return [{ kind: "hash_val", key: key_preview(k), class: obj.class.name }] + sub
+      end
+    end
+  end
+
+  # Array: scan elements
+  if obj.is_a?(Array)
+    obj.each_with_index do |v, i|
+      return [{ kind: "array_elem", index: i, class: obj.class.name }] if v.equal?(target)
+
+      sub = find_path_inside(v, target, max_depth: max_depth - 1, seen: seen)
+      if sub
+        return [{ kind: "array_elem", index: i, class: obj.class.name }] + sub
+      end
+    end
+  end
+
+  # Common wrappers: look through ivars (e.g., Rack::BodyProxy@body, ActionDispatch::Response@body)
+  begin
+    obj.instance_variables.each do |ivar|
+      val = obj.instance_variable_get(ivar)
+      next if val.nil?
+      return [{ kind: "ivar", ivar: ivar.to_s, class: obj.class.name }] if val.equal?(target)
+
+      sub = find_path_inside(val, target, max_depth: max_depth - 1, seen: seen)
+      if sub
+        return [{ kind: "ivar", ivar: ivar.to_s, class: obj.class.name }] + sub
+      end
+    end
+  rescue
+  end
+
+  # Reader methods that often expose bodies
+  %i[body string to_str to_s].each do |m|
+    next unless obj.respond_to?(m)
+    begin
+      val = obj.public_send(m)
+      if val.equal?(target)
+        return [{ kind: "method", method: m.to_s, class: obj.class.name }]
+      end
+      sub = find_path_inside(val, target, max_depth: max_depth - 1, seen: seen)
+      if sub
+        return [{ kind: "method", method: m.to_s, class: obj.class.name }] + sub
+      end
     rescue
     end
   end
