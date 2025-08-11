@@ -35,7 +35,7 @@ class EspnGameImporter
   private
 
   def fetch_games_from_espn
-    url = URI("#{ESPN_API_URL}?week=#{@week}")
+    url = URI("#{ESPN_API_URL}?week=#{@week}&groups=80")
     response = Net::HTTP.get(url)
     parsed = JSON.parse(response)
     puts "📦 ESPN returned #{parsed['events']&.size || 0} games for week #{@week}"
