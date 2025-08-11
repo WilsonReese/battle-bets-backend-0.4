@@ -69,8 +69,8 @@ class GamesController < ApplicationController
     # 4. Render the JSON
     render json: @games.as_json(
       include: {
-        home_team:    { only: [:name, :conference] },
-        away_team:    { only: [:name, :conference] },
+        home_team:    { only: [:name, :conference, :api_sports_io_id] },
+        away_team:    { only: [:name, :conference, :api_sports_io_id] },
         bet_options:  { only: [:id, :title, :long_title, :payout, :category] }
       },
       methods: [:user_bet_count]
