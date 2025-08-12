@@ -71,8 +71,15 @@ class User < ApplicationRecord
   validates :last_name, presence: true
 
   enum ambassador: {
-    reese_wilson:     0,
-    logan_dunn:   1,
+
+    carlos_: 0,
+    marshall_: 1,
+    kane_pollock: 2,
+    coda_cooper: 3,
+    jay_arnold: 4,
+    boomer_backfield: 5,
+    joel_: 6
+    
     # …add more keys as needed
   }, _prefix: :ambassador
 
