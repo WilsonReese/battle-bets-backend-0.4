@@ -72,14 +72,14 @@ class User < ApplicationRecord
 
   enum ambassador: {
 
-    carlos_: 0,
-    marshall_: 1,
+    carlos_e: 0,
+    marshall_b: 1,
     kane_pollock: 2,
     coda_cooper: 3,
     jay_arnold: 4,
     boomer_backfield: 5,
-    joel_: 6
-    
+    joel_wickert: 6
+
     # …add more keys as needed
   }, _prefix: :ambassador
 

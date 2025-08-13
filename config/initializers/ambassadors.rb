@@ -1,12 +1,12 @@
 # Human‑readable labels for each enum key:
 AMBASSADOR_LABELS = {
-  "carlos_"   => "Carlos ?  – UNT Ambassador",
-  "marshall_"   => "Marshall ?  – Georgia Ambassador",
-  "kane_pollock"   => "Kane P.  – Clemson Ambassador",
-  "coda_cooper"   => "Coda C.  – Tennessee Ambassador",
-  "jay_arnold"   => "Jay Arnold  – ???",
-  "boomer_backfield"   => "Boomer Backfield  – OU Ambassador",
-  "joel_"   => "Joel ?  – Vanderbilt Ambassador",
+  "jay_arnold"   => "The Get Back Coach  – Podcast",
+  "boomer_backfield"   => "Boomer Backfield  – Podcast",
+  "carlos_e"   => "Carlos E.  – UNT",
+  "coda_cooper"   => "Coda C.  – Tennessee",
+  "joel_wickert"   => "Joel W.  – Vanderbilt",
+  "kane_pollock"   => "Kane P.  – Clemson",
+  "marshall_b"   => "Saturdayinathensga  – Georgia",
 
   # …and so on
 }.freeze
