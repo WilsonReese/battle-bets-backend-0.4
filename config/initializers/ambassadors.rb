@@ -7,7 +7,7 @@ AMBASSADOR_LABELS = {
   "coda_cooper"   => "Coda C.  – Tennessee",
   "joel_wickert"   => "Joel W.  – Vanderbilt",
   "kane_pollock"   => "Kane P.  – Clemson",
-  "kaden_bender" => "Kaden B.  – Texas A&M"
+  "kaden_bender" => "Kaden B.  – Texas A&M",
   "nick_v" => "Nick V.  – Farmers Branch"
 
   # …and so on
