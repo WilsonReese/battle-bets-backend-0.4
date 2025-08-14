@@ -80,6 +80,7 @@ class User < ApplicationRecord
     boomer_backfield: 5,
     joel_wickert: 6,
     kaden_bender: 7,
+    nick_v: 8,
 
     # …add more keys as needed
   }, _prefix: :ambassador

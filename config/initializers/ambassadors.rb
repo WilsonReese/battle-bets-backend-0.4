@@ -8,6 +8,7 @@ AMBASSADOR_LABELS = {
   "joel_wickert"   => "Joel W.  – Vanderbilt",
   "kane_pollock"   => "Kane P.  – Clemson",
   "kaden_bender" => "Kaden B.  – Texas A&M"
+  "nick_v" => "Nick V. => Farmers Branch"
 
   # …and so on
 }.freeze
