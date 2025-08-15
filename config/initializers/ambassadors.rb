@@ -1,6 +1,6 @@
 # Human‑readable labels for each enum key:
 AMBASSADOR_LABELS = {
-  "jay_arnold"   => "The Get Back Coach  – Podcast",
+  "get_back_coach"   => "The Get Back Coach  – Podcast",
   "boomer_backfield"   => "Boomer Backfield  – Podcast",
   "marshall_b"   => "Saturdayinathensga  – Georgia",
   "carlos_e"   => "Carlos E.  – UNT",

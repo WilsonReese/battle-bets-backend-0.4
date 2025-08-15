@@ -76,7 +76,7 @@ class User < ApplicationRecord
     marshall_b: 1,
     kane_pollock: 2,
     coda_cooper: 3,
-    jay_arnold: 4,
+    get_back_coach: 4,
     boomer_backfield: 5,
     joel_wickert: 6,
     kaden_bender: 7,
